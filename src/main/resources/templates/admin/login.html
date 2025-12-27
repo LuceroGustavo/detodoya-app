@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detodoya - Login Administrador</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem 2.5rem;
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .brand-logo h1 {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .brand-logo p {
+            color: #718096;
+            font-weight: 400;
+            font-size: 1rem;
+        }
+        
+        .form-label {
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s ease;
+            z-index: 10;
+        }
+        
+        .password-toggle:hover {
+            color: #667eea;
+        }
+        
+        .password-wrapper .form-control {
+            padding-right: 4.5rem;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            color: white;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link a {
+            color: #718096;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .back-link a:hover {
+            color: #667eea;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .login-container {
+                padding: 2rem 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .brand-logo h1 {
+                font-size: 2rem;
+            }
+            
+            .brand-logo {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .brand-logo h1 {
+                font-size: 1.75rem;
+            }
+        }
+        
+        /* Animación de entrada */
+        .login-container {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estados de carga */
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Mejoras de accesibilidad */
+        .form-control:invalid {
+            border-color: #e53e3e;
+        }
+        
+        .form-control:valid {
+            border-color: #38a169;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="brand-logo">
+            <h1>Detodoya</h1>
+            <p>Panel de Administración</p>
+        </div>
+        
+        <form th:action="@{/admin/login}" method="post" id="loginForm">
+            <div class="mb-4">
+                <label for="username" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="username" name="username" required 
+                       placeholder="Ingresa tu usuario" autocomplete="username">
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="password-wrapper">
+                    <input type="password" class="form-control" id="password" name="password" required 
+                           placeholder="Ingresa tu contraseña" autocomplete="current-password">
+                    <button type="button" class="password-toggle" id="togglePassword" aria-label="Mostrar/Ocultar contraseña">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Iniciar Sesión</span>
+                <span class="btn-loading" style="display: none;">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    Iniciando...
+                </span>
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="/">← Volver al sitio público</a>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mejorar la experiencia de usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = loginBtn.querySelector('.btn-text');
+            const btnLoading = loginBtn.querySelector('.btn-loading');
+            
+            // Auto-focus en el primer campo
+            document.getElementById('username').focus();
+            
+            // Manejar el envío del formulario
+            form.addEventListener('submit', function(e) {
+                // Mostrar estado de carga
+                loginBtn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline';
+                
+                // Simular delay mínimo para UX
+                setTimeout(() => {
+                    // El formulario se enviará normalmente
+                }, 300);
+            });
+            
+            // Mejorar navegación con teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const activeElement = document.activeElement;
+                    if (activeElement.tagName === 'INPUT') {
+                        e.preventDefault();
+                        const inputs = Array.from(form.querySelectorAll('input'));
+                        const currentIndex = inputs.indexOf(activeElement);
+                        
+                        if (currentIndex < inputs.length - 1) {
+                            inputs[currentIndex + 1].focus();
+                        } else {
+                            form.submit();
+                        }
+                    }
+                }
+            });
+            
+            // Validación en tiempo real
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                });
+            });
+            
+            // Toggle mostrar/ocultar contraseña
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Cambiar icono
+                if (type === 'password') {
+                    eyeIcon.classList.remove('bi-eye-slash');
+                    eyeIcon.classList.add('bi-eye');
+                } else {
+                    eyeIcon.classList.remove('bi-eye');
+                    eyeIcon.classList.add('bi-eye-slash');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+/* Réplica exacta de Lovely Denim - MENORCA STORIES */
+
+/* Variables CSS de Lovely Denim */
+:root {
+    --lovely-black: #000000;
+    --lovely-white: #ffffff;
+    --lovely-gray: #f8f9fa;
+    --lovely-text: #3f3f40;
+    --lovely-accent: #ff4757;
+    --lovely-border: #ededed;
+}
+
+/* Reset y base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--lovely-white);
+    color: var(--lovely-black);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header de Lovely Denim - Réplica exacta */
+.lovely-header {
+    background: var(--lovely-black);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--lovely-border);
+}
+
+.lovely-header-container {
+    max-width: 1330px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.lovely-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: relative;
+}
+
+.lovely-logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--lovely-white);
+    text-decoration: none;
+    letter-spacing: 0.7px;
+    transition: color 0.3s ease;
+}
+
+.lovely-logo:hover {
+    color: var(--lovely-white);
+    text-decoration: none;
+}
+
+.lovely-menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.lovely-menu-item {
+    position: relative;
+}
+
+.lovely-menu-link {
+    color: var(--lovely-white);
+    text-decoration: none;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.lovely-menu-link:hover {
+    color: var(--lovely-white);
+    text-decoration: none;
+}
+
+.lovely-menu-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--lovely-white);
+    transition: width 0.3s ease;
+}
+
+.lovely-menu-link:hover::after {
+    width: 20px;
+}
+
+.lovely-search {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lovely-search-input {
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--lovely-white);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+    transition: border-color 0.3s ease;
+}
+
+.lovely-search-input:focus {
+    outline: none;
+    border-color: var(--lovely-white);
+}
+
+.lovely-search-input::placeholder {
+    color: #999;
+}
+
+.lovely-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lovely-icon {
+    color: var(--lovely-white);
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.lovely-icon:hover {
+    color: var(--lovely-white);
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+/* Título principal - Réplica exacta */
+.lovely-title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--lovely-black);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 60px 0 40px 0;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+}
+
+.lovely-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: var(--lovely-black);
+}
+
+/* Grid de categorías - Réplica exacta de Lovely Denim */
+.lovely-categories {
+    max-width: 1330px;
+    margin: 0 auto;
+    padding: 0 20px;
+    margin-bottom: 60px;
+}
+
+.lovely-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    width: 100%;
+    border: 1px solid var(--lovely-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lovely-category-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--lovely-white);
+    border-right: 1px solid var(--lovely-border);
+}
+
+.lovely-category-item:last-child {
+    border-right: none;
+}
+
+.lovely-category-item:hover {
+    transform: scale(1.02);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.lovely-category-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.lovely-category-item:hover .lovely-category-image {
+    transform: scale(1.05);
+}
+
+.lovely-category-title {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--lovely-white);
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.lovely-category-item:hover .lovely-category-title {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateX(-50%) translateY(-5px);
+}
+
+/* Grid de productos - Réplica exacta */
+.lovely-products {
+    max-width: 1330px;
+    margin: 0 auto;
+    padding: 0 20px;
+    margin-bottom: 80px;
+}
+
+.lovely-products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    width: 100%;
+}
+
+.lovely-product-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--lovely-white);
+    border: 1px solid var(--lovely-border);
+    border-right: none;
+}
+
+.lovely-product-item:last-child {
+    border-right: 1px solid var(--lovely-border);
+}
+
+.lovely-product-item:hover {
+    transform: scale(1.02);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.lovely-product-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.lovely-product-item:hover .lovely-product-image {
+    transform: scale(1.05);
+}
+
+.lovely-product-info {
+    padding: 20px;
+    background: var(--lovely-white);
+    border-top: 1px solid var(--lovely-border);
+}
+
+.lovely-product-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--lovely-black);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+}
+
+.lovely-product-price {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--lovely-black);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lovely-product-original-price {
+    font-size: 16px;
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 400;
+}
+
+.lovely-product-discount {
+    background: var(--lovely-accent);
+    color: var(--lovely-white);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Efectos de hover mejorados */
+.lovely-category-item,
+.lovely-product-item {
+    position: relative;
+}
+
+.lovely-category-item::before,
+.lovely-product-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    z-index: 1;
+}
+
+.lovely-category-item:hover::before,
+.lovely-product-item:hover::before {
+    transform: translateX(100%);
+}
+
+/* Responsive - Réplica exacta de Lovely Denim */
+@media (max-width: 1024px) {
+    .lovely-categories-grid,
+    .lovely-products-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .lovely-title {
+        font-size: 36px;
+    }
+    
+    .lovely-menu {
+        display: none;
+    }
+    
+    .lovely-search-input {
+        width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .lovely-categories-grid,
+    .lovely-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .lovely-title {
+        font-size: 28px;
+        margin: 40px 0 30px 0;
+    }
+    
+    .lovely-category-image,
+    .lovely-product-image {
+        height: 250px;
+    }
+    
+    .lovely-search-input {
+        width: 120px;
+        font-size: 12px;
+    }
+    
+    .lovely-menu-link {
+        padding: 0 15px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lovely-categories-grid,
+    .lovely-products-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .lovely-title {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+    
+    .lovely-category-image,
+    .lovely-product-image {
+        height: 200px;
+    }
+    
+    .lovely-header-container {
+        padding: 0 15px;
+    }
+    
+    .lovely-search {
+        gap: 10px;
+    }
+    
+    .lovely-search-input {
+        width: 100px;
+    }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lovely-category-item,
+.lovely-product-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.lovely-category-item:nth-child(1) { animation-delay: 0.1s; }
+.lovely-category-item:nth-child(2) { animation-delay: 0.2s; }
+.lovely-category-item:nth-child(3) { animation-delay: 0.3s; }
+.lovely-category-item:nth-child(4) { animation-delay: 0.4s; }
+
+.lovely-product-item:nth-child(1) { animation-delay: 0.1s; }
+.lovely-product-item:nth-child(2) { animation-delay: 0.2s; }
+.lovely-product-item:nth-child(3) { animation-delay: 0.3s; }
+.lovely-product-item:nth-child(4) { animation-delay: 0.4s; }

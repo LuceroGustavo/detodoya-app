@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.id != null ? 'Editar Categoría' : 'Nueva Categoría'} + ' - Detodoya'">Nueva Categoría - Detodoya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/categories">
+                <i class="bi bi-tags me-2"></i>Detodoya - Categorías
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/categories">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a Categorías
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-tags me-2"></i>
+                        <span th:text="${category.id != null ? 'Editar Categoría' : 'Nueva Categoría'}">Nueva Categoría</span>
+                    </h1>
+                </div>
+
+                <!-- Formulario -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-form me-2"></i>Información de la Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${category.id != null ? '/admin/categories/update/' + category.id : '/admin/categories/create'}" 
+                              th:object="${category}" method="post">
+                            
+                            <!-- Campo oculto para el ID de la categoría -->
+                            <input type="hidden" th:field="*{id}" name="category.id">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nombre de la Categoría *</label>
+                                        <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                               placeholder="Ej: Remeras, Pantalones, Accesorios" required>
+                                        <div class="form-text">Nombre único para identificar la categoría</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="displayOrder" class="form-label">Orden de Visualización</label>
+                                        <input type="number" class="form-control" id="displayOrder" th:field="*{displayOrder}" 
+                                               th:value="${category.id != null ? category.displayOrder : 1}"
+                                               placeholder="1" min="1" onchange="checkOrderAvailability(this.value)">
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Orden en que aparecerá en el catálogo. Si asignas una posición ocupada, las demás categorías se moverán automáticamente hacia abajo.
+                                        </div>
+                                        <div id="orderInfo" class="alert alert-info mt-2" style="display: none;">
+                                            <i class="bi bi-arrow-down-circle me-1"></i>
+                                            <span id="orderInfoText">Las categorías en posición 3 o superior se moverán automáticamente hacia abajo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" 
+                                          rows="3" placeholder="Descripción detallada de la categoría"></textarea>
+                                <div class="form-text">Descripción opcional para la categoría</div>
+                            </div>
+
+                            <!-- Sección de Imagen -->
+                            <div class="mb-4">
+                                <h6 class="text-primary mb-3">
+                                    <i class="bi bi-image me-2"></i>Imagen de la Categoría
+                                </h6>
+                                
+                                <!-- Upload de imagen -->
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label for="imageFile" class="form-label">Subir Imagen</label>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control" id="imageFile" name="imageFile" 
+                                                   accept="image/*" onchange="handleFileSelection(this)">
+                                        </div>
+                                        <div class="form-text">
+                                            Formatos: JPG, PNG, WebP. Máximo 3MB. Se optimizará automáticamente.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="category-image-preview" 
+                                             style="width: 120px; height: 120px; border: 2px dashed #dee2e6; border-radius: 12px; overflow: hidden; margin: 0 auto; position: relative;">
+                                            <img th:if="${category.imagePath != null and !category.imagePath.isEmpty()}"
+                                                 th:src="@{/uploads/{imagePath}(imagePath=${category.imagePath})}" 
+                                                 th:alt="${category.name}"
+                                                 id="imagePreview"
+                                                 style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                            <div th:unless="${category.imagePath != null and !category.imagePath.isEmpty()}"
+                                                 id="imagePlaceholder"
+                                                 class="d-flex align-items-center justify-content-center text-muted h-100"
+                                                 style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                                                <i class="bi bi-image fs-4"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Preview de imagen seleccionada -->
+                                <div id="imagePreviewContainer" class="mt-3" style="display: none;">
+                                    <h6>Vista Previa:</h6>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="card">
+                                                <div class="preview-image-container" style="height: 150px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                                                    <img id="previewImage" class="preview-image" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                                </div>
+                                                <div class="card-body p-2">
+                                                    <small class="text-muted" id="previewFileName">imagen.webp</small>
+                                                    <br>
+                                                    <small class="text-muted" id="previewFileSize">0 MB</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ruta actual (oculta) -->
+                                <input type="hidden" th:field="*{imagePath}" id="imagePath">
+                            </div>
+
+                            <!-- Sección del Carrusel -->
+                            <div class="mb-4">
+                                <h6 class="text-primary mb-3">
+                                    <i class="bi bi-collection me-2"></i>Configuración del Carrusel Principal
+                                </h6>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="showInCarousel" th:field="*{showInCarousel}" 
+                                                   th:disabled="${category.imagePath == null or category.imagePath.isEmpty()}">
+                                            <label class="form-check-label" for="showInCarousel">
+                                                <strong>Mostrar en carrusel principal</strong>
+                                            </label>
+                                            <div class="form-text">
+                                                Esta categoría aparecerá en el carrusel de imágenes del inicio
+                                                <span th:if="${category.imagePath == null or category.imagePath.isEmpty()}" 
+                                                      class="text-warning d-block">
+                                                    <i class="bi bi-exclamation-triangle"></i> 
+                                                    Primero debes subir una imagen
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="carouselOrder" class="form-label">Orden en el carrusel</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="carouselOrder" th:field="*{carouselOrder}" 
+                                                       th:value="${category.id != null ? category.carouselOrder : 1}"
+                                                       min="1" step="1" placeholder="1">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="setNextCarouselOrder()">
+                                                    <i class="bi bi-arrow-down-circle"></i> Siguiente
+                                                </button>
+                                            </div>
+                                            <div class="form-text">
+                                                Número menor = aparece primero. 1 = primero. Usa "Siguiente" para orden automático.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Nota:</strong> Solo las categorías con imagen y marcadas para carrusel aparecerán en el carrusel principal del sitio.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="isActive" th:field="*{isActive}">
+                                    <label class="form-check-label" for="isActive">
+                                        Categoría activa
+                                    </label>
+                                </div>
+                                <div class="form-text">Las categorías inactivas no aparecerán en el catálogo</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/admin/categories}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span th:text="${category.id != null ? 'Actualizar Categoría' : 'Crear Categoría'}">Crear Categoría</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Información del Sistema
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>📋 Estructura de Datos:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• <strong>1 Producto</strong> → <strong>1 Categoría</strong></li>
+                                    <li>• <strong>1 Producto</strong> → <strong>Múltiples Colores</strong></li>
+                                    <li>• <strong>Colores flexibles</strong>: Básicos + "Animal Print", "Estampadas", etc.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>🖼️ Gestión de Imágenes:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• <strong>Imagen</strong>: Ruta a archivo de imagen para la categoría</li>
+                                    <li>• <strong>Formato</strong>: JPG, PNG, WebP recomendados</li>
+                                    <li>• <strong>Tamaño</strong>: 400x400px ideal para tarjetas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Actualizar preview de imagen cuando cambie la ruta
+        document.getElementById('imagePath').addEventListener('input', function() {
+            const preview = document.querySelector('.category-image-preview img');
+            const placeholder = document.querySelector('.category-image-preview div');
+            
+            if (this.value && this.value.trim() !== '') {
+                if (preview) {
+                    preview.src = this.value;
+                    preview.style.display = 'block';
+                }
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+            } else {
+                if (preview) {
+                    preview.style.display = 'none';
+                }
+                if (placeholder) {
+                    placeholder.style.display = 'flex';
+                }
+            }
+        });
+        
+        // Verificar disponibilidad del orden
+        function checkOrderAvailability(order) {
+            const infoDiv = document.getElementById('orderInfo');
+            const infoText = document.getElementById('orderInfoText');
+            
+            if (!order || order < 1) {
+                infoDiv.style.display = 'none';
+                return;
+            }
+            
+            // Mostrar información sobre el reordenamiento automático
+            if (order > 1) {
+                infoText.textContent = `Si asignas la posición ${order}, las categorías en posición ${order} o superior se moverán automáticamente hacia abajo.`;
+                infoDiv.style.display = 'block';
+            } else {
+                infoDiv.style.display = 'none';
+            }
+        }
+        
+        // Ocultar advertencia al cargar la página si no hay duplicados
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderInput = document.getElementById('displayOrder');
+            if (orderInput && orderInput.value) {
+                checkOrderAvailability(orderInput.value);
+            }
+        });
+
+        // ===== FUNCIONES PARA MANEJO DE IMÁGENES =====
+        
+        // Variables globales para manejo de archivos
+        let selectedFile = null;
+        
+        // Inicializar listeners cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔄 DOM cargado, inicializando listeners...');
+            
+            // Debug: verificar el estado inicial de la imagen
+            const mainPreview = document.getElementById('imagePreview');
+            if (mainPreview) {
+                console.log('🖼️ Imagen principal encontrada, src actual:', mainPreview.src);
+                console.log('🖼️ Imagen principal completa URL:', mainPreview.src);
+                
+                // Listener para detectar cambios en el src
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                            console.log('🔄 Imagen src cambiado a:', mainPreview.src);
+                            if (mainPreview.src.includes('/admin/categories/')) {
+                                console.error('❌ ERROR: URL incorrecta detectada:', mainPreview.src);
+                            }
+                        }
+                    });
+                });
+                observer.observe(mainPreview, { attributes: true });
+            }
+            
+            // Listener para cambios en el checkbox del carrusel
+            const carouselCheckbox = document.getElementById('showInCarousel');
+            if (carouselCheckbox) {
+                console.log('✅ Checkbox del carrusel encontrado, estado inicial:', carouselCheckbox.checked);
+                carouselCheckbox.addEventListener('change', function() {
+                    const categoryId = document.querySelector('input[name="category.id"]')?.value;
+                    console.log('🔄 Checkbox cambiado, categoryId:', categoryId, 'checked:', this.checked);
+                    if (categoryId && this.checked) {
+                        console.log('🔄 Checkbox del carrusel marcado, guardando en BD...');
+                        updateCategoryCarouselStatus(categoryId, true);
+                    } else if (categoryId && !this.checked) {
+                        console.log('🔄 Checkbox del carrusel desmarcado, guardando en BD...');
+                        updateCategoryCarouselStatus(categoryId, false);
+                    }
+                });
+            } else {
+                console.log('❌ Checkbox del carrusel no encontrado');
+            }
+        });
+
+        // Función simple para manejar selección de archivo (basada en product-images.html)
+        function handleFileSelection(input) {
+            console.log('🔄 handleFileSelection called');
+            
+            if (input.files && input.files.length > 0) {
+                selectedFile = input.files[0];
+                console.log('📁 File selected:', selectedFile.name, '(' + selectedFile.size + ' bytes)');
+                
+                // Validar archivo
+                if (selectedFile.size > 3 * 1024 * 1024) {
+                    showAlert('❌ El archivo es demasiado grande. Máximo 3MB', 'danger');
+                    input.value = '';
+                    selectedFile = null;
+                    return;
+                }
+                
+                // Validar tipo de archivo
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+                if (!allowedTypes.includes(selectedFile.type)) {
+                    showAlert('❌ Tipo de archivo no permitido. Use: JPG, PNG, GIF, BMP, WebP', 'danger');
+                    input.value = '';
+                    selectedFile = null;
+                    return;
+                }
+                
+                // Mostrar vista previa usando FileReader (como en product-images.html)
+                displaySelectedFile();
+                
+                // Mostrar mensaje
+                showAlert('📁 Archivo seleccionado: ' + selectedFile.name + '. Haz clic en "Actualizar Categoría" para guardar.', 'info');
+                
+                // NO subir automáticamente - solo mostrar preview
+                // La imagen se subirá cuando se envíe el formulario
+            } else {
+                console.log('❌ No file selected');
+                selectedFile = null;
+            }
+        }
+        
+        // Función para mostrar vista previa (basada en product-images.html)
+        function displaySelectedFile() {
+            if (!selectedFile) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Mostrar preview en el contenedor separado
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const previewImage = document.getElementById('previewImage');
+                const previewFileName = document.getElementById('previewFileName');
+                const previewFileSize = document.getElementById('previewFileSize');
+                
+                if (previewContainer && previewImage) {
+                    previewImage.src = e.target.result;
+                    previewFileName.textContent = selectedFile.name;
+                    previewFileSize.textContent = (selectedFile.size / 1024 / 1024).toFixed(2) + ' MB';
+                    previewContainer.style.display = 'block';
+                    console.log('✅ Preview image updated in container');
+                } else {
+                    console.error('❌ No se encontraron los elementos de preview');
+                }
+                
+                // También actualizar el preview principal si existe
+                const mainPreview = document.getElementById('imagePreview');
+                const placeholder = document.getElementById('imagePlaceholder');
+                
+                if (mainPreview) {
+                    mainPreview.src = e.target.result;
+                    mainPreview.style.display = 'block';
+                    console.log('✅ Main preview updated');
+                }
+                
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                    console.log('✅ Placeholder hidden');
+                }
+                
+                // Habilitar y marcar el checkbox del carrusel cuando se ve la imagen
+                enableCarouselCheckbox();
+                markCarouselCheckbox();
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+        
+        // Función para habilitar el checkbox del carrusel
+        function enableCarouselCheckbox() {
+            const carouselCheckbox = document.getElementById('showInCarousel');
+            if (carouselCheckbox) {
+                carouselCheckbox.disabled = false;
+                const warningElement = carouselCheckbox.parentElement.querySelector('.text-warning');
+                if (warningElement) {
+                    warningElement.style.display = 'none';
+                }
+                console.log('✅ Checkbox del carrusel habilitado (imagen visible)');
+            }
+        }
+        
+        // Función para marcar el checkbox del carrusel por defecto
+        function markCarouselCheckbox() {
+            const carouselCheckbox = document.getElementById('showInCarousel');
+            if (carouselCheckbox && !carouselCheckbox.disabled) {
+                carouselCheckbox.checked = true;
+                console.log('✅ Checkbox del carrusel marcado por defecto');
+            }
+        }
+        
+        // Función de debug para verificar el estado de la imagen
+        function debugImage() {
+            console.log('🐛 === DEBUG IMAGEN ===');
+            
+            const mainPreview = document.getElementById('imagePreview');
+            if (mainPreview) {
+                console.log('🖼️ Imagen principal:');
+                console.log('  - src:', mainPreview.src);
+                console.log('  - complete URL:', mainPreview.src);
+                console.log('  - visible:', mainPreview.style.display);
+                console.log('  - naturalWidth:', mainPreview.naturalWidth);
+                console.log('  - naturalHeight:', mainPreview.naturalHeight);
+            } else {
+                console.log('❌ Imagen principal no encontrada');
+            }
+            
+            const imagePathInput = document.getElementById('imagePath');
+            if (imagePathInput) {
+                console.log('📁 Campo imagePath:', imagePathInput.value);
+            } else {
+                console.log('❌ Campo imagePath no encontrado');
+            }
+            
+            const categoryIdInput = document.querySelector('input[name="category.id"]');
+            const categoryId = categoryIdInput?.value;
+            console.log('🆔 Category ID Input:', categoryIdInput);
+            console.log('🆔 Category ID Value:', categoryId);
+            
+            console.log('🐛 === FIN DEBUG ===');
+        }
+
+        // Función para subir imagen automáticamente
+        async function uploadImageAutomatically() {
+            const categoryId = document.querySelector('input[name="category.id"]')?.value;
+            
+            if (!selectedFile) {
+                showAlert('No hay archivo seleccionado', 'warning');
+                return;
+            }
+            
+            if (!categoryId) {
+                // Para categorías nuevas, crear primero la categoría
+                console.log('🔄 Categoría nueva detectada, creando primero...');
+                await createCategoryAndUploadImage();
+                return;
+            }
+            
+            console.log('🔄 Subiendo imagen automáticamente:', selectedFile.name, 'for category:', categoryId);
+            showAlert('🔄 Subiendo imagen...', 'info');
+            
+            try {
+                await uploadImage(categoryId, selectedFile);
+            } catch (error) {
+                showAlert('Error al subir la imagen: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para crear categoría y subir imagen
+        async function createCategoryAndUploadImage() {
+            try {
+                showAlert('🔄 Creando categoría...', 'info');
+                
+                // Crear la categoría primero (sin imagen)
+                const formData = new FormData(document.querySelector('form'));
+                formData.delete('imageFile'); // Remover el archivo del FormData inicial
+                
+                const createResponse = await fetch('/admin/categories/create-json', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const createResult = await createResponse.json();
+                
+                if (createResult.success) {
+                    const newCategoryId = createResult.categoryId;
+                    showAlert('✅ Categoría creada. Subiendo imagen...', 'success');
+                    
+                    // Actualizar el ID en el formulario
+                    const idInput = document.querySelector('input[name="category.id"]');
+                    if (idInput) {
+                        idInput.value = newCategoryId;
+                    }
+                    
+                    // Ahora subir la imagen con el ID de la categoría creada
+                    await uploadImage(newCategoryId, selectedFile);
+                    
+                } else {
+                    // Si la categoría ya existe, buscar su ID y subir la imagen
+                    if (createResult.message.includes('Ya existe una categoría')) {
+                        showAlert('Categoría ya existe. Buscando categoría...', 'info');
+                        
+                        // Buscar la categoría existente por nombre
+                        const categoryName = document.getElementById('name').value;
+                        const searchResponse = await fetch(`/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
+                        const searchResult = await searchResponse.json();
+                        
+                        if (searchResult && searchResult.length > 0) {
+                            const existingCategory = searchResult[0];
+                            showAlert('Categoría encontrada. Subiendo imagen...', 'info');
+                            
+                            // Actualizar el ID en el formulario
+                            const idInput = document.querySelector('input[name="category.id"]');
+                            if (idInput) {
+                                idInput.value = existingCategory.id;
+                            }
+                            
+                            // Subir imagen a la categoría existente
+                            await uploadImage(existingCategory.id, selectedFile);
+                        } else {
+                            showAlert('Error: No se pudo encontrar la categoría existente', 'danger');
+                        }
+                    } else {
+                        showAlert('Error al crear la categoría: ' + createResult.message, 'danger');
+                    }
+                }
+            } catch (error) {
+                showAlert('Error al procesar: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para actualizar el estado del carrusel en la base de datos
+        async function updateCategoryCarouselStatus(categoryId, showInCarousel) {
+            try {
+                console.log('🔄 [JS] Actualizando estado del carrusel para categoría:', categoryId, 'showInCarousel:', showInCarousel);
+                
+                const response = await fetch(`/admin/categories/${categoryId}/update-carousel-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        showInCarousel: showInCarousel
+                    })
+                });
+                
+                console.log('🔄 [JS] Respuesta del servidor:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ [JS] Error HTTP:', response.status, errorText);
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('🔄 [JS] Resultado del servidor:', result);
+                
+                if (result.success) {
+                    console.log('✅ [JS] Estado del carrusel actualizado correctamente');
+                    showAlert('Estado del carrusel guardado correctamente', 'success');
+                } else {
+                    console.error('❌ [JS] Error al actualizar estado del carrusel:', result.message);
+                    showAlert('Error al guardar estado del carrusel: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('❌ [JS] Error al actualizar estado del carrusel:', error);
+                showAlert('Error de conexión al guardar estado del carrusel', 'danger');
+            }
+        }
+
+        // Función para subir imagen
+        async function uploadImage(categoryId, file) {
+            console.log('🔄 Subiendo imagen para categoría ID:', categoryId);
+            console.log('📁 Archivo:', file.name, '(' + file.size + ' bytes)');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`/admin/categories/${categoryId}/upload-image`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('📡 Respuesta del servidor:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                console.log('📋 Resultado:', result);
+                
+                if (result.success) {
+                    // Actualizar el campo oculto con la nueva ruta
+                    document.getElementById('imagePath').value = result.imagePath;
+                    console.log('✅ Ruta de imagen actualizada:', result.imagePath);
+                    
+                    // Actualizar la vista previa principal con la imagen subida
+                    const mainPreview = document.getElementById('imagePreview');
+                    const placeholder = document.getElementById('imagePlaceholder');
+                    
+                    if (mainPreview) {
+                        const imageUrl = '/uploads/' + result.imagePath;
+                        console.log('🖼️ Construyendo URL de imagen:', imageUrl);
+                        
+                        // Agregar listener para errores de carga
+                        mainPreview.onerror = function() {
+                            console.error('❌ Error al cargar imagen:', imageUrl);
+                            console.error('❌ URL completa:', window.location.origin + imageUrl);
+                        };
+                        
+                        mainPreview.onload = function() {
+                            console.log('✅ Imagen cargada correctamente:', imageUrl);
+                        };
+                        
+                        mainPreview.src = imageUrl;
+                        mainPreview.style.display = 'block';
+                        console.log('✅ Vista previa principal actualizada con URL:', imageUrl);
+                    }
+                    
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                        console.log('✅ Placeholder ocultado');
+                    }
+                    
+                    // Ocultar el contenedor de preview temporal
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    if (previewContainer) {
+                        previewContainer.style.display = 'none';
+                        console.log('✅ Contenedor de preview temporal ocultado');
+                    }
+                    
+                    // Mostrar mensaje de éxito con detalles
+                    showAlert('✅ Imagen subida correctamente: ' + result.imagePath, 'success');
+                    
+                    // El checkbox ya fue habilitado y marcado en el preview
+                    // Solo actualizar el estado en la base de datos si está marcado
+                    const carouselCheckbox = document.getElementById('showInCarousel');
+                    if (carouselCheckbox && carouselCheckbox.checked) {
+                        console.log('✅ Guardando estado del checkbox en la base de datos');
+                        updateCategoryCarouselStatus(categoryId, true);
+                    }
+                    
+                    // Mostrar la sección del carrusel
+                    toggleCarouselSection();
+                    
+                    // Limpiar variable global y input de archivo
+                    selectedFile = null;
+                    const fileInput = document.getElementById('imageFile');
+                    if (fileInput) {
+                        fileInput.value = '';
+                    }
+                    console.log('✅ Proceso de subida completado exitosamente');
+                    
+                } else {
+                    console.error('❌ Error del servidor:', result.message);
+                    showAlert('Error al subir la imagen: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('❌ Error en la subida:', error);
+                showAlert('Error al subir la imagen: ' + error.message, 'danger');
+            }
+        }
+
+        // Función para mostrar alertas
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container-fluid');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-dismiss después de 5 segundos
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Mostrar/ocultar sección del carrusel según si hay imagen
+        function toggleCarouselSection() {
+            const imagePath = document.getElementById('imagePath').value;
+            const carouselSection = document.querySelector('.mb-4[th\\:if]');
+            
+            if (carouselSection) {
+                if (imagePath && imagePath.trim() !== '') {
+                    carouselSection.style.display = 'block';
+                } else {
+                    carouselSection.style.display = 'none';
+                }
+            }
+        }
+
+        // Manejar envío del formulario
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            const imageFile = document.getElementById('imageFile');
+            const categoryId = document.querySelector('input[name="category.id"]')?.value;
+            const isNewCategory = !categoryId || categoryId === '';
+            
+            // Si hay una imagen nueva
+            if (imageFile.files.length > 0) {
+                e.preventDefault();
+                
+                try {
+                    if (isNewCategory) {
+                        // Para categorías nuevas: crear primero la categoría, luego subir imagen
+                        showAlert('Creando categoría...', 'info');
+                        
+                        // Crear la categoría primero (sin imagen)
+                        const formData = new FormData(this);
+                        formData.delete('imageFile'); // Remover el archivo del FormData inicial
+                        
+                        const createResponse = await fetch('/admin/categories/create-json', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const createResult = await createResponse.json();
+                        
+                        if (createResult.success) {
+                            const newCategoryId = createResult.categoryId;
+                            showAlert('Categoría creada. Subiendo imagen...', 'info');
+                            
+                            // Ahora subir la imagen con el ID de la categoría creada
+                            await uploadImage(newCategoryId, imageFile.files[0]);
+                            
+                            // Redirigir a la lista de categorías
+                            showAlert('Categoría creada e imagen subida correctamente', 'success');
+                            setTimeout(() => {
+                                window.location.href = '/admin/categories';
+                            }, 2000);
+                        } else {
+                            // Si la categoría ya existe, buscar su ID y subir la imagen
+                            if (createResult.message.includes('Ya existe una categoría')) {
+                                showAlert('Categoría ya existe. Buscando categoría...', 'info');
+                                
+                                // Buscar la categoría existente por nombre
+                                const categoryName = document.getElementById('name').value;
+                                const searchResponse = await fetch(`/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
+                                const searchResult = await searchResponse.json();
+                                
+                                if (searchResult && searchResult.length > 0) {
+                                    const existingCategory = searchResult[0];
+                                    showAlert('Categoría encontrada. Subiendo imagen...', 'info');
+                                    
+                                    // Subir imagen a la categoría existente
+                                    await uploadImage(existingCategory.id, imageFile.files[0]);
+                                    
+                                    // Redirigir a la lista de categorías
+                                    showAlert('Imagen subida correctamente a la categoría existente', 'success');
+                                    setTimeout(() => {
+                                        window.location.href = '/admin/categories';
+                                    }, 2000);
+                                } else {
+                                    showAlert('Error: No se pudo encontrar la categoría existente', 'danger');
+                                }
+                            } else {
+                                showAlert('Error al crear la categoría: ' + createResult.message, 'danger');
+                            }
+                        }
+                    } else {
+                        // Para categorías existentes: actualizar primero, luego subir imagen
+                        showAlert('Actualizando categoría...', 'info');
+                        
+                        // Enviar el formulario primero (sin la imagen)
+                        const formData = new FormData(this);
+                        formData.delete('imageFile'); // Remover el archivo del FormData
+                        
+                        const updateResponse = await fetch(this.action, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (updateResponse.ok) {
+                            showAlert('Categoría actualizada. Subiendo imagen...', 'info');
+                            
+                            // Ahora subir la imagen
+                            await uploadImage(categoryId, imageFile.files[0]);
+                            
+                            // Recargar la página para mostrar la imagen actualizada
+                            showAlert('Categoría e imagen actualizadas correctamente', 'success');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            showAlert('Error al actualizar la categoría', 'danger');
+                        }
+                    }
+                } catch (error) {
+                    showAlert('Error al procesar: ' + error.message, 'danger');
+                }
+            }
+        });
+
+        // Función para establecer el siguiente orden del carrusel
+        async function setNextCarouselOrder() {
+            try {
+                const response = await fetch('/admin/categories/next-carousel-order');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('carouselOrder').value = result.nextOrder;
+                    showAlert(`Orden establecido en ${result.nextOrder}`, 'info');
+                } else {
+                    showAlert('Error al obtener el siguiente orden: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error al obtener el siguiente orden: ' + error.message, 'danger');
+            }
+        }
+
+        // Función alternativa para habilitar botón (más simple)
+        function enableUploadButton() {
+            const uploadBtn = document.getElementById('uploadBtn');
+            if (uploadBtn) {
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('btn-outline-secondary');
+                uploadBtn.classList.add('btn-outline-primary');
+                console.log('Upload button enabled via alternative method');
+            }
+        }
+
+        // Función de prueba
+        function testFunction() {
+            console.log('🧪 JavaScript is working!');
+            console.log('🧪 Selected file:', selectedFile);
+            console.log('🧪 Upload button:', document.getElementById('uploadBtn'));
+            console.log('🧪 Image preview:', document.getElementById('imagePreview'));
+            console.log('🧪 Image path field:', document.getElementById('imagePath'));
+            alert('JavaScript está funcionando! Revisa la consola para más detalles.');
+        }
+        
+        // Función de prueba de subida
+        async function testUpload() {
+            if (!selectedFile) {
+                showAlert('❌ No hay archivo seleccionado', 'warning');
+                return;
+            }
+            
+            const categoryId = document.querySelector('input[name="category.id"]')?.value;
+            if (!categoryId) {
+                showAlert('❌ No hay ID de categoría. Usa una categoría existente.', 'warning');
+                return;
+            }
+            
+            showAlert('🧪 Probando subida de imagen...', 'info');
+            try {
+                await uploadImage(categoryId, selectedFile);
+            } catch (error) {
+                showAlert('❌ Error en prueba: ' + error.message, 'danger');
+            }
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, JavaScript is working');
+            toggleCarouselSection();
+            
+            // Establecer valores por defecto de 1 para nuevas categorías
+            const categoryId = document.querySelector('input[name="category.id"]')?.value;
+            if (!categoryId || categoryId === '') {
+                // Es una nueva categoría, establecer valores por defecto
+                const displayOrderInput = document.getElementById('displayOrder');
+                if (displayOrderInput && (!displayOrderInput.value || displayOrderInput.value === '0')) {
+                    displayOrderInput.value = '1';
+                }
+                
+                const carouselOrderInput = document.getElementById('carouselOrder');
+                if (carouselOrderInput && (!carouselOrderInput.value || carouselOrderInput.value === '0')) {
+                    carouselOrderInput.value = '1';
+                }
+            }
+            
+            // Agregar listener adicional al input de archivo
+            const fileInput = document.getElementById('imageFile');
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    console.log('File input changed via event listener');
+                    if (this.files && this.files.length > 0) {
+                        enableUploadButton();
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <style>
+        /* Estilos para el preview de imágenes (copiados de product-images.html) */
+        .preview-image-container {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .preview-image {
+            border-radius: 8px;
+        }
+        
+        .category-image-preview {
+            transition: all 0.3s ease;
+        }
+        
+        .category-image-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-image-preview img {
+            transition: transform 0.3s ease;
+        }
+        
+        .category-image-preview:hover img {
+            transform: scale(1.05);
+        }
+        
+        #imagePreviewContainer {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+    </style>
+</body>
+</html>

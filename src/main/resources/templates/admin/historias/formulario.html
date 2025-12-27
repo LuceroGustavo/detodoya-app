@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Historia - Detodoya Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+        }
+        .video-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+        .video-preview-container {
+            position: relative;
+        }
+        .remove-video-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.2s;
+        }
+        .remove-video-btn:hover {
+            background-color: rgba(220, 53, 69, 1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="bi bi-plus-circle me-2"></i>Detodoya - Nueva Historia
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/historias">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a Historias
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-plus-circle text-primary"></i>
+                        Nueva Historia
+                    </h1>
+                </div>
+
+                <!-- Alertas -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Formulario -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <form th:action="@{/admin/historias/guardar}" method="post" enctype="multipart/form-data" id="historiaForm">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-info-circle"></i>
+                                        Información de la Historia
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="titulo" class="form-label">Título *</label>
+                                        <input type="text" class="form-control" id="titulo" name="titulo" required
+                                               placeholder="Ej: Nueva colección de verano 2025">
+                                        <div class="form-text">Un título atractivo para tu historia</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="descripcion" class="form-label">Descripción</label>
+                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+                                                  placeholder="Describe brevemente el contenido de la historia..."></textarea>
+                                        <div class="form-text">Descripción opcional del contenido</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-camera-video"></i>
+                                        Video de la Historia
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="upload-area" id="uploadArea">
+                                        <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                        <h5 class="mt-2">Arrastra tu video aquí</h5>
+                                        <p class="text-muted">o haz clic para seleccionar</p>
+                                        <input type="file" class="form-control d-none" id="video" name="video" 
+                                               accept="video/mp4,video/webm,video/quicktime,video/x-msvideo" required>
+                                        <button type="button" class="btn btn-outline-primary" id="selectVideoBtn">
+                                            <i class="bi bi-folder2-open"></i> Seleccionar Video
+                                        </button>
+                                    </div>
+
+                                    <!-- Preview del video -->
+                                    <div id="videoPreview" class="mt-3" style="display: none;">
+                                        <div class="video-preview-container">
+                                            <video id="previewVideo" class="video-preview" controls>
+                                                Tu navegador no soporta la reproducción de video.
+                                            </video>
+                                            <button type="button" class="remove-video-btn" id="removeVideoBtn" title="Eliminar video">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i>
+                                                <span id="videoInfo"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Especificaciones -->
+                                    <div class="mt-3">
+                                        <h6>Especificaciones del video:</h6>
+                                        <ul class="list-unstyled">
+                                            <li><i class="bi bi-check-circle text-success"></i> Formatos: MP4, WebM, MOV, AVI</li>
+                                            <li><i class="bi bi-check-circle text-success"></i> Duración máxima: 15 segundos</li>
+                                            <li><i class="bi bi-check-circle text-success"></i> Tamaño máximo: 10MB</li>
+                                            <li><i class="bi bi-check-circle text-success"></i> Resolución recomendada: 1080x1920 (vertical)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-lightbulb"></i>
+                                        Consejos para una buena historia
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Contenido:</h6>
+                                            <ul class="small">
+                                                <li>Muestra productos destacados</li>
+                                                <li>Incluye ofertas especiales</li>
+                                                <li>Presenta el local/ambiente</li>
+                                                <li>Usa música de fondo apropiada</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Técnico:</h6>
+                                            <ul class="small">
+                                                <li>Grabación vertical (9:16)</li>
+                                                <li>Buena iluminación</li>
+                                                <li>Audio claro</li>
+                                                <li>Transiciones suaves</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Crear Historia
+                                </button>
+                                <a href="/admin/historias" class="btn btn-outline-secondary btn-lg ms-2">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-question-circle"></i>
+                                    Ayuda
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>¿Qué es una historia?</h6>
+                                <p class="small">Una historia es un video corto que aparece en la página principal para promocionar productos, ofertas o el local.</p>
+                                
+                                <h6>¿Cuántas historias puedo tener?</h6>
+                                <p class="small">Puedes tener múltiples historias, pero solo una se mostrará como principal en el index.</p>
+                                
+                                <h6>¿Cómo cambio la historia principal?</h6>
+                                <p class="small">La historia más reciente y activa se mostrará automáticamente. Puedes activar/desactivar historias desde la lista.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('video');
+        const videoPreview = document.getElementById('videoPreview');
+        const previewVideo = document.getElementById('previewVideo');
+        const videoInfo = document.getElementById('videoInfo');
+        const selectVideoBtn = document.getElementById('selectVideoBtn');
+        const removeVideoBtn = document.getElementById('removeVideoBtn');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('video/')) {
+                    // Crear un DataTransfer para asignar el archivo al input
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    videoInput.files = dataTransfer.files;
+                    handleVideoSelection();
+                } else {
+                    alert('Por favor, selecciona un archivo de video válido.');
+                }
+            }
+        });
+
+        // Click en el botón para seleccionar video (evitar doble click)
+        selectVideoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            videoInput.click();
+        });
+
+        // Click en el área de upload (pero no en el botón) para seleccionar
+        uploadArea.addEventListener('click', (e) => {
+            // Solo abrir si el click no fue en el botón
+            if (e.target !== selectVideoBtn && !selectVideoBtn.contains(e.target)) {
+                videoInput.click();
+            }
+        });
+
+        // File selection
+        videoInput.addEventListener('change', handleVideoSelection);
+
+        // Eliminar video
+        removeVideoBtn.addEventListener('click', () => {
+            // Limpiar el input
+            videoInput.value = '';
+            
+            // Liberar la URL del objeto si existe
+            if (previewVideo.src && previewVideo.src.startsWith('blob:')) {
+                URL.revokeObjectURL(previewVideo.src);
+            }
+            
+            // Limpiar el video
+            previewVideo.src = '';
+            
+            // Ocultar preview
+            videoPreview.style.display = 'none';
+            
+            // Mostrar área de upload
+            uploadArea.style.display = 'block';
+        });
+
+        function handleVideoSelection() {
+            const file = videoInput.files[0];
+            if (file) {
+                // Validar tamaño (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('El video no puede superar los 10MB');
+                    videoInput.value = '';
+                    return;
+                }
+
+                // Validar tipo
+                const validTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Formato de video no válido. Use MP4, WebM, MOV o AVI.');
+                    videoInput.value = '';
+                    return;
+                }
+
+                // Mostrar preview
+                const url = URL.createObjectURL(file);
+                previewVideo.src = url;
+                videoPreview.style.display = 'block';
+
+                // Mostrar información
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                videoInfo.textContent = `${file.name} (${sizeMB} MB)`;
+
+                // Ocultar área de upload
+                uploadArea.style.display = 'none';
+            }
+        }
+
+        // Validación del formulario
+        document.getElementById('historiaForm').addEventListener('submit', function(e) {
+            const titulo = document.getElementById('titulo').value.trim();
+            const video = document.getElementById('video').files[0];
+
+            if (!titulo) {
+                e.preventDefault();
+                alert('El título es obligatorio');
+                return;
+            }
+
+            if (!video) {
+                e.preventDefault();
+                alert('Debe seleccionar un video');
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

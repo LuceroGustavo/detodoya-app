@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${product.name} + ' - Detodoya'">Producto - Detodoya</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Detodoya</a>
+                
+                <div class="header-nav">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Overlay para el menú móvil -->
+                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+                    
+                    <!-- Menú para PC (≥ 769px) -->
+                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <div class="dropdown-grid">
+                                        <a href="/catalog?category=REMERAS" class="dropdown-item">Remeras</a>
+                                        <a href="/catalog?category=PANTALONES" class="dropdown-item">Pantalones</a>
+                                        <a href="/catalog?category=CAMISAS" class="dropdown-item">Camisas</a>
+                                        <a href="/catalog?category=BUZOS" class="dropdown-item">Buzos</a>
+                                        <a href="/catalog?category=VESTIDOS" class="dropdown-item">Vestidos</a>
+                                        <a href="/catalog?category=SHORTS" class="dropdown-item">Shorts</a>
+                                        <a href="/catalog?category=CHOMBAS" class="dropdown-item">Chombas</a>
+                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Menú para Móvil (≤ 768px) -->
+                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Catálogo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=REMERAS" class="nav-link" onclick="closeMobileMenu()">Remeras</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=PANTALONES" class="nav-link" onclick="closeMobileMenu()">Pantalones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=CAMISAS" class="nav-link" onclick="closeMobileMenu()">Camisas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=BUZOS" class="nav-link" onclick="closeMobileMenu()">Buzos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=VESTIDOS" class="nav-link" onclick="closeMobileMenu()">Vestidos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=SHORTS" class="nav-link" onclick="closeMobileMenu()">Shorts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=CHOMBAS" class="nav-link" onclick="closeMobileMenu()">Chombas</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
+                    <div class="search-bar" id="searchBar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                    </div>
+                    <div class="header-icons">
+                        <!-- Search icon - only visible on mobile -->
+                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="https://www.instagram.com/detodoya" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Product Detail -->
+    <section class="product-detail-section" style="background: white; margin-top: 0; padding: 40px 0;">
+        <div class="container product-detail-container">
+            <div class="row g-0">
+                <!-- Imagen del Producto -->
+                <div class="col-12 col-lg-6">
+                    <!-- Galería para PC -->
+                    <div class="product-gallery-desktop d-none d-lg-flex" style="max-width: 100%; width: 100%;">
+                        <!-- Thumbnails Verticales (Lado Izquierdo) -->
+                        <div class="thumbnail-column" th:if="${product.images != null and product.images.size() > 1}" style="margin-right: 25px; display: flex; flex-direction: column; height: 600px; overflow-y: auto;">
+                            <div th:each="image, iterStat : ${product.images}" 
+                                 th:class="${iterStat.first} ? 'thumbnail-vertical active' : 'thumbnail-vertical'"
+                                 th:data-image-url="${image.getImageUrl()}"
+                                 th:data-image-id="${image.id}"
+                                 th:data-is-video="${image.isVideo}"
+                                 class="thumbnail-vertical" 
+                                 style="width: 120px; height: 188px; margin-bottom: 16px; cursor: pointer; overflow: hidden; border: 1.5px solid transparent; transition: all 0.3s ease; text-align: center;">
+                                <!-- Mostrar video o imagen -->
+                                <video th:if="${image.isVideo}" th:src="${image.getImageUrl()}" muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                <img th:unless="${image.isVideo}" th:src="${image.getThumbnailUrl()}" 
+                                     class="img-fluid" 
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+                        
+                        <!-- Imagen Principal -->
+                        <div class="main-image-container" style="flex: 1; display: flex; justify-content: center; align-items: center; min-width: 0; overflow: hidden;">
+                            <div class="product-image-large" id="mainImageContainer" style="width: 100%; max-width: 520px; height: 600px; background: #fff; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 4rem; position: relative; overflow: hidden; cursor: pointer; border: 1px solid #e9ecef;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                <i class="bi bi-image" th:if="${product.images == null or product.images.isEmpty()}"></i>
+                                <!-- Calcular si es video usando th:with -->
+                                <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                               isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                                    <!-- Video - Siempre presente pero oculto si no es video -->
+                                    <video th:if="${product.images != null and !product.images.isEmpty()}" 
+                                         th:src="${product.getImagenPrincipalUrl()}" 
+                                         id="mainVideo"
+                                         th:class="${isVideo} ? '' : 'd-none'"
+                                         autoplay muted loop
+                                         style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; background: white; object-position: center;"></video>
+                                    <!-- Imagen - Siempre presente pero oculto si es video -->
+                                    <img th:if="${product.images != null and !product.images.isEmpty()}" 
+                                         th:src="${product.getImagenPrincipalUrl()}" 
+                                         id="mainImage" 
+                                         th:class="${!isVideo and imagenPrincipal != null} ? 'img-fluid' : 'd-none img-fluid'"
+                                         style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; background: white; object-position: center;">
+                                </div>
+                                <div class="image-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s ease;">
+                                    <button class="btn btn-light btn-sm" style="background: rgba(255,255,255,0.9); border: none; padding: 8px 16px; border-radius: 4px;">
+                                        <i class="bi bi-zoom-in me-1"></i>Ampliar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <!-- Galería para Móvil -->
+        <div class="product-gallery-mobile d-lg-none" style="margin-top: 0; padding: 0;">
+            <div class="mobile-gallery-container" style="position: relative; width: 100%; height: 60vh; background: #fff; overflow: hidden; padding: 0; display: flex; justify-content: center;">
+                <!-- Imagen Principal Móvil -->
+                <div class="mobile-main-image" id="mobileMainImage" style="width: 85%; min-width: 300px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; padding: 0;">
+                    <i class="bi bi-image" th:if="${product.images == null or product.images.isEmpty()}" style="font-size: 4rem; color: #ccc;"></i>
+                    <!-- Calcular si es video usando th:with -->
+                    <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                   isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                        <!-- Video móvil - Siempre presente pero oculto si no es video -->
+                        <video th:if="${product.images != null and !product.images.isEmpty()}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             id="mobileVideo"
+                             th:class="${isVideo} ? '' : 'd-none'"
+                             autoplay muted loop
+                             style="width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 0; margin: 0; padding: 0;"></video>
+                        <!-- Imagen móvil - Siempre presente pero oculto si es video -->
+                        <img th:if="${product.images != null and !product.images.isEmpty()}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             id="mobileImage"
+                             th:class="${!isVideo and imagenPrincipal != null} ? 'img-fluid' : 'd-none img-fluid'"
+                             style="width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 0; margin: 0; padding: 0;">
+                    </div>
+                    
+                    <!-- Botón de zoom -->
+                    <div class="mobile-zoom-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <i class="bi bi-zoom-in"></i>
+                    </div>
+                </div>
+                
+                <!-- Indicadores de puntos -->
+                <div class="mobile-gallery-indicators" th:if="${product.images != null and product.images.size() > 1}" 
+                     style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10;">
+                    <span th:each="image, iterStat : ${product.images}" 
+                          th:class="${iterStat.first} ? 'indicator active' : 'indicator'"
+                          th:data-image-index="${iterStat.index}"
+                          th:data-image-url="${image.getImageUrl()}"
+                          th:data-is-video="${image.isVideo}"
+                          class="indicator" 
+                          style="width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.44); cursor: pointer; transition: all 0.3s ease;"></span>
+                </div>
+            </div>
+        </div>
+                </div>
+
+                <!-- Información del Producto -->
+                <div class="col-12 col-lg-6">
+                    <div class="product-details" style="padding: 0 40px;">
+                        <!-- Título del producto -->
+                        <h1 class="product-title mb-4" th:text="${product.name}" 
+                            style="font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 400; color: #000; letter-spacing: 0px; text-transform: uppercase; line-height: 1.2;">
+                            Nombre del Producto
+                        </h1>
+                        
+                        <!-- Precio con etiqueta promocional -->
+                        <div class="product-price-container mb-4 d-flex align-items-center" style="gap: 12px;">
+                            <div class="product-price">
+                                <span class="current-price" th:text="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}" 
+                                      style="font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 400; color: #000;">$ 0</span>
+                            </div>
+                            <!-- Etiqueta promocional -->
+                            <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                 class="product-promo-label"
+                                 th:text="${product.etiquetaPromocional}">
+                            </div>
+                        </div>
+                        
+                        <!-- Información de colores disponibles (desktop) -->
+                        <div class="product-colors-info mb-4 d-none d-lg-block">
+                            <div class="d-flex align-items-center mb-4" th:if="${product.colores != null and product.colores.size() > 0}">
+                                <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 15px;">Color</span>
+                                <div class="color-circles d-flex gap-3">
+                                    <!-- Colores del sistema nuevo -->
+                                    <div th:each="color : ${product.colores}" 
+                                         class="color-circle" 
+                                         th:title="${color.name}"
+                                         th:attr="style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
+                                                          ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
+                                                          ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')} + 'width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; cursor: default; transition: all 0.3s ease; position: relative;'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+        <!-- Información inicial visible en móvil -->
+        <div class="mobile-initial-info d-lg-none mb-4" style="padding: 20px 30px; background: white;">
+            <div class="mobile-product-header">
+                <div class="mb-3">
+                    <h2 class="mobile-product-title mb-0" th:text="${product.name}" 
+                        style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 400; color: #000; letter-spacing: 0px; text-transform: uppercase; line-height: 1.2;">
+                        Nombre del Producto
+                    </h2>
+                    
+                </div>
+                                <div class="product-price-container mb-4 d-flex align-items-center" style="gap: 12px;">
+                                    <div class="mobile-product-price">
+                                        <span class="mobile-current-price" th:text="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}" 
+                                              style="font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 400; color: #000;">$ 0</span>
+                                    </div>
+                                    <!-- Etiqueta promocional -->
+                                    <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                         class="product-promo-label"
+                                         th:text="${product.etiquetaPromocional}">
+                                    </div>
+                                </div>
+                                
+                                <!-- Información de colores y talles -->
+                                <div class="mobile-variant-selector mb-3">
+                                    
+                                    
+                                    <!-- Colores -->
+                                    <div class="mobile-color-section mb-3">
+                                        <div th:if="${product.colores != null and product.colores.size() > 0}">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 10px;">Color:</span>
+                                                <div class="color-circles d-flex gap-2">
+                                                    <!-- Colores del sistema nuevo -->
+                                                    <div th:each="color : ${product.colores}" 
+                                                         class="color-circle mobile-color-circle" 
+                                                         th:title="${color.name}"
+                                                         th:attr="data-color-name=${color.name},
+                                                                  style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
+                                                                          ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
+                                                                          ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')} + 'width: 32px; height: 32px; border-radius: 50%; border: 2px solid #e0e0e0; cursor: pointer; transition: all 0.3s ease;'">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Nombre del color seleccionado (solo visible en móvil) -->
+                                            <div class="mobile-color-name-display" 
+                                                 id="mobileColorNameDisplay"
+                                                 style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #666; margin-top: 8px; min-height: 18px; display: none;">
+                                                <span id="mobileColorNameText"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Talles -->
+                                    <div class="mobile-size-section mb-3" th:if="${product.talles != null and !product.talles.isEmpty()}">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 10px;">Talle:</span>
+                                            <div class="size-options d-flex gap-2">
+                                                <button th:each="talle : ${product.talles}" 
+                                                        th:text="${talle.displayName}"
+                                                        class="size-btn" 
+                                                        style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; background: white; color: #000; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: default; transition: all 0.3s ease;">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Descripción del producto -->
+                                <div class="mobile-description mb-4">
+                                    <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; text-transform: uppercase; letter-spacing: 1px;">
+                                        Descripción
+                                    </h6>
+                                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #666; line-height: 1.6;" th:text="${product.descripcion ?: 'Producto de alta calidad con diseño único y materiales premium. Perfecto para destacar tu personalidad y sentirte cómodo en cualquier ocasión.'}"></p>
+                                </div>
+                                
+                                <!-- Botones de acción -->
+                                <div class="mobile-action-buttons d-grid gap-3">
+                                    <button class="btn btn-dark btn-lg" 
+                                            th:data-product-name="${product.name}"
+                                            th:data-product-price="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}"
+                                            style="background: #000; border: none; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                        <i class="bi bi-whatsapp me-2"></i>Consultar por WhatsApp
+                                    </button>
+                                    <a th:href="@{/contact(producto=${product.name})}" class="btn btn-outline-dark btn-lg"
+                                       style="border: 2px solid #000; color: #000; background: transparent; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase; text-decoration: none;">
+                                        <i class="bi bi-envelope me-2"></i>Enviar Consulta
+                                    </a>
+                                </div>
+                                
+                                <!-- Especificaciones del producto -->
+                                <div class="mobile-specs mb-4">
+                                    <!-- Medidas -->
+                                    <div class="mb-3" th:if="${product.medidas}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-arrows-expand me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Medidas: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.medidas}"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Material -->
+                                    <div class="mb-3" th:if="${product.material}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-shield-check me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Material: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.material}"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Géneros -->
+                                    <div class="mb-3" th:if="${product.generos != null and !product.generos.isEmpty()}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-person me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Género: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                                  th:text="${product.getGenerosComoTexto()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Características del Producto -->
+                                <div class="mobile-features mb-4">
+                                    <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                        Características del Producto
+                                    </h6>
+                                    <ul class="list-unstyled" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666;">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Material de alta calidad
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Diseño único y exclusivo
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Corte clásico y elegante
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Perfecto para ocasiones especiales
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de colores y talles para PC -->
+                        <div class="variant-selector-desktop d-none d-lg-block mb-5">
+                            
+                            
+                            <!-- Talles -->
+                            <div class="size-section mb-4" th:if="${product.talles != null and !product.talles.isEmpty()}">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 15px;">Talle</span>
+                                    <div class="size-options d-flex gap-2">
+                                        <button th:each="talle : ${product.talles}" 
+                                                th:text="${talle.displayName}"
+                                                class="size-btn" 
+                                                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; background: white; color: #000; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: default; transition: all 0.3s ease;">
+                                    </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección de especificaciones para desktop -->
+                        <div class="product-specs mb-4 d-none d-lg-block">
+                            <div class="row">
+                                
+                                <!-- Medidas -->
+                                <div class="col-md-6 mb-3" th:if="${product.medidas}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-arrows-expand me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Medidas: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.medidas}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Material -->
+                                <div class="col-md-6 mb-3" th:if="${product.material}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-shield-check me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Material: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.material}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Géneros -->
+                                <div class="col-md-6 mb-3" th:if="${product.generos != null and !product.generos.isEmpty()}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-person me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Género: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                              th:text="${product.getGenerosComoTexto()}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Temporadas -->
+                                <div class="col-md-6 mb-3" th:if="${product.temporadas != null and !product.temporadas.isEmpty()}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-calendar me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Temporada: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                              th:text="${product.getTemporadasComoTexto()}"></span>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Edad recomendada -->
+                                <div class="col-md-6 mb-3" th:if="${product.edadRecomendada}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-people me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Edad: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.edadRecomendada}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción para desktop -->
+                        <div class="product-actions mb-5 d-none d-lg-block">
+                            <div class="d-grid gap-3">
+                                <button class="btn btn-dark btn-lg" 
+                                        th:data-product-name="${product.name}"
+                                        th:data-product-price="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}"
+                                        style="background: #000; border: none; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                    <i class="bi bi-whatsapp me-2"></i>Consultar por WhatsApp
+                                </button>
+                                <a th:href="@{/contact(producto=${product.name})}" class="btn btn-outline-dark btn-lg"
+                                   style="border: 2px solid #000; color: #000; background: transparent; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                    <i class="bi bi-envelope me-2"></i>Enviar Consulta
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Características del producto para desktop -->
+                        <div class="product-features mb-4 d-none d-lg-block">
+                            <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                Características del Producto
+                            </h6>
+                            <ul class="list-unstyled" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666;">
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Material de alta calidad
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Diseño único y exclusivo
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Corte clásico y elegante
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Perfecto para ocasiones especiales
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Cuidados del producto -->
+                        <div class="product-care mb-4" th:if="${product.cuidados}">
+                            <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                Cuidados
+                            </h6>
+                            <div style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; line-height: 1.6;" th:text="${product.cuidados}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal para imagen ampliada -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="background: transparent; border: none;">
+                <div class="modal-header" style="border: none; padding: 0; position: absolute; top: 10px; right: 10px; z-index: 1050;">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px;"></button>
+                </div>
+                <div class="modal-body text-center" style="padding: 0;">
+                    <img id="modalImage" 
+                         th:if="${product.images != null and !product.images.isEmpty()}" 
+                         th:src="${product.images[0].getImageUrl()}" 
+                         class="img-fluid" 
+                         style="max-height: 90vh; max-width: 100%; object-fit: contain; background: white; border-radius: 10px;">
+                    <div th:if="${product.images == null or product.images.isEmpty()}" class="text-center py-5">
+                        <i class="bi bi-image" style="font-size: 5rem; color: white;"></i>
+                        <p class="text-white mt-3">Imagen no disponible</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Indumentaria con estilo y personalidad. Cada prenda está diseñada para que te sientas único y cómodo.
+                    </p>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="mailto:info@detodoya.com" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 1234-5678</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@detodoya.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Detodoya. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/whatsapp.js"></script>
+    <script>
+        // Efecto de scroll en navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-Detodoya');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 107, 107, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // Cambio de thumbnails interactivos
+        document.querySelectorAll('.thumbnail-vertical').forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Remover clase active de todos los thumbnails
+                document.querySelectorAll('.thumbnail-vertical').forEach(t => t.classList.remove('active'));
+                // Agregar clase active al thumbnail clickeado
+                this.classList.add('active');
+                
+                // Obtener URL de la imagen de alta calidad
+                const imageUrl = this.getAttribute('data-image-url');
+                const isVideo = this.getAttribute('data-is-video') === 'true';
+                
+                if (imageUrl) {
+                    // Obtener elementos de video e imagen
+                    const mainImage = document.getElementById('mainImage');
+                    const mainVideo = document.getElementById('mainVideo');
+                    const modalImage = document.getElementById('modalImage');
+                    
+                    if (isVideo) {
+                        // Es un video, mostrar video y ocultar imagen
+                        if (mainVideo) {
+                            mainVideo.src = imageUrl;
+                            mainVideo.classList.remove('d-none');
+                        }
+                        if (mainImage) {
+                            mainImage.classList.add('d-none');
+                        }
+                        if (modalImage) {
+                            modalImage.classList.add('d-none');
+                        }
+                    } else {
+                        // Es una imagen, mostrar imagen y ocultar video
+                        if (mainImage) {
+                            mainImage.src = imageUrl;
+                            mainImage.classList.remove('d-none');
+                        }
+                        if (mainVideo) {
+                            mainVideo.classList.add('d-none');
+                        }
+                        if (modalImage) {
+                            modalImage.src = imageUrl;
+                            modalImage.classList.remove('d-none');
+                        }
+                    }
+                }
+            });
+            
+            // Efecto hover
+            thumb.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.borderColor = '#000';
+                }
+            });
+            
+            thumb.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'scale(1)';
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        });
+
+        // Función global para abrir WhatsApp desde Thymeleaf
+        function openWhatsApp(productName, productPrice) {
+            WhatsAppIntegration.openWhatsApp(productName, productPrice);
+        }
+
+        // Manejar click del botón de WhatsApp en detalle de producto
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botones de WhatsApp (PC y móvil)
+            document.querySelectorAll('button[data-product-name]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productName = this.getAttribute('data-product-name');
+                    const productPrice = this.getAttribute('data-product-price');
+                    openWhatsApp(productName, productPrice);
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .product-title-large {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-color);
+        }
+
+        .product-price-large {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        .price-currency {
+            font-size: 2rem;
+            vertical-align: top;
+        }
+
+        /* Etiqueta promocional */
+        .product-promo-label {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        /* Ajustar el tamaño de la etiqueta en móvil */
+        @media (max-width: 768px) {
+            .product-promo-label {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-image-large:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .thumbnail-vertical {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .thumbnail-vertical:hover {
+            border-color: #151414 !important;
+        }
+
+        .thumbnail-vertical.active {
+            border: 1.5px solid #151414 !important;
+        }
+
+        .thumbnail-vertical img {
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-vertical:hover img {
+            transform: scale(1.1);
+        }
+
+        .product-image-large {
+            transition: all 0.3s ease;
+        }
+
+        .product-image-large:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Asegurar que las imágenes se mantengan dentro del contenedor */
+        .main-image-container {
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .product-image-large {
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .product-image-large img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            object-position: center !important;
+        }
+
+        /* Modal mejorado */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            box-shadow: none;
+        }
+
+        #modalImage {
+            transition: all 0.3s ease;
+        }
+
+        #modalImage:hover {
+            transform: scale(1.02);
+        }
+
+        .spec-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-features ul li {
+            padding: 0.25rem 0;
+        }
+
+        /* Estilos para galería móvil */
+        .mobile-gallery-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-main-image {
+            overflow: hidden;
+        }
+        
+        .mobile-main-image img {
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-main-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .mobile-gallery-indicators .indicator.active {
+            background: #000 !important;
+            transform: scale(1.2);
+        }
+
+        .mobile-gallery-indicators .indicator:hover {
+            background: rgba(0,0,0,0.8) !important;
+        }
+
+        /* Selector de colores móvil */
+        .color-circle.active {
+            border-color: #000 !important;
+            transform: scale(1.1);
+        }
+
+        .color-circle.active .color-check {
+            opacity: 1 !important;
+        }
+
+        .color-circle:hover {
+            transform: scale(1.05);
+        }
+
+        /* Mejoras de tipografía para móvil */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 24px !important;
+                font-weight: 500 !important;
+                letter-spacing: 0.5px !important;
+            }
+
+            .product-price .current-price {
+                font-size: 28px !important;
+                font-weight: 600 !important;
+            }
+
+            .product-description p {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+            }
+
+            .spec-item {
+                font-size: 14px !important;
+            }
+
+            .product-actions .btn {
+                font-size: 16px !important;
+                padding: 16px 24px !important;
+                font-weight: 500 !important;
+            }
+        }
+
+        /* Estilos para el modal de zoom móvil */
+        .mobile-zoom-modal {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Estilos para el carrusel en pantalla completa */
+        .fullscreen-carousel-container {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        .fullscreen-carousel-track {
+            will-change: transform;
+        }
+        
+        .fullscreen-carousel-slide {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .fullscreen-carousel-slide img,
+        .fullscreen-carousel-slide video {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .fullscreen-carousel-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .fullscreen-carousel-indicator.active {
+            transform: scale(1.3);
+        }
+        
+        .fullscreen-carousel-indicator:hover {
+            background: rgba(255,255,255,0.8) !important;
+        }
+        
+        /* Prevenir scroll del body cuando el modal está abierto */
+        body.carousel-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        /* Mejoras en el layout móvil */
+        @media (max-width: 768px) {
+            .product-detail-section {
+                margin-top: 0 !important;
+            }
+
+            .product-details {
+                padding: 20px;
+                background: white;
+            }
+
+            .product-specs .row {
+                margin: 0 -10px;
+            }
+
+            .product-specs .col-md-6 {
+                padding: 0 10px;
+                margin-bottom: 15px;
+            }
+
+            /* Ocultar título y precio originales en móvil */
+            .product-title,
+            .product-price {
+                display: none !important;
+            }
+
+            /* Mostrar información inicial móvil */
+            .mobile-initial-info {
+                background: white;
+                padding: 20px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            /* Ajustar altura de galería móvil */
+            .mobile-gallery-container {
+                height: 60vh !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            /* Reducir márgenes del contenedor principal */
+            .product-detail-container {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            
+            /* Reducir padding de la sección principal */
+            .product-detail-section {
+                padding: 0 !important;
+                margin-top: 0 !important;
+            }
+            
+            /* Ajustar padding del contenido */
+            .product-details {
+                padding: 15px !important;
+            }
+            
+            /* Hacer que la galería móvil ocupe todo el ancho */
+            .product-gallery-mobile {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Mejorar scroll */
+            .product-details {
+                min-height: 100vh;
+            }
+
+            /* Ajustar imagen móvil */
+            .mobile-main-image img {
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            /* Estilos para botones de cantidad */
+            .quantity-btn {
+                border: 2px solid #e0e0e0 !important;
+                background: white !important;
+                color: #000 !important;
+                transition: all 0.3s ease;
+            }
+
+            .quantity-btn:hover {
+                border-color: #000 !important;
+                background: #f8f9fa !important;
+            }
+
+            /* Estilos para botones de talle */
+            .size-btn.active {
+                border-color: #000 !important;
+                background: #000 !important;
+                color: white !important;
+            }
+
+            .size-btn:hover {
+                border-color: #666 !important;
+            }
+
+            /* Estilos para círculos de color */
+            .color-circle.active {
+            border-color: #151414 !important;
+                transform: scale(1.1);
+            }
+
+            .color-circle.active .color-check {
+                opacity: 1 !important;
+            }
+
+            .color-circle:hover {
+                transform: scale(1.05);
+            border-color: #666 !important;
+        }
+
+        /* Estilos para botones de talle */
+        .size-btn.active {
+            border-color: #151414 !important;
+            background: #151414 !important;
+            color: white !important;
+        }
+
+        .size-btn:hover {
+            border-color: #666 !important;
+            }
+
+            /* Círculos de colores en la fila del precio */
+            .mobile-color-circles-price .color-circle {
+                width: 24px !important;
+                height: 24px !important;
+                border: 2px solid #e0e0e0 !important;
+            }
+
+            .mobile-color-circles-price .color-circle.active {
+                border-color: #151414 !important;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Estilos para PC */
+        @media (min-width: 769px) {
+            .mobile-initial-info {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Versión ultra-simplificada del menú móvil
+        let isMobileMenuOpen = false;
+        
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navMenu || !overlay || !toggle) return;
+            
+            // Prevenir múltiples ejecuciones simultáneas
+            if (toggle.disabled) return;
+            toggle.disabled = true;
+            
+            if (isMobileMenuOpen) {
+                // Cerrar menú
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            } else {
+                // Abrir menú
+                navMenu.classList.add('active');
+                overlay.classList.add('active');
+                toggle.innerHTML = '<i class="bi bi-x"></i>';
+                isMobileMenuOpen = true;
+            }
+            
+            // Rehabilitar después de un breve delay
+            setTimeout(() => {
+                toggle.disabled = false;
+            }, 50);
+        }
+
+        // Cerrar menú móvil
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navMenu && overlay && toggle) {
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            }
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchBar');
+            const searchToggle = document.getElementById('searchToggle');
+            
+            if (searchBar.classList.contains('active')) {
+                searchBar.classList.remove('active');
+                searchToggle.innerHTML = '<i class="bi bi-search"></i>';
+            } else {
+                searchBar.classList.add('active');
+                searchToggle.innerHTML = '<i class="bi bi-x"></i>';
+                // Focus on search input when opened
+                searchBar.querySelector('.search-input').focus();
+            }
+        }
+
+        // Variables para galería móvil
+        let currentImageIndex = 0;
+        let productImages = [];
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Función para cambiar imagen en galería móvil
+        function changeMobileImage(index) {
+            if (productImages.length === 0) return;
+            
+            currentImageIndex = index;
+            const mobileImage = document.getElementById('mobileImage');
+            const mobileVideo = document.getElementById('mobileVideo');
+            const indicators = document.querySelectorAll('.mobile-gallery-indicators .indicator');
+            
+            if (productImages[index]) {
+                const isVideo = productImages[index].getIsVideo();
+                const imageUrl = productImages[index].getImageUrl();
+                
+                if (isVideo) {
+                    // Es un video
+                    if (mobileVideo) {
+                        mobileVideo.src = imageUrl;
+                        mobileVideo.classList.remove('d-none');
+                    }
+                    if (mobileImage) {
+                        mobileImage.classList.add('d-none');
+                    }
+                } else {
+                    // Es una imagen
+                    if (mobileImage) {
+                        mobileImage.src = imageUrl;
+                        mobileImage.classList.remove('d-none');
+                    }
+                    if (mobileVideo) {
+                        mobileVideo.classList.add('d-none');
+                    }
+                }
+            }
+            
+            // Actualizar indicadores
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.add('active');
+                    indicator.style.background = 'rgba(255,255,255,1)';
+                } else {
+                    indicator.classList.remove('active');
+                    indicator.style.background = 'rgba(255,255,255,0.5)';
+                }
+            });
+        }
+
+        // Función para siguiente imagen
+        function nextMobileImage() {
+            if (productImages.length === 0) return;
+            const nextIndex = (currentImageIndex + 1) % productImages.length;
+            changeMobileImage(nextIndex);
+        }
+
+        // Función para imagen anterior
+        function prevMobileImage() {
+            if (productImages.length === 0) return;
+            const prevIndex = currentImageIndex === 0 ? productImages.length - 1 : currentImageIndex - 1;
+            changeMobileImage(prevIndex);
+        }
+
+        // Variables para el carrusel en pantalla completa
+        let fullscreenCarouselIndex = 0;
+        let fullscreenCarouselModal = null;
+        let fullscreenTouchStartX = 0;
+        let fullscreenTouchEndX = 0;
+
+        // Función para zoom de imagen móvil con carrusel
+        function zoomMobileImage() {
+            if (productImages.length === 0) return;
+            
+            // Usar el índice actual de la imagen
+            fullscreenCarouselIndex = currentImageIndex;
+            
+            // Crear modal de zoom con carrusel
+            fullscreenCarouselModal = document.createElement('div');
+            fullscreenCarouselModal.className = 'mobile-zoom-modal';
+            fullscreenCarouselModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                touch-action: pan-y;
+            `;
+            
+            // Contenedor del carrusel
+            const carouselContainer = document.createElement('div');
+            carouselContainer.className = 'fullscreen-carousel-container';
+            carouselContainer.style.cssText = `
+                position: relative;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            `;
+            
+            // Contenedor de imágenes/videos con transform para el carrusel
+            const carouselTrack = document.createElement('div');
+            carouselTrack.className = 'fullscreen-carousel-track';
+            carouselTrack.style.cssText = `
+                display: flex;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                transition: transform 0.3s ease;
+            `;
+            
+            // Crear slides para cada imagen/video
+            productImages.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'fullscreen-carousel-slide';
+                slide.style.cssText = `
+                    min-width: 100%;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                `;
+                
+                const isVideo = image.getIsVideo();
+                const imageUrl = image.getImageUrl();
+                
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = imageUrl;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.loop = true;
+                    video.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(img);
+                }
+                
+                carouselTrack.appendChild(slide);
+            });
+            
+            carouselContainer.appendChild(carouselTrack);
+            
+            // Indicadores de posición (puntos)
+            if (productImages.length > 1) {
+                const indicatorsContainer = document.createElement('div');
+                indicatorsContainer.className = 'fullscreen-carousel-indicators';
+                indicatorsContainer.style.cssText = `
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 10px;
+                    z-index: 10000;
+                `;
+                
+                productImages.forEach((image, index) => {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'fullscreen-carousel-indicator';
+                    if (index === fullscreenCarouselIndex) {
+                        indicator.classList.add('active');
+                    }
+                    indicator.style.cssText = `
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: ${index === fullscreenCarouselIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'};
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    `;
+                    indicator.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        goToFullscreenImage(index);
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                });
+                
+                carouselContainer.appendChild(indicatorsContainer);
+            }
+            
+            // Botón de cerrar
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                background: rgba(0,0,0,0.5);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10000;
+                font-size: 20px;
+                transition: all 0.3s ease;
+            `;
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeFullscreenCarousel();
+            });
+            closeBtn.addEventListener('mouseenter', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.8)';
+                closeBtn.style.transform = 'scale(1.1)';
+            });
+            closeBtn.addEventListener('mouseleave', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.5)';
+                closeBtn.style.transform = 'scale(1)';
+            });
+            
+            carouselContainer.appendChild(closeBtn);
+            
+            fullscreenCarouselModal.appendChild(carouselContainer);
+            document.body.appendChild(fullscreenCarouselModal);
+            
+            // Prevenir scroll del body
+            document.body.classList.add('carousel-open');
+            
+            // Actualizar posición inicial
+            updateFullscreenCarouselPosition();
+            
+            // Eventos de touch para swipe
+            carouselTrack.addEventListener('touchstart', (e) => {
+                fullscreenTouchStartX = e.touches[0].clientX;
+                // Pausar transición durante el drag
+                carouselTrack.style.transition = 'none';
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchmove', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                const currentX = e.touches[0].clientX;
+                const diff = currentX - fullscreenTouchStartX;
+                // Mover el carrusel mientras se arrastra
+                const translateX = -(fullscreenCarouselIndex * 100) + (diff / window.innerWidth * 100);
+                carouselTrack.style.transform = `translateX(${translateX}%)`;
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchend', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                
+                fullscreenTouchEndX = e.changedTouches[0].clientX;
+                const diff = fullscreenTouchStartX - fullscreenTouchEndX;
+                const swipeThreshold = 50;
+                
+                // Restaurar transición
+                carouselTrack.style.transition = 'transform 0.3s ease';
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente imagen
+                        nextFullscreenImage();
+                    } else {
+                        // Swipe derecha - imagen anterior
+                        prevFullscreenImage();
+                    }
+                } else {
+                    // Volver a la posición actual si no se superó el threshold
+                    updateFullscreenCarouselPosition();
+                }
+                
+                fullscreenTouchStartX = 0;
+            }, { passive: true });
+            
+            // Prevenir el cierre al hacer clic en el contenido
+            carouselContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Cerrar al hacer clic en el fondo
+            fullscreenCarouselModal.addEventListener('click', (e) => {
+                if (e.target === fullscreenCarouselModal) {
+                    closeFullscreenCarousel();
+                }
+            });
+        }
+        
+        // Función para actualizar posición del carrusel en pantalla completa
+        function updateFullscreenCarouselPosition() {
+            if (!fullscreenCarouselModal) return;
+            const carouselTrack = fullscreenCarouselModal.querySelector('.fullscreen-carousel-track');
+            if (carouselTrack) {
+                carouselTrack.style.transform = `translateX(-${fullscreenCarouselIndex * 100}%)`;
+            }
+            
+            // Actualizar indicadores
+            const indicators = fullscreenCarouselModal.querySelectorAll('.fullscreen-carousel-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === fullscreenCarouselIndex) {
+                    indicator.classList.add('active');
+                    indicator.style.background = 'rgba(255,255,255,1)';
+                } else {
+                    indicator.classList.remove('active');
+                    indicator.style.background = 'rgba(255,255,255,0.5)';
+                }
+            });
+        }
+        
+        // Función para siguiente imagen en pantalla completa
+        function nextFullscreenImage() {
+            if (productImages.length === 0) return;
+            fullscreenCarouselIndex = (fullscreenCarouselIndex + 1) % productImages.length;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para imagen anterior en pantalla completa
+        function prevFullscreenImage() {
+            if (productImages.length === 0) return;
+            fullscreenCarouselIndex = fullscreenCarouselIndex === 0 ? productImages.length - 1 : fullscreenCarouselIndex - 1;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para ir a una imagen específica en pantalla completa
+        function goToFullscreenImage(index) {
+            if (index >= 0 && index < productImages.length) {
+                fullscreenCarouselIndex = index;
+                updateFullscreenCarouselPosition();
+            }
+        }
+        
+        // Función para cerrar el carrusel en pantalla completa
+        function closeFullscreenCarousel() {
+            if (fullscreenCarouselModal && document.body.contains(fullscreenCarouselModal)) {
+                document.body.removeChild(fullscreenCarouselModal);
+                fullscreenCarouselModal = null;
+                // Restaurar scroll del body
+                document.body.classList.remove('carousel-open');
+            }
+        }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener imágenes del producto
+            const imageElements = document.querySelectorAll('[data-image-url]');
+            productImages = Array.from(imageElements).map(el => ({
+                getImageUrl: () => el.getAttribute('data-image-url'),
+                getThumbnailUrl: () => el.querySelector('img') ? el.querySelector('img').src : '',
+                getIsVideo: () => el.getAttribute('data-is-video') === 'true'
+            }));
+
+            // Search functionality
+            const searchToggle = document.getElementById('searchToggle');
+            if (searchToggle) {
+                searchToggle.addEventListener('click', toggleSearch);
+            }
+
+            // Dropdown functionality - Solo en PC
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.closest('.dropdown');
+                    
+                    // Solo funcionar en PC (≥ 769px)
+                    if (window.innerWidth >= 769) {
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Galería móvil - Indicadores
+            document.querySelectorAll('.mobile-gallery-indicators .indicator').forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    changeMobileImage(index);
+                });
+            });
+
+            // Galería móvil - Botón de zoom
+            const mobileZoomBtn = document.querySelector('.mobile-zoom-btn');
+            if (mobileZoomBtn) {
+                mobileZoomBtn.addEventListener('click', zoomMobileImage);
+            }
+
+            // Galería móvil - Touch gestures
+            const mobileMainImage = document.getElementById('mobileMainImage');
+            const mobileImage = document.getElementById('mobileImage');
+            const mobileVideo = document.getElementById('mobileVideo');
+            
+            if (mobileMainImage) {
+                let touchStartedOnImage = false;
+                let touchMoved = false;
+                let touchStartTime = 0;
+                
+                mobileMainImage.addEventListener('touchstart', (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartTime = Date.now();
+                    touchStartedOnImage = true;
+                    touchMoved = false;
+                }, { passive: true });
+
+                mobileMainImage.addEventListener('touchmove', (e) => {
+                    if (touchStartedOnImage) {
+                        const currentX = e.touches[0].clientX;
+                        const diff = Math.abs(touchStartX - currentX);
+                        // Si hay movimiento horizontal significativo, es un swipe
+                        if (diff > 10) {
+                            touchMoved = true;
+                        }
+                    }
+                }, { passive: true });
+
+                mobileMainImage.addEventListener('touchend', (e) => {
+                    if (touchStartedOnImage) {
+                        touchEndX = e.changedTouches[0].clientX;
+                        const diff = Math.abs(touchStartX - touchEndX);
+                        const touchDuration = Date.now() - touchStartTime;
+                        window.lastTouchEnd = Date.now();
+                        
+                        // Si hubo movimiento horizontal significativo (swipe)
+                        if (touchMoved && diff > 50) {
+                            handleSwipe();
+                        } else if (!touchMoved && touchDuration < 300) {
+                            // Si fue un tap rápido sin movimiento, abrir zoom
+                            setTimeout(() => {
+                                if (!fullscreenCarouselModal) {
+                                    zoomMobileImage();
+                                }
+                            }, 50);
+                        }
+                    }
+                    touchStartedOnImage = false;
+                    touchMoved = false;
+                }, { passive: true });
+
+                // Click en la imagen principal (para casos donde no haya touch)
+                mobileMainImage.addEventListener('click', (e) => {
+                    // Solo si no hubo un touch reciente
+                    const timeSinceTouchEnd = Date.now() - (window.lastTouchEnd || 0);
+                    if (timeSinceTouchEnd > 300) {
+                        zoomMobileImage();
+                    }
+                });
+                
+                // También permitir click directo en imagen/video
+                if (mobileImage) {
+                    mobileImage.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        zoomMobileImage();
+                    });
+                }
+                
+                if (mobileVideo) {
+                    mobileVideo.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        zoomMobileImage();
+                    });
+                }
+            }
+
+            // Los colores ahora son solo informativos (sin funcionalidad de selección)
+
+            // Los talles ahora son solo informativos (sin funcionalidad de selección)
+
+            // Cerrar menú móvil al hacer clic en enlaces
+            document.querySelectorAll('.nav-menu-mobile .nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+
+            // Cerrar menú móvil al hacer clic en el overlay
+            const overlay = document.getElementById('navOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Manejar resize de ventana
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
+        });
+
+        // Función para manejar swipe
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                // Solo procesar si no estamos en pantalla completa
+                if (!fullscreenCarouselModal) {
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente imagen
+                        nextMobileImage();
+                    } else {
+                        // Swipe derecha - imagen anterior
+                        prevMobileImage();
+                    }
+                }
+            }
+        }
+
+        // Mostrar nombre del color al tocar/seleccionar en móvil
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileColorCircles = document.querySelectorAll('.mobile-color-circle');
+            const colorNameDisplay = document.getElementById('mobileColorNameDisplay');
+            const colorNameText = document.getElementById('mobileColorNameText');
+            
+            if (mobileColorCircles.length > 0 && colorNameDisplay && colorNameText) {
+                mobileColorCircles.forEach(function(circle) {
+                    // Manejar click/touch
+                    circle.addEventListener('click', function() {
+                        const colorName = this.getAttribute('data-color-name');
+                        if (colorName) {
+                            colorNameText.textContent = colorName;
+                            colorNameDisplay.style.display = 'block';
+                            
+                            // Remover selección anterior
+                            mobileColorCircles.forEach(function(c) {
+                                c.style.border = '2px solid #e0e0e0';
+                                c.style.transform = 'scale(1)';
+                            });
+                            
+                            // Resaltar el color seleccionado
+                            this.style.border = '2px solid #000';
+                            this.style.transform = 'scale(1.1)';
+                            
+                            // Ocultar después de 3 segundos si no hay otra interacción
+                            clearTimeout(window.colorNameTimeout);
+                            window.colorNameTimeout = setTimeout(function() {
+                                colorNameDisplay.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+                    
+                    // También mostrar en hover para dispositivos con mouse (tablets)
+                    circle.addEventListener('mouseenter', function() {
+                        const colorName = this.getAttribute('data-color-name');
+                        if (colorName && window.innerWidth <= 991) { // Solo en móvil/tablet
+                            colorNameText.textContent = colorName;
+                            colorNameDisplay.style.display = 'block';
+                            clearTimeout(window.colorNameTimeout);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

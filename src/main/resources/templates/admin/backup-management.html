@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Backups - Detodoya</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 0.2rem 0;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .backup-card {
+            transition: transform 0.2s;
+        }
+        .backup-card:hover {
+            transform: translateY(-2px);
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">Detodoya</h4>
+                        <small class="text-white-50">Panel Admin</small>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                        </a>
+                        <a class="nav-link" href="/admin/products">
+                            <i class="bi bi-box-seam me-2"></i>Productos
+                        </a>
+                        <a class="nav-link" href="/admin/categories">
+                            <i class="bi bi-tags me-2"></i>Categorías
+                        </a>
+                        <a class="nav-link" href="/admin/colors">
+                            <i class="bi bi-palette me-2"></i>Colores
+                        </a>
+                        <a class="nav-link" href="/admin/historias">
+                            <i class="bi bi-camera-video me-2"></i>Historias
+                        </a>
+                        <a class="nav-link" href="/admin/contacts">
+                            <i class="bi bi-envelope me-2"></i>Consultas
+                        </a>
+                        <a class="nav-link" href="/admin/users/change-password">
+                            <i class="bi bi-key me-2"></i>Cambiar Contraseña
+                        </a>
+                        <a class="nav-link" href="/admin/help">
+                            <i class="bi bi-question-circle me-2"></i>Manual de Usuario
+                        </a>
+                        <hr class="text-white-50">
+                        <a class="nav-link" href="/" target="_blank">
+                            <i class="bi bi-eye me-2"></i>Ver Sitio
+                        </a>
+                        <a class="nav-link" href="/admin/logout">
+                            <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2><i class="bi bi-archive"></i> Gestión de Backups</h2>
+                                <p class="text-muted">Exporta e importa todos los datos de la aplicación</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createBackupModal">
+                                    <i class="bi bi-plus-circle"></i> Crear Backup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-archive fs-1 mb-2"></i>
+                                <div class="stats-number" th:text="${#lists.size(backups)}">0</div>
+                                <div>Total Backups</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-box-seam fs-1 mb-2"></i>
+                                <div class="stats-number">0</div>
+                                <div>Backups Completos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-database fs-1 mb-2"></i>
+                                <div class="stats-number">0</div>
+                                <div>Backups de Datos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-clock-history fs-1 mb-2"></i>
+                                <div class="stats-number">0</div>
+                                <div>Esta Semana</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup Actions -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="bi bi-download"></i> Crear Backup</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <form th:action="@{/admin/backup/create/full}" method="post">
+                                            <div class="mb-2">
+                                                <label class="form-label">Backup Completo</label>
+                                                <input type="text" class="form-control" name="description" placeholder="Descripción (opcional)">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="bi bi-archive"></i> Crear Backup Completo
+                                            </button>
+                                            <small class="text-muted">Incluye productos, categorías, imágenes y usuarios</small>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <form th:action="@{/admin/backup/create/data-only}" method="post">
+                                            <div class="mb-2">
+                                                <label class="form-label">Solo Datos</label>
+                                                <input type="text" class="form-control" name="description" placeholder="Descripción (opcional)">
+                                            </div>
+                                            <button type="submit" class="btn btn-outline-primary w-100">
+                                                <i class="bi bi-database"></i> Crear Backup de Datos
+                                            </button>
+                                            <small class="text-muted">Solo productos, categorías y usuarios (sin imágenes)</small>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="bi bi-upload"></i> Restaurar Backup</h5>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/admin/backup/restore}" method="post" enctype="multipart/form-data" id="restoreForm">
+                                    <div class="upload-area" id="uploadArea">
+                                        <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                        <p class="mt-2 mb-0">Arrastra un archivo ZIP aquí o haz clic para seleccionar</p>
+                                        <input type="file" name="backupFile" id="backupFile" accept=".zip" style="display: none;" required>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="clearExisting" id="clearExisting">
+                                            <label class="form-check-label" for="clearExisting">
+                                                Limpiar datos existentes antes de restaurar
+                                            </label>
+                                        </div>
+                                        <small class="text-warning">
+                                            <i class="bi bi-exclamation-triangle"></i> 
+                                            Esta opción eliminará todos los datos actuales
+                                        </small>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 mt-3">
+                                        <i class="bi bi-upload"></i> Restaurar Backup
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backups List -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="bi bi-list"></i> Historial de Backups</h5>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${#lists.isEmpty(backups)}" class="text-center py-5">
+                                    <i class="bi bi-archive fs-1 text-muted"></i>
+                                    <p class="text-muted mt-2">No hay backups creados aún</p>
+                                </div>
+                                
+                                <div th:if="${!#lists.isEmpty(backups)}" class="row">
+                                    <div th:each="backup : ${backups}" class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card backup-card h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <h6 class="card-title mb-0" th:text="${backup.fileName}">backup_file.zip</h6>
+                                                    <span class="badge bg-primary" th:text="${backup.backupType}">FULL</span>
+                                                </div>
+                                                
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-person"></i> <span th:text="${backup.createdBy}">usuario</span><br>
+                                                        <i class="bi bi-calendar"></i> <span th:text="${#temporals.format(backup.createdAt, 'dd/MM/yyyy HH:mm')}">fecha</span><br>
+                                                        <i class="bi bi-hdd"></i> <span th:text="${backup.formattedFileSize}">0 MB</span>
+                                                    </small>
+                                                </p>
+                                                
+                                                <div th:if="${backup.description}" class="mb-2">
+                                                    <small class="text-muted" th:text="${backup.description}">descripción</small>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-box"></i> <span th:text="${backup.productCount}">0</span> productos |
+                                                        <i class="bi bi-tags"></i> <span th:text="${backup.categoryCount}">0</span> categorías |
+                                                        <i class="bi bi-image"></i> <span th:text="${backup.imageCount}">0</span> imágenes
+                                                    </small>
+                                                </div>
+                                                
+                                                <div class="d-flex gap-2">
+                                                    <a th:href="@{/admin/backup/download/{id}(id=${backup.id})}" 
+                                                       class="btn btn-outline-primary btn-sm">
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-danger btn-sm" 
+                                                            th:onclick="'deleteBackup(' + ${backup.id} + ')'">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que quieres eliminar este backup?</p>
+                    <p class="text-muted">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="deleteForm" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('backupFile');
+        const restoreForm = document.getElementById('restoreForm');
+        
+        // Click en el área de upload
+        uploadArea.addEventListener('click', (e) => {
+            e.preventDefault();
+            fileInput.click();
+        });
+        
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateUploadArea();
+            }
+        });
+        
+        // Cambio en el input file
+        fileInput.addEventListener('change', function(e) {
+            updateUploadArea();
+        });
+        
+        function updateUploadArea() {
+            if (fileInput.files && fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                // No reemplazar todo el HTML, solo actualizar el contenido visual
+                const icon = uploadArea.querySelector('i');
+                const text = uploadArea.querySelector('p');
+                const small = uploadArea.querySelector('small');
+                
+                if (icon) icon.className = 'bi bi-file-zip fs-1 text-success';
+                if (text) text.textContent = fileName;
+                if (small) small.textContent = 'Archivo seleccionado';
+            }
+        }
+        
+        // Validación del formulario
+        restoreForm.addEventListener('submit', function(e) {
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Por favor selecciona un archivo ZIP para restaurar');
+                return false;
+            }
+            
+            const file = fileInput.files[0];
+            if (!file.name.toLowerCase().endsWith('.zip')) {
+                e.preventDefault();
+                alert('Por favor selecciona un archivo ZIP válido');
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // Delete backup function
+        function deleteBackup(backupId) {
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = `/admin/backup/delete/${backupId}`;
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+        
+        // Auto-hide alerts
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+/* Estilos para el carrusel de categorías */
+
+.categories-carousel-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0; /* Reducido de 3rem a 2rem */
+}
+
+.categories-carousel-section h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem; /* Reducido de 2rem a 1rem */
+}
+
+/* Desktop Grid Layout */
+.categories-grid-desktop {
+    padding: 0 10px; /* Reducido para que ocupen más ancho */
+    max-width: 1330px;
+    margin: 0 auto;
+}
+
+.categories-grid-desktop .d-flex {
+    gap: 4px !important; /* Espaciado mínimo como en la referencia */
+    max-width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    grid-gap: 4px !important;
+}
+
+.categories-grid-desktop .category-carousel-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+}
+
+.category-carousel-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.category-carousel-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.category-image-container {
+    margin: 0 auto;
+    border-radius: 0; /* Sin border radius para que sea más cuadrado */
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.category-image-container:hover {
+    transform: scale(1.02);
+}
+
+.category-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.category-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.category-carousel-item h5 {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0.75rem 0 0 0;
+    padding: 0 0.5rem 0.75rem 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.category-carousel-item:hover h5 {
+    color: #667eea;
+}
+
+/* Mobile Carousel Layout */
+.categories-carousel-mobile {
+    padding: 0 10px; /* Reducido para que ocupen más ancho */
+}
+
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.carousel-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 8px; /* Espaciado reducido entre tarjetas */
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.carousel-nav:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-nav i {
+    font-size: 18px;
+    color: #333;
+}
+
+/* Controles del carrusel */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(255,255,255,1);
+    transform: scale(1.1);
+}
+
+.carousel-control-prev {
+    left: -50px;
+}
+
+.carousel-control-next {
+    right: -50px;
+}
+
+/* Indicadores del carrusel */
+.carousel-indicators {
+    bottom: -20px;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #c1c1c1;
+    border: none;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: #171717;
+    transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .categories-grid-desktop .d-flex {
+        gap: 6px !important;
+    }
+    
+    .category-carousel-item {
+        width: calc(33.333% - 4px) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .categories-carousel-section {
+        padding: 2rem 0;
+    }
+    
+    .categories-carousel-section h2 {
+        font-size: 24px;
+    }
+    
+    .carousel-nav {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .carousel-nav i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .categories-carousel-section h2 {
+        font-size: 20px;
+    }
+    
+    .carousel-nav {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .carousel-nav i {
+        font-size: 14px;
+    }
+    
+    .carousel-prev {
+        left: 5px;
+    }
+    
+    .carousel-next {
+        right: 5px;
+    }
+}
+

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detodoya - Sobre Nosotros</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Detodoya</a>
+                
+                <div class="header-nav">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <a href="/catalog?category=REMERAS" class="dropdown-item">Remeras</a>
+                                <a href="/catalog?category=PANTALONES" class="dropdown-item">Pantalones</a>
+                                <a href="/catalog?category=CAMISAS" class="dropdown-item">Camisas</a>
+                                <a href="/catalog?category=BUZOS" class="dropdown-item">Buzos</a>
+                                <a href="/catalog?category=VESTIDOS" class="dropdown-item">Vestidos</a>
+                                <a href="/catalog?category=SHORTS" class="dropdown-item">Shorts</a>
+                                <a href="/catalog?category=CHOMBAS" class="dropdown-item">Chombas</a>
+                                <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                    </div>
+                    <div class="header-icons">
+                        <a href="https://www.instagram.com/detodoya" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-Detodoya" style="min-height: 40vh;">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Sobre Detodoya</h1>
+                <p class="hero-subtitle">Catálogo profesional de productos para complementar tus ventas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <div class="container py-5" style="margin-top: 80px;">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <h2 class="text-center mb-5">Nuestra Historia</h2>
+                <p class="lead text-center mb-5">
+                    Detodoya es una plataforma de catálogo profesional que permite a vendedores crear showcases completos de sus productos, complementando sus ventas en marketplaces como Facebook Marketplace, MercadoLibre y más.
+                </p>
+                
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-heart text-primary me-2"></i>Nuestra Misión</h4>
+                        <p>Proporcionar una plataforma profesional donde los vendedores puedan mostrar sus productos de manera completa y atractiva, con información detallada, imágenes de alta calidad y enlaces a sus puntos de venta.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-eye text-primary me-2"></i>Nuestra Visión</h4>
+                        <p>Ser la plataforma de referencia para vendedores que buscan un showcase profesional de sus productos, facilitando la conexión entre vendedores y compradores a través de catálogos completos y detallados.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-star text-primary me-2"></i>Nuestros Valores</h4>
+                        <ul>
+                            <li>Profesionalismo en cada showcase</li>
+                            <li>Facilidad de uso</li>
+                            <li>Compromiso con vendedores y compradores</li>
+                            <li>Innovación constante</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><i class="bi bi-person text-primary me-2"></i>¿Cómo Funciona?</h4>
+                        <p>Los vendedores pueden crear productos en nuestro catálogo con información completa, imágenes, videos y enlaces a sus puntos de venta. Los compradores encuentran productos detallados y se conectan directamente con los vendedores.</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="/catalog" class="btn btn-Detodoya btn-lg me-3">
+                        <i class="bi bi-shop me-2"></i>Ver Productos
+                    </a>
+                    <a href="/contact" class="btn btn-Detodoya-secondary btn-lg">
+                        <i class="bi bi-whatsapp me-2"></i>Contactar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Catálogo profesional de productos. Showcase completo para complementar tus ventas en marketplace.
+                    </p>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="mailto:info@detodoya.com" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 1234-5678</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@detodoya.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Detodoya. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Efecto de scroll en navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-Detodoya');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 107, 107, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

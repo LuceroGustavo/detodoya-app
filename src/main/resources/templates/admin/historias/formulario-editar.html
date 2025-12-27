@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Historia - Detodoya Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/Detodoya-messages.css}">
+    <style>
+        .video-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+        .current-video {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: #f8f9fa;
+        }
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-house"></i> Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box"></i> Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/historias">
+                                <i class="bi bi-camera-video"></i> Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope"></i> Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-pencil text-primary"></i>
+                        Editar Historia
+                    </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <a th:href="@{/admin/historias}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mensajes - Se muestran con el sistema Detodoya Messages -->
+
+                <!-- Formulario -->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <form th:action="@{/admin/historias/actualizar/{id}(id=${historia.id})}" method="post" enctype="multipart/form-data" id="historiaForm">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-info-circle"></i>
+                                        Información de la Historia
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="titulo" class="form-label">Título *</label>
+                                        <input type="text" class="form-control" id="titulo" name="titulo" required
+                                               th:value="${historia.titulo}">
+                                        <div class="form-text">Un título atractivo para tu historia</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="descripcion" class="form-label">Descripción</label>
+                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+                                                  th:text="${historia.descripcion}"></textarea>
+                                        <div class="form-text">Descripción opcional del contenido</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-camera-video"></i>
+                                        Video Actual
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="current-video">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <video th:src="${historia.videoUrl}" class="video-preview" controls>
+                                                    Tu navegador no soporta la reproducción de video.
+                                                </video>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>Información del video actual:</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Título:</strong> <span th:text="${historia.titulo}"></span></li>
+                                                    <li><strong>Duración:</strong> <span th:text="${historia.duracionFormateada}"></span></li>
+                                                    <li><strong>Tamaño:</strong> <span th:text="${historia.pesoFormateado}"></span></li>
+                                                    <li><strong>Estado:</strong> 
+                                                        <span th:class="'badge ' + (${historia.activa} ? 'bg-success' : 'bg-secondary')"
+                                                              th:text="${historia.activa ? 'Activa' : 'Inactiva'}">
+                                                        </span>
+                                                    </li>
+                                                    <li><strong>Creada:</strong> <span th:text="${#temporals.format(historia.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Actualizar Historia
+                                </button>
+                                <a th:href="@{/admin/historias}" class="btn btn-outline-secondary btn-lg ms-2">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-question-circle"></i>
+                                    Ayuda
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>¿Qué puedo cambiar?</h6>
+                                <p class="small">Puedes modificar el título, descripción y reemplazar el video si es necesario.</p>
+                                
+                                <h6>¿Se pierde el video anterior?</h6>
+                                <p class="small">Solo si subes un nuevo video. Si no seleccionas nada, se mantiene el video actual.</p>
+                                
+                                <h6>¿Cuándo se actualiza?</h6>
+                                <p class="small">Los cambios se aplican inmediatamente después de guardar.</p>
+                            </div>
+                        </div>
+
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    Cambiar Video (Opcional)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i>
+                                    <strong>Nota:</strong> Si no seleccionas un nuevo video, se mantendrá el video actual.
+                                </div>
+
+                                <div class="upload-area" id="uploadArea">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                                    <h5 class="mt-2">Arrastra un nuevo video aquí</h5>
+                                    <p class="text-muted">o haz clic para seleccionar</p>
+                                    <input type="file" class="form-control d-none" id="video" name="video" 
+                                           accept="video/mp4,video/webm,video/quicktime,video/x-msvideo">
+                                    <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('video').click()">
+                                        <i class="bi bi-folder2-open"></i> Seleccionar Nuevo Video
+                                    </button>
+                                </div>
+
+                                <!-- Preview del nuevo video -->
+                                <div id="videoPreview" class="mt-3" style="display: none;">
+                                    <h6>Vista previa del nuevo video:</h6>
+                                    <video id="previewVideo" class="video-preview" controls>
+                                        Tu navegador no soporta la reproducción de video.
+                                    </video>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle"></i>
+                                            <span id="videoInfo"></span>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Especificaciones -->
+                                <div class="mt-3">
+                                    <h6>Especificaciones del video:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle text-success"></i> Formatos: MP4, WebM, MOV, AVI</li>
+                                        <li><i class="bi bi-check-circle text-success"></i> Duración máxima: 15 segundos</li>
+                                        <li><i class="bi bi-check-circle text-success"></i> Tamaño máximo: 10MB</li>
+                                        <li><i class="bi bi-check-circle text-success"></i> Resolución recomendada: 1080x1920 (vertical)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/Detodoya-messages.js}"></script>
+    <script>
+        // Mostrar mensajes flash con el sistema Detodoya
+        document.addEventListener('DOMContentLoaded', function() {
+            /*[[${error}]]*/ var errorMessage = null;
+            
+            if (errorMessage) {
+                DetodoyaMessages.showError(errorMessage);
+            }
+        });
+    </script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('video');
+        const videoPreview = document.getElementById('videoPreview');
+        const previewVideo = document.getElementById('previewVideo');
+        const videoInfo = document.getElementById('videoInfo');
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                videoInput.files = files;
+                handleVideoSelection();
+            }
+        });
+
+        // Click to select
+        uploadArea.addEventListener('click', () => {
+            videoInput.click();
+        });
+
+        // File selection
+        videoInput.addEventListener('change', handleVideoSelection);
+
+        function handleVideoSelection() {
+            const file = videoInput.files[0];
+            if (file) {
+                // Validar tamaño (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    DetodoyaMessages.showError('El video no puede superar los 10MB');
+                    videoInput.value = '';
+                    return;
+                }
+
+                // Validar tipo
+                const validTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
+                if (!validTypes.includes(file.type)) {
+                    DetodoyaMessages.showError('Formato de video no válido. Use MP4, WebM, MOV o AVI.');
+                    videoInput.value = '';
+                    return;
+                }
+
+                // Mostrar preview
+                const url = URL.createObjectURL(file);
+                previewVideo.src = url;
+                videoPreview.style.display = 'block';
+
+                // Mostrar información
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                videoInfo.textContent = `${file.name} (${sizeMB} MB)`;
+            }
+        }
+
+        // Validación del formulario
+        document.getElementById('historiaForm').addEventListener('submit', function(e) {
+            const titulo = document.getElementById('titulo').value.trim();
+
+            if (!titulo) {
+                e.preventDefault();
+                DetodoyaMessages.showError('El título es obligatorio');
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

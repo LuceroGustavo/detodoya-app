@@ -1,0 +1,4 @@
+contraseña para ingresar a mysql
+OriolaMySQL2025!
+
+CREATE USER 'oriola_user'@'localhost' IDENTIFIED BY 'OriolaDB2025!';

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${color.id != null ? 'Editar Color' : 'Nuevo Color'} + ' - Detodoya'">Nuevo Color - Detodoya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/Detodoya-messages.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/colors">
+                <i class="bi bi-palette me-2"></i>Detodoya - Colores
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/colors">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a Colores
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-palette me-2"></i>
+                        <span th:text="${color.id != null ? 'Editar Color' : 'Nuevo Color'}">Nuevo Color</span>
+                    </h1>
+                </div>
+
+                <!-- Formulario -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-form me-2"></i>Información del Color
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="${color.id != null ? '/admin/colors/update/' + color.id : '/admin/colors/create'}" 
+                              th:object="${color}" method="post" enctype="multipart/form-data">
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nombre del Color *</label>
+                                        <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                               placeholder="Ej: Blanco, Negro, Animal Print, Estampada" required>
+                                        <div class="form-text">Nombre descriptivo del color o patrón</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" 
+                                          rows="3" placeholder="Descripción detallada del color o patrón"></textarea>
+                                <div class="form-text">Descripción opcional del color o patrón</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="hexCodeText" class="form-label">Código de Color</label>
+                                        <div class="input-group">
+                                            <input type="color" class="form-control form-control-color" id="hexCodePicker" 
+                                                   th:value="${color.hexCode ?: '#ff6b6b'}" style="width: 60px; height: 38px;">
+                                            <input type="text" class="form-control" id="hexCodeText" name="hexCode" 
+                                                   th:value="${color.hexCode}" 
+                                                   placeholder="#ff6b6b" pattern="^#[0-9A-Fa-f]{6}$"
+                                                   maxlength="7">
+                                        </div>
+                                        <div class="form-text">Código hexadecimal del color (opcional para patrones)</div>
+                                        <div th:if="${#fields.hasErrors('hexCode')}" class="text-danger small mt-1">
+                                            <span th:errors="*{hexCode}">Error</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Opción para subir imagen de patrón -->
+                                    <div class="mb-3">
+                                        <label for="patternImage" class="form-label">
+                                            <i class="bi bi-image me-1"></i>Imagen de Patrón (Alternativa al código de color)
+                                        </label>
+                                        <input type="file" class="form-control" id="patternImage" name="patternImage" 
+                                               accept="image/*" onchange="handleImageUpload(event)">
+                                        <div class="form-text">
+                                            Sube una imagen para patrones como "Animal Print", "Nevado", "Estampado", etc. 
+                                            (Máximo 3MB, formatos: JPG, PNG, GIF, WebP)
+                                        </div>
+                                        <div id="imagePreviewContainer" class="mt-2" style="display: none;">
+                                            <img id="imagePreview" src="" alt="Vista previa" 
+                                                 class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            <button type="button" class="btn btn-sm btn-danger ms-2" onclick="removeImage()">
+                                                <i class="bi bi-x-circle me-1"></i>Eliminar
+                                            </button>
+                                        </div>
+                                        <!-- Mostrar imagen existente si está editando -->
+                                        <div th:if="${color.imagePath != null and !color.imagePath.isEmpty()}" class="mt-2" id="existingImageContainer">
+                                            <label class="form-label small">Imagen actual:</label>
+                                            <div>
+                                                <img id="existingImage" 
+                                                     th:src="@{'/uploads/' + ${color.imagePath}}" 
+                                                     alt="Imagen actual" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 200px; max-height: 200px;"
+                                                     th:attr="data-image-path=${color.imagePath}">
+                                                <p class="text-muted small mt-2 mb-0">
+                                                    <i class="bi bi-info-circle me-1"></i>Para cambiar la imagen, selecciona una nueva arriba y esta reemplazará la actual.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Vista Previa</label>
+                                        <div class="border rounded p-3 text-center">
+                                            <div class="color-preview mx-auto" 
+                                                 id="colorPreview"
+                                                 style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #dee2e6; background-color: #ff6b6b; background-size: cover; background-position: center; overflow: hidden;">
+                                                <!-- La imagen se mostrará aquí si existe -->
+                                            </div>
+                                            <small class="text-muted mt-2 d-block" id="previewName">Nombre del color</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/admin/colors}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    <span th:text="${color.id != null ? 'Actualizar Color' : 'Crear Color'}">Crear Color</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-info-circle me-2"></i>Información del Sistema de Colores
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>🎨 Tipos de Colores Soportados:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• <strong>Colores básicos</strong>: Blanco, Negro, Azul, Rojo, etc.</li>
+                                    <li>• <strong>Patrones</strong>: Animal Print, Estampada, Tricolor</li>
+                                    <li>• <strong>Efectos</strong>: Metalizado, Brillo, Mate</li>
+                                    <li>• <strong>Personalizados</strong>: Cualquier nombre descriptivo</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>📋 Uso en Productos:</h6>
+                                <ul class="list-unstyled">
+                                    <li>• <strong>1 Producto</strong> puede tener <strong>múltiples colores</strong></li>
+                                    <li>• <strong>Ejemplo</strong>: "Musculosa" → "Blanca, Amarilla, Rosa"</li>
+                                    <li>• <strong>Flexibilidad</strong>: Agregar nuevos colores según necesidad</li>
+                                    <li>• <strong>Filtros</strong>: Los usuarios pueden filtrar por color</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/Detodoya-messages.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorPicker = document.getElementById('hexCodePicker');
+            const hexCodeText = document.getElementById('hexCodeText');
+            const colorPreview = document.getElementById('colorPreview');
+            const previewName = document.getElementById('previewName');
+            const nameInput = document.getElementById('name');
+            
+            // Sincronizar el color picker con el input de texto
+            if (colorPicker) {
+                colorPicker.addEventListener('input', function() {
+                    hexCodeText.value = this.value.toUpperCase();
+                    updatePreview();
+                });
+            }
+            
+            // Sincronizar el input de texto con el color picker y validar formato
+            if (hexCodeText) {
+                hexCodeText.addEventListener('input', function() {
+                    let value = this.value.trim();
+                    
+                    // Remover caracteres no válidos excepto #
+                    value = value.replace(/[^#0-9A-Fa-f]/g, '');
+                    
+                    // Asegurar que empiece con #
+                    if (value && !value.startsWith('#')) {
+                        value = '#' + value;
+                    }
+                    
+                    // Limitar a 7 caracteres (#RRGGBB)
+                    if (value.length > 7) {
+                        value = value.substring(0, 7);
+                    }
+                    
+                    this.value = value.toUpperCase();
+                    
+                    // Validar formato y actualizar color picker
+                    if (value.match(/^#[0-9A-Fa-f]{6}$/)) {
+                        colorPicker.value = value;
+                        updatePreview();
+                        // Remover mensaje de error si existe
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else if (value.length > 1) {
+                        // Mostrar error si el formato no es válido
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    } else {
+                        this.classList.remove('is-invalid', 'is-valid');
+                    }
+                });
+                
+                // Validar al perder el foco
+                hexCodeText.addEventListener('blur', function() {
+                    if (this.value && !this.value.match(/^#[0-9A-Fa-f]{6}$/)) {
+                        this.classList.add('is-invalid');
+                    }
+                });
+            }
+            
+            // Actualizar nombre en la vista previa
+            if (nameInput) {
+                nameInput.addEventListener('input', function() {
+                    previewName.textContent = this.value || 'Nombre del color';
+                });
+            }
+            
+            // Actualizar la vista previa
+            function updatePreview() {
+                const hexValue = hexCodeText.value || '#ff6b6b';
+                const imagePreview = document.getElementById('imagePreview');
+                const existingImage = document.getElementById('existingImage');
+                
+                // Prioridad 1: Si hay una imagen seleccionada nueva, mostrar la imagen
+                if (imagePreview && imagePreview.src && imagePreview.src !== window.location.href && imagePreview.src.startsWith('data:')) {
+                    colorPreview.style.backgroundImage = 'url(' + imagePreview.src + ')';
+                    colorPreview.style.backgroundColor = 'transparent';
+                    return;
+                }
+                
+                // Prioridad 2: Si hay imagen existente en el servidor, mostrarla
+                if (existingImage && existingImage.src) {
+                    const imageUrl = existingImage.src;
+                    // Verificar que la URL sea válida y no sea solo el href de la página
+                    if (imageUrl && imageUrl !== window.location.href && !imageUrl.includes('data:')) {
+                        colorPreview.style.backgroundImage = 'url(' + imageUrl + ')';
+                        colorPreview.style.backgroundColor = 'transparent';
+                        return;
+                    }
+                }
+                
+                // Prioridad 3: Mostrar color sólido si hay código hexadecimal válido
+                if (hexValue && hexValue.match(/^#[0-9A-Fa-f]{6}$/)) {
+                    colorPreview.style.backgroundImage = 'none';
+                    colorPreview.style.backgroundColor = hexValue;
+                } else {
+                    // Color por defecto
+                    colorPreview.style.backgroundImage = 'none';
+                    colorPreview.style.backgroundColor = '#ff6b6b';
+                }
+            }
+            
+            // Manejar subida de imagen
+            window.handleImageUpload = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    // Validar tamaño (3MB)
+                    if (file.size > 3 * 1024 * 1024) {
+                        DetodoyaMessages.showError('El archivo es demasiado grande. Máximo 3MB');
+                        event.target.value = '';
+                        return;
+                    }
+                    
+                    // Validar tipo
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+                    if (!allowedTypes.includes(file.type)) {
+                        DetodoyaMessages.showError('Formato de archivo no permitido. Use: JPG, PNG, GIF, WebP, BMP');
+                        event.target.value = '';
+                        return;
+                    }
+                    
+                    // Mostrar vista previa
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imagePreview = document.getElementById('imagePreview');
+                        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+                        const existingImageContainer = document.getElementById('existingImageContainer');
+                        
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.style.display = 'block';
+                        
+                        // Ocultar la imagen actual si existe (será reemplazada por la nueva)
+                        if (existingImageContainer) {
+                            existingImageContainer.style.display = 'none';
+                        }
+                        
+                        // Actualizar vista previa circular
+                        updatePreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            
+            // Eliminar imagen seleccionada
+            window.removeImage = function() {
+                const patternImage = document.getElementById('patternImage');
+                const imagePreview = document.getElementById('imagePreview');
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+                const existingImageContainer = document.getElementById('existingImageContainer');
+                
+                patternImage.value = '';
+                imagePreview.src = '';
+                imagePreviewContainer.style.display = 'none';
+                
+                // Volver a mostrar la imagen actual si existe
+                if (existingImageContainer) {
+                    existingImageContainer.style.display = 'block';
+                }
+                
+                // Restaurar vista previa
+                updatePreview();
+            };
+            
+            // La función removeExistingImage ya no es necesaria
+            // Al seleccionar una nueva imagen, esta reemplazará automáticamente la anterior
+            
+            // Inicializar vista previa
+            if (nameInput && nameInput.value) {
+                previewName.textContent = nameInput.value;
+            }
+            
+            // Cargar imagen existente si hay una al cargar la página
+            const existingImage = document.getElementById('existingImage');
+            if (existingImage) {
+                // Esperar a que la imagen se cargue completamente
+                existingImage.onload = function() {
+                    updatePreview();
+                };
+                // Si la imagen ya está cargada (cached), actualizar inmediatamente
+                if (existingImage.complete) {
+                    updatePreview();
+                }
+            } else {
+                // Si no hay imagen existente, actualizar con color sólido
+                updatePreview();
+            }
+        });
+    </script>
+</body>
+</html>

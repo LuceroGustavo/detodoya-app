@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Catálogo de Productos - Detodoya</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Detodoya</a>
+                
+                <div class="header-nav">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Overlay para el menú móvil -->
+                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+                    
+                    <!-- Menú para PC (≥ 769px) -->
+                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link active">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <div class="dropdown-grid">
+                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                                        <a th:each="category : ${categories}" 
+                                           th:href="@{/catalog(category=${category.name})}" 
+                                           class="dropdown-item" 
+                                           th:text="${category.name}">Categoría</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Menú para Móvil (≤ 768px) -->
+                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Ver Todo</a>
+                        </li>
+                        <li class="nav-item" th:each="category : ${categories}">
+                            <a th:href="@{/catalog(category=${category.name})}" 
+                               class="nav-link" 
+                               th:text="${category.name}"
+                               onclick="closeMobileMenu()">Categoría</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
+                    <div class="search-bar" id="searchBar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                    </div>
+                    <div class="header-icons">
+                        <!-- Search icon - only visible on mobile -->
+                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="https://www.instagram.com/detodoya" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Título del Catálogo -->
+    <section class="catalog-title-section">
+        <h1 class="catalog-title">Catálogo</h1>
+    </section>
+
+    <!-- Filtros Modernos -->
+    <section class="filters-section">
+        <div class="filters desktop-filters">
+            <div class="filter-group">
+                <span style="font-weight: 600; margin-right: 10px;">Filtros:</span>
+                <a href="/catalog" 
+                   class="filter-btn" 
+                   th:classappend="${selectedCategory == null} ? 'active' : ''"
+                   style="text-decoration: none; color: inherit;">Todos</a>
+                <a th:each="category : ${categories}" 
+                   th:href="@{/catalog(category=${category.name})}" 
+                   class="filter-btn" 
+                   th:classappend="${selectedCategory != null and selectedCategory.equals(category.name)} ? 'active' : ''"
+                   th:data-category="${category.name}"
+                   th:text="${category.name}"
+                   style="text-decoration: none; color: inherit;">Categoría</a>
+                
+                <div class="search-container" style="margin-left: auto;">
+                    <form method="GET" action="/catalog" id="searchForm">
+                        <div class="search-input" style="position: relative; display: flex; align-items: center; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; min-width: 250px;">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   name="search" 
+                                   placeholder="Buscar productos..." 
+                                   th:value="${search != null ? search : ''}"
+                                   style="border: none; outline: none; flex: 1; font-size: 14px; background: transparent;">
+                            <i class="bi bi-search" style="color: #666; font-size: 16px; margin-left: 8px;"></i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="products-grid">
+                <div th:each="product : ${products}" 
+                     class="product-card"
+                     th:data-product-id="${product.pId}"
+                     onclick="goToProduct(this)">
+                    <div class="product-image-container">
+                            <!-- Calcular si es video usando th:with -->
+                            <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                           isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                                <!-- Mostrar video si es video -->
+                                <video th:if="${isVideo}" 
+                                     th:src="${product.getImagenPrincipalUrl()}" 
+                                     th:title="${product.name}" 
+                                     class="product-image"
+                                     muted loop autoplay
+                                     style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                <!-- Mostrar imagen si no es video -->
+                                <img th:if="${!isVideo and imagenPrincipal != null}" 
+                                     th:src="${product.getImagenPrincipalUrl()}" 
+                                     th:alt="${product.name}" 
+                                     class="product-image">
+                            </div>
+                            <img th:if="${product.images == null or product.images.empty}" 
+                                 src="https://via.placeholder.com/350x350/f8f9fa/666666?text=Detodoya" 
+                                 th:alt="${product.name}" 
+                                 class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name" th:text="${product.name}">Nombre del Producto</h3>
+                            <div class="product-price-container">
+                                <div class="product-price">
+                                    <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
+                                          class="product-price-original" th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}">$0</span>
+                                    <span th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}">$0</span>
+                                    <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
+                                          class="product-discount" th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '%'">-0%</span>
+                                </div>
+                                <!-- Etiqueta promocional -->
+                                <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                     class="product-promo-label"
+                                     th:text="${product.etiquetaPromocional}">
+                                </div>
+                            </div>
+                            <div class="product-colors" th:if="${product.coloresDisponibles != null and !#strings.isEmpty(product.coloresDisponibles)}">
+                                <div th:each="color : ${#strings.arraySplit(product.coloresDisponibles, ',')}" 
+                                     class="color-dot" 
+                                     th:style="'background-color: ' + ${color.trim()}" 
+                                     th:title="${color.trim()}"></div>
+                            </div>
+                        </div>
+                </div>
+        </div>
+        
+        <!-- Mensaje si no hay productos -->
+        <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+            <div class="empty-state">
+            <i class="bi bi-box-seam" style="font-size: 5rem; color: #667eea; margin-bottom: 2rem;"></i>
+                <h3>No hay productos disponibles</h3>
+                <p class="text-muted">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
+                <a href="/" class="btn btn-Detodoya mt-3">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Indumentaria con estilo y personalidad. Cada prenda está diseñada para que te sientas único y cómodo.
+                    </p>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="mailto:info@Detodoyadenim.com" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 1234-5678</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@Detodoyadenim.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Detodoya. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/whatsapp.js"></script>
+    <script>
+        // Búsqueda de productos
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchForm = document.getElementById('searchForm');
+            let searchTimeout;
+            
+            // Búsqueda automática al escribir (con delay)
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchForm.submit();
+                }, 500); // Esperar 500ms después de que el usuario deje de escribir
+            });
+            
+            // Búsqueda al presionar Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    searchForm.submit();
+                }
+            });
+        });
+    </script>
+    <script>
+        // Dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            
+            dropdowns.forEach(dropdown => {
+                const toggle = dropdown.querySelector('.dropdown-toggle');
+                
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns
+                    dropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdown.classList.toggle('active');
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    dropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        // Efecto de scroll en navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-Detodoya');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(102, 126, 234, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // Filtros de productos modernos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.getAttribute('data-category');
+                filterProducts(category);
+            });
+        });
+
+        // Búsqueda de productos moderna
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            searchProducts(searchTerm);
+        });
+
+        // Ordenamiento de productos
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            const sortBy = this.value;
+            sortProducts(sortBy);
+        });
+
+        // Funciones de filtrado, búsqueda y ordenamiento
+        function filterProducts(category) {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const productCategory = product.getAttribute('data-category');
+                if (category === 'all' || productCategory === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        function searchProducts(searchTerm) {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const title = product.querySelector('.product-title').textContent.toLowerCase();
+                const brand = product.querySelector('.product-brand').textContent.toLowerCase();
+                const isVisible = product.style.display !== 'none';
+                
+                if (isVisible && (title.includes(searchTerm) || brand.includes(searchTerm))) {
+                    product.style.display = 'block';
+                } else if (isVisible) {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        function sortProducts(sortBy) {
+            const container = document.querySelector('.products-grid');
+            const products = Array.from(container.querySelectorAll('.product-card'));
+            
+            products.sort((a, b) => {
+                switch(sortBy) {
+                    case 'price-asc':
+                        return parseFloat(a.querySelector('.current-price').textContent.replace('$', '').replace(',', '')) - 
+                               parseFloat(b.querySelector('.current-price').textContent.replace('$', '').replace(',', ''));
+                    case 'price-desc':
+                        return parseFloat(b.querySelector('.current-price').textContent.replace('$', '').replace(',', '')) - 
+                               parseFloat(a.querySelector('.current-price').textContent.replace('$', '').replace(',', ''));
+                    case 'name':
+                        return a.querySelector('.product-title').textContent.localeCompare(b.querySelector('.product-title').textContent);
+                    case 'newest':
+                        // Ordenar por badges (nuevos primero)
+                        const aIsNew = a.querySelector('.product-badge.new') !== null;
+                        const bIsNew = b.querySelector('.product-badge.new') !== null;
+                        return bIsNew - aIsNew;
+                    default:
+                        return 0;
+                }
+            });
+            
+            products.forEach(product => container.appendChild(product));
+        }
+
+        // Funciones de interacción con productos
+        function toggleFavorite(productId) {
+            const btn = event.target.closest('.action-btn');
+            const icon = btn.querySelector('i');
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                btn.style.background = '#ff4757';
+                btn.style.color = 'white';
+                // Aquí podrías agregar lógica para guardar en favoritos
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                btn.style.background = 'white';
+                btn.style.color = '#333';
+                // Aquí podrías agregar lógica para quitar de favoritos
+            }
+        }
+
+        function quickView(productId) {
+            // Aquí podrías implementar un modal de vista rápida
+            window.location.href = '/product/' + productId;
+        }
+
+        // Colores interactivos
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const parent = this.closest('.product-card');
+                parent.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Animación de entrada para las cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.product-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Hover en tarjetas
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Estilos del catálogo moderno */
+        .catalog-title-section {
+            max-width: 1330px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .catalog-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 400;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 40px 0 30px 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filters-section {
+            max-width: 1330px;
+            margin: 0 auto;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            /* El contenido interno de los filtros está a 40px de los bordes (20px section + 20px filters) */
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 12px;
+            color: #666;
+            z-index: 2;
+        }
+
+        .search-input input {
+            padding: 8px 12px 8px 35px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            width: 250px;
+            font-size: 14px;
+        }
+
+        .search-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+
+        .sort-select {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .products-section {
+            max-width: 1330px !important;
+            margin: 0 auto;
+            padding: 0 20px !important;
+            margin-bottom: 80px;
+            width: 100%;
+            box-sizing: border-box;
+            /* Asegurar que el contenedor ocupe todo el ancho disponible */
+            min-width: 0;
+            /* Sobrescribir estilos de lovely-style.css */
+            background-color: transparent !important;
+        }
+
+        .products-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 8px !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            max-width: none !important;
+            box-sizing: border-box;
+            /* Asegurar que el grid use el 100% del ancho disponible */
+            min-width: 0;
+            /* Sobrescribir estilos de lovely-style.css que tienen max-width: 1200px y gap: 15px */
+        }
+        
+        /* Asegurar que las tarjetas ocupen todo el ancho de su celda del grid */
+        .products-grid .product-card {
+            min-width: 0;
+            width: 100%;
+            /* Asegurar que el contenido no desborde */
+            overflow: hidden;
+        }
+
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+            }
+            
+            .product-image-container {
+                height: 420px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-section {
+                padding: 0 20px !important;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+            
+            .product-image-container {
+                height: 300px;
+                overflow: hidden;
+                position: relative;
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Asegurar que el div wrapper no interfiera */
+            .product-image-container > div {
+                width: 100% !important;
+                height: 100% !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Forzar que las imágenes llenen completamente el contenedor en móvil */
+            .product-image-container .product-image,
+            .product-image-container img.product-image,
+            .product-image-container video.product-image,
+            .product-image-container > div .product-image,
+            .product-image-container > div img,
+            .product-image-container > div video {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                min-width: 100% !important;
+                min-height: 100% !important;
+                object-fit: cover !important;
+                object-position: center center !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+            }
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+            background: #f8f9fa;
+            flex-shrink: 0;
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Asegurar que el div wrapper interno llene el contenedor en escritorio */
+        .product-image-container > div {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Etiqueta promocional */
+        .product-promo-label {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .product-promo-label.sale {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .product-promo-label.new {
+            background: linear-gradient(135deg, #2ed573, #1e90ff);
+        }
+        
+        .product-promo-label.hot {
+            background: linear-gradient(135deg, #ff9ff3, #f368e0);
+        }
+        
+        .product-promo-label.offer {
+            background: linear-gradient(135deg, #ffa726, #ff7043);
+        }
+
+        .product-image {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            min-width: 100% !important;
+            min-height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+            transition: transform 0.3s ease;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background-color: #f8f9fa;
+        }
+        
+        /* Asegurar que las imágenes dentro del wrapper también llenen */
+        .product-image-container > div .product-image,
+        .product-image-container > div img,
+        .product-image-container > div video {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            min-width: 100% !important;
+            min-height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+        }
+
+        .product-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            color: #ccc;
+            font-size: 3rem;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #ff4757;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-badge.new {
+            background: #2ed573;
+        }
+
+        .product-badge.sale {
+            background: #ff4757;
+        }
+
+        .product-badge.trending {
+            background: #ffa502;
+        }
+
+        .product-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .product-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .product-price-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .product-price-original {
+            font-size: 14px;
+            color: #999;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+
+        .product-discount {
+            background: #ff4757;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .product-colors {
+            display: flex;
+            gap: 6px;
+        }
+
+        .color-option {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover,
+        .color-option.active {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .stars {
+            color: #ffa502;
+            font-size: 12px;
+        }
+
+        .rating-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: auto;
+        }
+
+        .tag {
+            background: #f1f2f6;
+            color: #666;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .tag.trending {
+            background: #ffa502;
+            color: white;
+        }
+
+        .tag.new {
+            background: #2ed573;
+            color: white;
+        }
+
+        .tag.sale {
+            background: #ff4757;
+            color: white;
+        }
+
+        .empty-state {
+            padding: 3rem 0;
+        }
+
+        /* Responsive - Eliminado, ya está manejado arriba */
+
+        @media (max-width: 768px) {
+            .catalog-title {
+                font-size: 24px;
+                margin: 30px 0 20px 0;
+            }
+            
+            .filters-section {
+                padding: 0 20px;
+            }
+
+            .search-input input {
+                width: 200px;
+            }
+            
+            /* Ocultar filtros en móvil */
+            .desktop-filters {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .catalog-title {
+                font-size: 20px;
+            }
+            
+            .filters-section {
+                padding: 0 15px;
+            }
+            
+            .products-section {
+                padding: 0 15px !important;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px !important;
+            }
+            
+            .product-image-container {
+                height: 320px;
+                overflow: hidden;
+                position: relative;
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Asegurar que el div wrapper no interfiera */
+            .product-image-container > div {
+                width: 100% !important;
+                height: 100% !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Forzar que las imágenes llenen completamente el contenedor en móvil pequeño */
+            .product-image-container .product-image,
+            .product-image-container img.product-image,
+            .product-image-container video.product-image,
+            .product-image-container > div .product-image,
+            .product-image-container > div img,
+            .product-image-container > div video {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                min-width: 100% !important;
+                min-height: 100% !important;
+                object-fit: cover !important;
+                object-position: center center !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input input {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script>
+        // Versión ultra-simplificada del menú móvil
+        let isMobileMenuOpen = false;
+        
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navMenu || !overlay || !toggle) return;
+            
+            // Prevenir múltiples ejecuciones simultáneas
+            if (toggle.disabled) return;
+            toggle.disabled = true;
+            
+            if (isMobileMenuOpen) {
+                // Cerrar menú
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            } else {
+                // Abrir menú
+                navMenu.classList.add('active');
+                overlay.classList.add('active');
+                toggle.innerHTML = '<i class="bi bi-x"></i>';
+                isMobileMenuOpen = true;
+            }
+            
+            // Rehabilitar después de un breve delay
+            setTimeout(() => {
+                toggle.disabled = false;
+            }, 50);
+        }
+
+        // Cerrar menú móvil
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navMenu && overlay && toggle) {
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            }
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchBar');
+            const searchToggle = document.getElementById('searchToggle');
+            
+            if (searchBar.classList.contains('active')) {
+                searchBar.classList.remove('active');
+                searchToggle.innerHTML = '<i class="bi bi-search"></i>';
+            } else {
+                searchBar.classList.add('active');
+                searchToggle.innerHTML = '<i class="bi bi-x"></i>';
+                // Focus on search input when opened
+                searchBar.querySelector('.search-input').focus();
+            }
+        }
+
+        // Función para ir al detalle del producto
+        function goToProduct(element) {
+            const productId = element.getAttribute('data-product-id');
+            console.log('🔄 [PRODUCTO] Clic en producto:', productId);
+            
+            // Efecto visual de clic
+            element.style.transform = 'scale(0.95)';
+            element.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.opacity = '1';
+            }, 150);
+            
+            const url = '/product/' + productId;
+            console.log('🔄 [PRODUCTO] Redirigiendo a:', url);
+            
+            // Pequeño delay para mostrar el efecto visual
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchToggle = document.getElementById('searchToggle');
+            if (searchToggle) {
+                searchToggle.addEventListener('click', toggleSearch);
+            }
+
+            // Dropdown functionality - Solo en PC
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.closest('.dropdown');
+                    
+                    // Solo funcionar en PC (≥ 769px)
+                    if (window.innerWidth >= 769) {
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Cerrar menú móvil al hacer clic en enlaces
+            document.querySelectorAll('.nav-menu-mobile .nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+
+            // Cerrar menú móvil al hacer clic en el overlay
+            const overlay = document.getElementById('navOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Manejar resize de ventana
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

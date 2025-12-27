@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Productos - Detodoya</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/Detodoya-messages.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-black: #000000;
+            --secondary-gray: #666666;
+            --light-gray: #f8f9fa;
+            --white: #ffffff;
+            --accent: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--primary-black);
+            line-height: 1.6;
+        }
+
+        .main-container {
+            padding: 20px;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-black);
+            letter-spacing: -0.5px;
+        }
+
+        .add-btn {
+            background-color: var(--primary-black);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary-gray);
+            color: var(--white);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background-color: var(--light-gray);
+            color: var(--primary-black);
+            border: none;
+            padding: 20px 15px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .filter-input {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-black);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-select {
+            width: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-black);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--light-gray);
+        }
+
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .table tbody td {
+            padding: 20px 15px;
+            vertical-align: middle;
+            border: none;
+            font-size: 14px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--primary-black);
+        }
+
+        .category-badge {
+            background-color: var(--light-gray);
+            color: var(--primary-black);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .talle-badge {
+            background-color: var(--light-gray);
+            color: var(--secondary-gray);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .price {
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        .stock-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stock-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .stock-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-hidden {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            margin: 0 2px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 12px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background-color: #a8e6cf;
+            color: #2d5a3d;
+            border: 1px solid #7dd3a0;
+        }
+
+        .btn-edit:hover {
+            background-color: #7dd3a0;
+            color: #1e3d2a;
+        }
+
+        .btn-toggle {
+            background-color: #b3d9ff;
+            color: #1e3a5f;
+            border: 1px solid #80b3ff;
+        }
+
+        .btn-toggle:hover {
+            background-color: #80b3ff;
+            color: #0f1f3f;
+        }
+
+        .btn-delete {
+            background-color: #ffb3ba;
+            color: #8b0000;
+            border: 1px solid #ff8080;
+        }
+
+        .btn-delete:hover {
+            background-color: #ff8080;
+            color: #660000;
+        }
+
+        .promo-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--secondary-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h4 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-black);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .clear-filters {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--secondary-gray);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--primary-black);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .table {
+                min-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="bi bi-box-seam me-2"></i>Detodoya - Productos
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al Panel de Admin
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="main-container">
+                    <!-- Header -->
+                    <div class="page-header">
+            <h1 class="page-title">Lista de Productos</h1>
+            <a href="/admin/products/new" class="add-btn">
+                <i class="bi bi-plus-circle"></i>
+                Agregar Nuevo Producto
+            </a>
+        </div>
+        
+        <!-- Tabla de Productos con Filtros en Encabezados -->
+        <div class="table-container">
+            <form id="filterForm" method="get" action="/admin/products">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Nombre
+                                <input type="text" 
+                                       class="filter-input" 
+                                       name="search" 
+                                       th:value="${search}"
+                                       placeholder="Buscar producto...">
+                            </th>
+                            <th>
+                                Categoría
+                                <select class="filter-select" name="category">
+                                    <option value="">Todas</option>
+                                    <option th:each="cat : ${categories}" 
+                                            th:value="${cat.name}" 
+                                            th:text="${cat.name}"
+                                            th:selected="${cat.name == selectedCategory}">
+                                    </option>
+                                </select>
+                            </th>
+                            <th>Precio</th>
+                            <th>Etiqueta Promocional</th>
+                            <th>Vista en Inicio</th>
+                            <th>
+                                Publicado
+                                <select class="filter-select" name="activo">
+                                    <option value="">Todos</option>
+                                    <option value="true" th:selected="${activo == 'true'}">Publicado</option>
+                                    <option value="false" th:selected="${activo == 'false'}">Oculto</option>
+                                </select>
+                            </th>
+                            <th>
+                                Acciones
+                                <button type="button" class="clear-filters" onclick="clearFilters()" title="Limpiar filtros">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="product : ${products}">
+                            <td>
+                                <div class="product-name" th:text="${product.name}"></div>
+                            </td>
+                            <td>
+                                <span th:if="${product.categories != null and !product.categories.empty}" 
+                                      class="category-badge" 
+                                      th:text="${product.getCategoriasComoTexto()}"></span>
+                                <span th:unless="${product.categories != null and !product.categories.empty}" 
+                                      class="text-muted">Sin categoría</span>
+                            </td>
+                            <td>
+                                <span class="price">$<span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></span></span>
+                            </td>
+                            <td>
+                                <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                      class="promo-badge" 
+                                      th:text="${product.etiquetaPromocional}"></span>
+                                <span th:unless="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                      class="text-muted">-</span>
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           th:id="'vistaInicio_' + ${product.pId}"
+                                           th:checked="${product.esNuevo}"
+                                           th:onchange="'toggleVistaInicio(' + ${product.pId} + ', this)'"
+                                           title="Mostrar en página de inicio">
+                                </div>
+                            </td>
+                            <td>
+                                <span th:if="${product.activo}" 
+                                      class="status-badge status-published">Publicado</span>
+                                <span th:if="${!product.activo}" 
+                                      class="status-badge status-hidden">Oculto</span>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/admin/products/edit/{id}(id=${product.pId})}" 
+                                       class="btn action-btn btn-edit" 
+                                       title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button"
+                                            class="btn action-btn btn-toggle"
+                                            th:title="${product.activo ? 'Desactivar publicación' : 'Activar publicación'}"
+                                            th:data-product-id="${product.pId}"
+                                            onclick="toggleProductStatus(this.getAttribute('data-product-id'), this)">
+                                        <i th:class="${product.activo ? 'bi bi-eye-slash' : 'bi bi-eye'}"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="btn action-btn btn-delete"
+                                            th:data-product-id="${product.pId}"
+                                            onclick="handleDeleteProduct(this.getAttribute('data-product-id'), this)" 
+                                            title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(products)}">
+                            <td colspan="7" class="empty-state">
+                                <i class="bi bi-box-seam"></i>
+                                <h4>No hay productos registrados</h4>
+                                <p>Comienza agregando tu primer producto</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/Detodoya-messages.js}"></script>
+    <script>
+        // Filtrado automático
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterInputs = document.querySelectorAll('.filter-input, .filter-select');
+            
+            filterInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Debounce para evitar muchas peticiones
+                    clearTimeout(this.timeout);
+                    this.timeout = setTimeout(() => {
+                        document.getElementById('filterForm').submit();
+                    }, 500);
+                });
+            });
+        });
+
+        function clearFilters() {
+            // Limpiar todos los campos de filtro
+            document.querySelectorAll('.filter-input, .filter-select').forEach(input => {
+                if (input.type === 'text') {
+                    input.value = '';
+                } else if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+            });
+            
+            // Enviar formulario
+            document.getElementById('filterForm').submit();
+        }
+
+        async function toggleProductStatus(productId, button) {
+            try {
+                const confirmed = await DetodoyaMessages.confirm('¿Estás seguro de que quieres cambiar el estado de publicación de este producto?');
+                if (confirmed) {
+                    // Deshabilitar el botón mientras se procesa
+                    button.disabled = true;
+                    
+                    const response = await fetch(`/admin/products/${productId}/toggle-status`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showMessage('success', data.message);
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showMessage('error', data.message || 'Error al cambiar el estado del producto');
+                        button.disabled = false;
+                    }
+                }
+            } catch (error) {
+                showMessage('error', 'Error al cambiar el estado del producto: ' + error.message);
+                button.disabled = false;
+            }
+        }
+
+        async function toggleVistaInicio(productId, checkbox) {
+            const isChecked = checkbox.checked;
+            const action = isChecked ? 'activar' : 'desactivar';
+            
+            const confirmed = await DetodoyaMessages.confirm(`¿Estás seguro de que quieres ${action} la vista en inicio de este producto?`);
+            if (confirmed) {
+                fetch(`/admin/products/${productId}/toggle-vista-inicio`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('success', data.message);
+                    } else {
+                        showMessage('error', data.message || 'Error al cambiar la vista en inicio');
+                        // Revertir el checkbox si hay error
+                        checkbox.checked = !isChecked;
+                    }
+                })
+                .catch(error => {
+                    showMessage('error', 'Error al cambiar la vista en inicio: ' + error.message);
+                    // Revertir el checkbox si hay error
+                    checkbox.checked = !isChecked;
+                });
+            } else {
+                // Revertir el checkbox si el usuario cancela
+                checkbox.checked = !isChecked;
+            }
+        }
+
+        function showMessage(type, message) {
+            if (type === 'success') {
+                DetodoyaMessages.showSuccess(message);
+            } else {
+                DetodoyaMessages.showError(message);
+            }
+        }
+
+        async function handleDeleteProduct(productId, buttonElement) {
+            try {
+                const confirmed = await DetodoyaMessages.confirm('¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.');
+                if (confirmed) {
+                    // Deshabilitar el botón mientras se procesa
+                    buttonElement.disabled = true;
+                    buttonElement.style.opacity = '0.6';
+                    
+                    try {
+                        const response = await fetch(`/admin/products/delete/${productId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            showMessage('success', data.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            showMessage('error', data.message || 'No se pudo eliminar el producto.');
+                            buttonElement.disabled = false;
+                            buttonElement.style.opacity = '1';
+                        }
+                    } catch (fetchError) {
+                        showMessage('error', 'Error al eliminar el producto: ' + fetchError.message);
+                        buttonElement.disabled = false;
+                        buttonElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                DetodoyaMessages.showError('Error al procesar la eliminación: ' + error.message);
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+            }
+        }
+    </script>
+</body>
+</html>

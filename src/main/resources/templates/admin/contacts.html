@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Consultas - Detodoya Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/Detodoya-messages.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="bi bi-envelope me-2"></i>Detodoya - Consultas
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al Panel de Admin
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                                <span th:if="${stats != null && stats.noLeidas > 0}" class="badge bg-danger ms-2" th:text="${stats.noLeidas}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="h3 mb-1">
+                            <i class="bi bi-chat-dots me-2"></i>Gestión de Consultas
+                        </h2>
+                        <p class="text-muted mb-0">Administra las consultas de tus clientes</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="/admin/contacts/stats" class="btn btn-outline-Detodoya">
+                            <i class="bi bi-graph-up me-1"></i>Estadísticas
+                        </a>
+                        <button class="btn btn-Detodoya" onclick="location.reload()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Actualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas Rápidas -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">Total</h6>
+                                        <h4 class="mb-0" th:text="${stats.total}">0</h4>
+                                    </div>
+                                    <i class="bi bi-chat-dots fs-1 opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">No Leídas</h6>
+                                        <h4 class="mb-0" th:text="${stats.noLeidas}">0</h4>
+                                    </div>
+                                    <i class="bi bi-envelope fs-1 opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">No Respondidas</h6>
+                                        <h4 class="mb-0" th:text="${stats.noRespondidas}">0</h4>
+                                    </div>
+                                    <i class="bi bi-clock fs-1 opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">Hoy</h6>
+                                        <h4 class="mb-0" th:text="${stats.hoy}">0</h4>
+                                    </div>
+                                    <i class="bi bi-calendar-day fs-1 opacity-75"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="get" action="/admin/contacts">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="search" class="form-label">Buscar</label>
+                                    <input type="text" class="form-control" id="search" name="search" 
+                                           th:value="${search}" placeholder="Nombre, email, asunto...">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="leido" class="form-label">Estado</label>
+                                    <select class="form-select" id="leido" name="leido">
+                                        <option value="">Todos</option>
+                                        <option value="false" th:selected="${leido == false}">No leídas</option>
+                                        <option value="true" th:selected="${leido == true}">Leídas</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="respondido" class="form-label">Respuesta</label>
+                                    <select class="form-select" id="respondido" name="respondido">
+                                        <option value="">Todos</option>
+                                        <option value="false" th:selected="${respondido == false}">Sin respuesta</option>
+                                        <option value="true" th:selected="${respondido == true}">Respondidas</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="size" class="form-label">Por página</label>
+                                    <select class="form-select" id="size" name="size">
+                                        <option value="10" th:selected="${size == 10}">10</option>
+                                        <option value="25" th:selected="${size == 25}">25</option>
+                                        <option value="50" th:selected="${size == 50}">50</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-Detodoya">
+                                            <i class="bi bi-search me-1"></i>Filtrar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista de Consultas -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list me-2"></i>Consultas
+                            <span class="badge bg-Detodoya ms-2" th:text="${totalElements}">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${consultas.empty}" class="text-center py-5">
+                            <i class="bi bi-chat-dots display-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">No hay consultas</h5>
+                            <p class="text-muted">No se encontraron consultas con los filtros aplicados.</p>
+                        </div>
+                        
+                        <div th:if="${!consultas.empty}" class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Asunto</th>
+                                        <th>Producto</th>
+                                        <th>Ubicación</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="contact : ${consultas.content}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-Detodoya text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-person"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0" th:text="${contact.nombre}">Nombre</h6>
+                                                    <small class="text-muted" th:text="${contact.email}">email@ejemplo.com</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${contact.asunto ?: 'Sin asunto'}">Asunto</span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${contact.productoInteres ?: 'General'}">Producto</span>
+                                        </td>
+                                        <td>
+                                            <small th:text="${contact.ubicacion ?: 'N/A'}">Ubicación</small>
+                                        </td>
+                                        <td>
+                                            <small th:text="${contact.fechaCreacion}">Fecha</small>
+                                        </td>
+                                        <td>
+                                            <span th:if="${contact.respondido}" class="badge bg-success">Respondida</span>
+                                            <span th:if="${!contact.respondido && contact.leido}" class="badge bg-warning">Leída</span>
+                                            <span th:if="${!contact.respondido && !contact.leido}" class="badge bg-danger">Nueva</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a th:href="@{/admin/contacts/{id}(id=${contact.id})}" 
+                                                   class="btn btn-outline-primary" title="Ver">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <button th:if="${!contact.leido}" 
+                                                        th:onclick="'marcarComoLeida(' + ${contact.id} + ')'"
+                                                        class="btn btn-outline-success" title="Marcar como leída">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                                <button th:if="${!contact.respondido}" 
+                                                        th:onclick="'responder(' + ${contact.id} + ')'"
+                                                        class="btn btn-outline-warning" title="Responder">
+                                                    <i class="bi bi-reply"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paginación -->
+                <div th:if="${!consultas.empty}" class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        <p class="text-muted mb-0">
+                            Mostrando <span th:text="${consultas.number * consultas.size + 1}">1</span> a 
+                            <span th:text="${consultas.number * consultas.size + consultas.numberOfElements}">10</span> de 
+                            <span th:text="${consultas.totalElements}">0</span> consultas
+                        </p>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" th:classappend="${consultas.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/contacts(page=${consultas.number - 1}, size=${size}, search=${search}, leido=${leido}, respondido=${respondido})}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, consultas.totalPages - 1)}" 
+                                th:classappend="${i == consultas.number} ? 'active'">
+                                <a class="page-link" th:href="@{/admin/contacts(page=${i}, size=${size}, search=${search}, leido=${leido}, respondido=${respondido})}" 
+                                   th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${consultas.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/admin/contacts(page=${consultas.number + 1}, size=${size}, search=${search}, leido=${leido}, respondido=${respondido})}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para responder consulta -->
+    <div class="modal fade" id="responderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-reply me-2"></i>Responder consulta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="responderForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="respuesta" class="form-label">Respuesta *</label>
+                            <textarea class="form-control" id="respuesta" rows="5" 
+                                      placeholder="Escribe tu respuesta aquí..." required></textarea>
+                        </div>
+                        <!-- Mensaje de estado -->
+                        <div id="respuestaStatus" class="alert d-none" role="alert">
+                            <div class="d-flex align-items-center">
+                                <span id="respuestaStatusIcon" class="me-2"></span>
+                                <span id="respuestaStatusText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">Cancelar</button>
+                        <button type="submit" class="btn btn-Detodoya" id="submitBtn">
+                            <i class="bi bi-send me-1"></i>Enviar respuesta
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/Detodoya-messages.js"></script>
+    
+    <!-- Mostrar mensajes flash con el sistema Detodoya -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var successMessage = /*[[${success}]]*/ null;
+            var errorMessage = /*[[${error}]]*/ null;
+            
+            if (successMessage) {
+                DetodoyaMessages.showSuccess(successMessage);
+            }
+            if (errorMessage) {
+                DetodoyaMessages.showError(errorMessage);
+            }
+        });
+    </script>
+    
+    <script>
+        let contactIdActual = null;
+        
+        // Marcar como leída
+        function marcarComoLeida(id) {
+            if (confirm('¿Marcar esta consulta como leída?')) {
+                fetch(`/api/contacts/${id}/leer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'OK') {
+                        location.reload();
+                    } else {
+                        alert('Error al marcar como leída');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al marcar como leída');
+                });
+            }
+        }
+        
+        // Responder consulta
+        function responder(id) {
+            contactIdActual = id;
+            const modal = new bootstrap.Modal(document.getElementById('responderModal'));
+            modal.show();
+        }
+        
+        // Enviar respuesta
+        document.getElementById('responderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const respuesta = document.getElementById('respuesta').value.trim();
+            if (!respuesta) {
+                alert('Por favor, escribe una respuesta');
+                return;
+            }
+            
+            // Obtener elementos del UI
+            const statusDiv = document.getElementById('respuestaStatus');
+            const statusIcon = document.getElementById('respuestaStatusIcon');
+            const statusText = document.getElementById('respuestaStatusText');
+            const submitBtn = document.getElementById('submitBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const closeBtn = document.querySelector('#responderModal .btn-close');
+            const textarea = document.getElementById('respuesta');
+            
+            // Mostrar estado de envío
+            statusDiv.classList.remove('d-none', 'alert-success', 'alert-danger');
+            statusDiv.classList.add('alert-info');
+            statusIcon.innerHTML = '<i class="bi bi-clock-history"></i>';
+            statusIcon.className = 'me-2';
+            statusText.textContent = 'Enviando respuesta...';
+            
+            // Deshabilitar controles
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Enviando...';
+            cancelBtn.disabled = true;
+            if (closeBtn) closeBtn.disabled = true;
+            textarea.disabled = true;
+            
+            fetch(`/api/contacts/${contactIdActual}/responder`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `respuesta=${encodeURIComponent(respuesta)}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data === 'OK') {
+                    // Mostrar éxito
+                    statusDiv.classList.remove('alert-info');
+                    statusDiv.classList.add('alert-success');
+                    statusIcon.innerHTML = '<i class="bi bi-check-circle"></i>';
+                    statusText.textContent = '¡Respuesta enviada exitosamente!';
+                    
+                    // Recargar después de 1.5 segundos
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    // Mostrar error
+                    statusDiv.classList.remove('alert-info');
+                    statusDiv.classList.add('alert-danger');
+                    statusIcon.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+                    statusText.textContent = 'Error al enviar respuesta: ' + data;
+                    
+                    // Rehabilitar controles
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-send me-1"></i>Enviar respuesta';
+                    cancelBtn.disabled = false;
+                    if (closeBtn) closeBtn.disabled = false;
+                    textarea.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Mostrar error
+                statusDiv.classList.remove('alert-info');
+                statusDiv.classList.add('alert-danger');
+                statusIcon.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+                statusText.textContent = 'Error al enviar respuesta. Por favor, intenta nuevamente.';
+                
+                // Rehabilitar controles
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send me-1"></i>Enviar respuesta';
+                cancelBtn.disabled = false;
+                if (closeBtn) closeBtn.disabled = false;
+                textarea.disabled = false;
+            });
+        });
+        
+        // Auto-refresh cada 30 segundos si hay consultas no leídas
+        setInterval(function() {
+            if (document.querySelector('.badge.bg-danger')) {
+                location.reload();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
+

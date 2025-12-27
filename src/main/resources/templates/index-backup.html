@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detodoya - Indumentaria Premium</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css?v=999">
+    <link rel="stylesheet" href="/css/carousel-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Detodoya</a>
+                
+                <div class="header-nav">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Overlay para el menú móvil -->
+                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+                    <!-- Menú para PC (≥ 769px) -->
+                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link active">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                <div class="dropdown-grid">
+                                        <a href="/catalog?category=Remeras" class="dropdown-item">Remeras</a>
+                                        <a href="/catalog?category=Pantalones" class="dropdown-item">Pantalones</a>
+                                        <a href="/catalog?category=Buzos" class="dropdown-item">Buzos</a>
+                                        <a href="/catalog?category=Shorts" class="dropdown-item">Shorts</a>
+                                        <a href="/catalog?category=Camisas" class="dropdown-item">Camisas</a>
+                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Menú para Móvil (≤ 768px) -->
+                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link active" onclick="closeMobileMenu()">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Novedades</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Catálogo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/contact" class="nav-link" onclick="closeMobileMenu()">Consulta</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/about" class="nav-link" onclick="closeMobileMenu()">Quiénes Somos</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
+                    <div class="search-bar" id="searchBar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                    </div>
+                    <div class="header-icons">
+                        <!-- Search icon - only visible on mobile -->
+                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="https://www.instagram.com/Detodoyaindumentaria" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/Detodoyaindumentaria" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Historia Section - Solo visible en móviles -->
+    <section th:if="${historiaPrincipal != null}" class="historia-section d-block d-md-none" style="padding: 20px 0; background: #000;">
+        <div class="historia-video-container" style="position: relative; width: 90%; max-width: 500px; height: 60vh; overflow: hidden; border: 2px solid #333; border-radius: 10px; margin: 0 auto; display: flex; justify-content: center; align-items: center;">
+            <video th:src="${historiaPrincipal.videoUrl}" 
+                   class="historia-video" 
+                   style="width: 100%; height: 100%; object-fit: contain;"
+                   autoplay muted loop playsinline>
+                Tu navegador no soporta la reproducción de video.
+            </video>
+        </div>
+    </section>
+
+    <!-- Categories Carousel Section -->
+    <section th:if="${carouselCategories != null and !carouselCategories.isEmpty()}" class="categories-carousel-section py-5" style="background: #f8f9fa;">
+        <div class="container">
+            <h2 class="text-center mb-4" style="font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 400; color: #000; text-transform: uppercase; letter-spacing: 1px;">Categorías Destacadas</h2>
+            
+            <!-- Desktop Layout: Grid con 4 columnas -->
+            <div class="categories-grid-desktop d-none d-lg-block">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center flex-wrap">
+                            <!-- Mostrar todas las categorías en grid para escritorio -->
+                            <div th:each="cat : ${carouselCategories}" 
+                                 class="category-carousel-item text-center" 
+                                 th:data-category-name="${cat.name}"
+                                 onclick="goToCategory(this)">
+                                <div class="category-image-container" 
+                                     style="width: 100%; height: 280px;">
+                                    <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : @{/img/categories/default-category.jpg}" 
+                                         th:alt="${cat.name}"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'">
+                                </div>
+                                <h5 th:text="${cat.name}"></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Layout: Carrusel horizontal con 2 categorías por vista -->
+            <div class="categories-carousel-mobile d-lg-none">
+                <div class="carousel-container">
+                    <div class="carousel-wrapper" id="mobileCarousel">
+                        <div class="carousel-track" id="carouselTrack">
+                            <!-- Duplicar las categorías para el efecto infinito -->
+                            <div th:each="cat : ${carouselCategories}" 
+                                 class="category-carousel-item text-center" 
+                                 style="width: calc(50% - 5px); flex-shrink: 0;"
+                                 th:data-category-name="${cat.name}"
+                                 onclick="goToCategory(this)">
+                                <div class="category-image-container" 
+                                     style="width: 100%; height: 200px;">
+                                    <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : @{/img/categories/default-category.jpg}" 
+                                         th:alt="${cat.name}"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'">
+                                </div>
+                                <h5 th:text="${cat.name}" 
+                                    style="font-size: 14px; font-weight: 600; padding: 0.5rem;">
+                                </h5>
+                            </div>
+                            <!-- Duplicar para efecto infinito -->
+                            <div th:each="cat : ${carouselCategories}" 
+                                 class="category-carousel-item text-center" 
+                                 style="width: calc(50% - 5px); flex-shrink: 0;"
+                                 th:data-category-name="${cat.name}"
+                                 onclick="goToCategory(this)">
+                                <div class="category-image-container" 
+                                     style="width: 100%; height: 200px;">
+                                    <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : @{/img/categories/default-category.jpg}" 
+                                         th:alt="${cat.name}"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'">
+                                </div>
+                                <h5 th:text="${cat.name}" 
+                                    style="font-size: 14px; font-weight: 600; padding: 0.5rem;">
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Controles de navegación para móvil -->
+                    <button class="carousel-nav carousel-prev" id="prevBtn" onclick="moveCarousel(-1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="carousel-nav carousel-next" id="nextBtn" onclick="moveCarousel(1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <h2 class="section-title">Novedades</h2>
+            <div class="products-grid">
+                <div th:each="product : ${products}" class="product-card">
+                    <a th:href="@{/product/{id}(id=${product.pId})}" class="text-decoration-none text-dark">
+                        <div class="product-image-container">
+                            <img th:if="${product.images != null and !product.images.empty}" 
+                                 th:src="${product.getImagenPrincipalUrl()}" 
+                                 th:alt="${product.name}" 
+                                 class="product-image">
+                            <img th:if="${product.images == null or product.images.empty}" 
+                                 src="https://via.placeholder.com/350x350/f8f9fa/666666?text=Detodoya" 
+                                 th:alt="${product.name}" 
+                                 class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name" th:text="${product.name}">Nombre del Producto</h3>
+                            <div class="product-price">
+                                <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
+                                      class="product-price-original" th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}">$0</span>
+                                <span th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}">$0</span>
+                                <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
+                                      class="product-discount" th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '%'">-0%</span>
+                            </div>
+                            <div class="product-colors" th:if="${product.coloresDisponibles != null and !#strings.isEmpty(product.coloresDisponibles)}">
+                                <div th:each="color : ${#strings.arraySplit(product.coloresDisponibles, ',')}" 
+                                     class="color-dot" 
+                                     th:style="'background-color: ' + ${color.trim()}" 
+                                     th:title="${color.trim()}"></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mensaje si no hay productos de novedades -->
+            <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
+                <div class="empty-state">
+                    <i class="bi bi-box-seam" style="font-size: 5rem; color: #667eea; margin-bottom: 2rem;"></i>
+                    <h3>No hay novedades disponibles</h3>
+                    <p class="text-muted">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
+                    <a href="/catalog" class="btn btn-Detodoya mt-3">
+                        <i class="bi bi-arrow-right me-2"></i>Ver Catálogo Completo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Indumentaria con estilo y personalidad. Cada prenda está diseñada para que te sientas único y cómodo.
+                    </p>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/Detodoyaindumentaria" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/Detodoyaindumentaria" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491159293920" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 5929-3920</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@Detodoyadenim.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Detodoya. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+        
+        /* Estilos para tarjetas de productos - igual que catálogo */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px; /* Espaciado reducido */
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px; /* Espaciado reducido */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important; /* Espaciado reducido */
+                padding: 0 20px !important;
+            }
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .product-image-container {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-image-container {
+                height: 300px !important;
+            }
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 42px;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .product-price span {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .product-price .product-price-original {
+            font-size: 14px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .product-price .product-discount {
+            background: #ff4757;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .product-colors {
+            display: flex;
+            gap: 6px;
+        }
+
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-dot:hover {
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            padding: 3rem 0;
+        }
+
+        .empty-state h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .btn-Detodoya {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-Detodoya:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        // Versión ultra-simplificada del menú móvil
+        let isMobileMenuOpen = false;
+        
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navMenu || !overlay || !toggle) return;
+            
+            // Prevenir múltiples ejecuciones simultáneas
+            if (toggle.disabled) return;
+            toggle.disabled = true;
+            
+            if (isMobileMenuOpen) {
+                // Cerrar menú
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            } else {
+                // Abrir menú
+                navMenu.classList.add('active');
+                overlay.classList.add('active');
+                toggle.innerHTML = '<i class="bi bi-x"></i>';
+                isMobileMenuOpen = true;
+            }
+            
+            // Rehabilitar después de un breve delay
+                    setTimeout(() => {
+                toggle.disabled = false;
+            }, 50);
+        }
+
+        function closeSubmenu() {
+            const dropdown = document.querySelector('.dropdown.active');
+            if (dropdown) {
+                        dropdown.classList.remove('active');
+            }
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchBar');
+            const searchToggle = document.getElementById('searchToggle');
+            
+            if (searchBar.classList.contains('active')) {
+                searchBar.classList.remove('active');
+                searchToggle.innerHTML = '<i class="bi bi-search"></i>';
+            } else {
+                searchBar.classList.add('active');
+                searchToggle.innerHTML = '<i class="bi bi-x"></i>';
+                // Focus on search input when opened
+                searchBar.querySelector('.search-input').focus();
+            }
+        }
+
+        // Función de búsqueda simple
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchBar');
+            if (searchBar) {
+                searchBar.classList.toggle('active');
+                if (searchBar.classList.contains('active')) {
+                    const searchInput = searchBar.querySelector('.search-input');
+                    if (searchInput) searchInput.focus();
+                }
+            }
+        }
+
+        // Cerrar menú móvil
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navMenu && overlay && toggle) {
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            }
+        }
+
+        // Event listeners simplificados
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchToggle = document.getElementById('searchToggle');
+            if (searchToggle) {
+                searchToggle.addEventListener('click', toggleSearch);
+            }
+
+            // Dropdown functionality - Solo en PC
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.closest('.dropdown');
+                    
+                    // Solo funcionar en PC (≥ 769px)
+                    if (window.innerWidth >= 769) {
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Cerrar menú móvil al hacer clic en enlaces
+            document.querySelectorAll('.nav-menu-mobile .nav-link').forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            // Cerrar menú móvil al hacer clic en el overlay
+            const overlay = document.getElementById('navOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Cerrar menú móvil en resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
+        });
+
+        // Auto-pause video when not in viewport (solo para móviles)
+        function handleVideoVisibility() {
+            const video = document.querySelector('.historia-video');
+            if (video && window.innerWidth < 768) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            video.play();
+                        } else {
+                            video.pause();
+                        }
+                    });
+                });
+                observer.observe(video);
+            }
+        }
+
+        // Initialize video controls when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            handleVideoVisibility();
+        });
+        
+        // Función para ir a la categoría del carrusel
+        function goToCategory(element) {
+            const categoryName = element.getAttribute('data-category-name');
+            console.log('🔄 [CARRUSEL] Clic en categoría:', categoryName);
+            
+            if (categoryName) {
+                // Efecto visual de clic
+                element.style.transform = 'scale(0.95)';
+                element.style.opacity = '0.8';
+                
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                    element.style.opacity = '1';
+                }, 150);
+                
+                const url = '/catalog?category=' + encodeURIComponent(categoryName);
+                console.log('🔄 [CARRUSEL] Redirigiendo a:', url);
+                
+                // Pequeño delay para mostrar el efecto visual
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 200);
+            } else {
+                console.error('❌ [CARRUSEL] No se encontró el nombre de la categoría');
+            }
+        }
+
+        // Variables para el carrusel móvil
+        let currentSlide = 0;
+        let totalSlides = 0;
+        let isTransitioning = false;
+
+        // Función para mover el carrusel
+        function moveCarousel(direction) {
+            if (isTransitioning) return;
+            
+            const track = document.getElementById('carouselTrack');
+            if (!track) return;
+
+            const items = track.querySelectorAll('.category-carousel-item');
+            if (items.length === 0) return;
+
+            // Calcular el número total de categorías únicas (sin duplicados)
+            totalSlides = items.length / 2; // Dividimos por 2 porque duplicamos las categorías
+            
+            isTransitioning = true;
+            
+            if (direction === 1) {
+                // Siguiente
+                currentSlide = (currentSlide + 1) % totalSlides;
+            } else {
+                // Anterior
+                currentSlide = currentSlide === 0 ? totalSlides - 1 : currentSlide - 1;
+            }
+            
+            // Calcular la posición de desplazamiento
+            const translateX = -(currentSlide * 50); // 50% por cada slide (2 categorías por vista)
+            track.style.transform = `translateX(${translateX}%)`;
+            
+            // Rehabilitar después de la transición
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
+        }
+
+        // Inicializar el carrusel móvil
+        function initMobileCarousel() {
+            const track = document.getElementById('carouselTrack');
+            if (!track) return;
+
+            const items = track.querySelectorAll('.category-carousel-item');
+            if (items.length === 0) return;
+
+            totalSlides = items.length / 2; // Dividimos por 2 porque duplicamos las categorías
+            
+            // Configurar el ancho del track para mostrar 2 categorías por vez
+            track.style.width = `${totalSlides * 200}%`; // 200% porque duplicamos las categorías
+            
+            // Configurar el ancho de cada item
+            items.forEach(item => {
+                item.style.width = `${100 / (totalSlides * 2)}%`; // Dividimos por el doble porque duplicamos
+            });
+        }
+
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            initMobileCarousel();
+        });
+    </script>
+</body>
+</html>

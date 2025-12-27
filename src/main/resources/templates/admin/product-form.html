@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detodoya - Gestión de Productos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" th:href="@{/css/Detodoya-messages.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .category-chip {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: default;
+        }
+        
+        .category-chip .remove-btn {
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .category-chip .remove-btn:hover {
+            color: #ffc107;
+        }
+        
+        .category-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .category-option.selected {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .category-option.selected:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Estilos para chips de colores */
+        .color-chip {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: default;
+        }
+        
+        .color-chip .remove-btn {
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .color-chip .remove-btn:hover {
+            color: #ffc107;
+        }
+        
+        .color-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .color-option.selected {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .color-option.selected:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Estilos para chips de talles */
+        .talle-chip {
+            display: inline-block;
+            background: #6f42c1;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: default;
+        }
+        
+        .talle-chip .remove-btn {
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .talle-chip .remove-btn:hover {
+            color: #ffc107;
+        }
+        
+        .talle-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .talle-option.selected {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .talle-option.selected:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Estilos para chips de géneros */
+        .genero-chip {
+            display: inline-block;
+            background: #fd7e14;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: default;
+        }
+        
+        .genero-chip .remove-btn {
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .genero-chip .remove-btn:hover {
+            color: #ffc107;
+        }
+        
+        .genero-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .genero-option.selected {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .genero-option.selected:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Estilos para chips de temporadas */
+        .temporada-chip {
+            display: inline-block;
+            background: #20c997;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: default;
+        }
+        
+        .temporada-chip .remove-btn {
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .temporada-chip .remove-btn:hover {
+            color: #ffc107;
+        }
+        
+        .temporada-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .temporada-option.selected {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        
+        .temporada-option.selected:hover {
+            background-color: #e9ecef;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="bi bi-box-seam me-2"></i>Detodoya - <span th:if="${product.pId == null}">Nuevo Producto</span><span th:if="${product.pId != null}">Editar Producto</span>
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/products">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a Productos
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span th:if="${product.pId == null}">Nuevo Producto</span>
+                        <span th:if="${product.pId != null}">Editar Producto</span>
+                    </h1>
+                    <div>
+                        <a th:if="${product.pId != null}" 
+                           th:href="@{/admin/products/{id}/images(id=${product.pId})}" 
+                           class="btn btn-primary me-2">
+                            <i class="bi bi-image me-1"></i>Gestionar Imágenes
+                        </a>
+                        <a href="/admin/products" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Volver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Datos ocultos para inicialización -->
+                <div th:if="${product.pId != null}" style="display: none;">
+                    <!-- Categorías seleccionadas -->
+                    <div th:each="category : ${product.categories}" th:data-category-id="${category.id}" th:data-category-name="${category.name}"></div>
+                    
+                    <!-- Colores seleccionados -->
+                    <div th:each="color : ${product.colores}" th:data-color-id="${color.id}" th:data-color-name="${color.name}"></div>
+                    
+                    <!-- Talles seleccionados -->
+                    <div th:each="talle : ${product.talles}" th:data-talle-name="${talle.name()}" th:data-talle-display="${talle.displayName}"></div>
+                    
+                    <!-- Géneros seleccionados -->
+                    <div th:each="genero : ${product.generos}" th:data-genero-name="${genero.name()}" th:data-genero-display="${genero.displayName}"></div>
+                    
+                    <!-- Temporadas seleccionadas -->
+                    <div th:each="temporada : ${product.temporadas}" th:data-temporada-name="${temporada.name()}" th:data-temporada-display="${temporada.displayName}"></div>
+                </div>
+
+                <form th:action="${product.pId != null ? '/admin/products/edit/' + product.pId : '/admin/products/save'}" th:object="${product}" method="post" enctype="multipart/form-data">
+                <div class="row">
+                        <!-- Información del Producto -->
+                        <div class="col-md-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>Información del Producto
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="name" class="form-label">Nombre del Producto *</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="price" class="form-label">Precio *</label>
+                                            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" required>
+                                            <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback" th:errors="*{price}"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="medidas" class="form-label">Medidas *</label>
+                                            <input type="text" class="form-control" id="medidas" th:field="*{medidas}" required>
+                                            <div th:if="${#fields.hasErrors('medidas')}" class="invalid-feedback" th:errors="*{medidas}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="material" class="form-label">Material</label>
+                                            <input type="text" class="form-control" id="material" th:field="*{material}">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="cuidados" class="form-label">Cuidados</label>
+                                            <input type="text" class="form-control" id="cuidados" th:field="*{cuidados}">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="descripcion" class="form-label">Descripción</label>
+                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="categories" class="form-label">
+                                                Categorías *
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona una o más categorías para clasificar el producto"></i>
+                                            </label>
+                                            
+                                            <!-- Categorías seleccionadas (chips) -->
+                                            <div id="selected-categories" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-categories" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Haz clic en las categorías de abajo para seleccionarlas
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de categorías disponibles -->
+                                            <div class="dropdown mb-2">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar categorías
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
+                                                    <li th:each="cat : ${categories}">
+                                                        <a class="dropdown-item category-option" 
+                                                           th:data-category-id="${cat.id}" 
+                                                           th:data-category-name="${cat.name}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-tag me-2"></i>
+                                                            <span th:text="${cat.name}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los IDs -->
+                                            <input type="hidden" id="categoryIds" name="categoryIds" value="">
+                                            
+                                            <div th:if="${#fields.hasErrors('categories')}" class="invalid-feedback" th:errors="*{categories}"></div>
+                                            <div class="form-text">
+                                                <a th:href="@{/admin/categories}" target="_blank" class="text-decoration-none">
+                                                    <i class="bi bi-plus-circle me-1"></i>Gestionar categorías
+                                                </a>
+                                                <small class="text-muted ms-2">
+                                                    <strong>Ejemplos:</strong> Camperas + Invierno + Casual
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Selección múltiple de colores y talles -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="colores" class="form-label">
+                                                Colores Disponibles
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona los colores disponibles para este producto"></i>
+                                            </label>
+                                            
+                                            <!-- Colores seleccionados (chips) -->
+                                            <div id="selected-colors" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-colors" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Haz clic en los colores de abajo para seleccionarlos
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de colores disponibles -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="colorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar colores
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="colorDropdown">
+                                                    <li th:each="color : ${colors}">
+                                                        <a class="dropdown-item color-option" 
+                                                           th:data-color-id="${color.id}" 
+                                                           th:data-color-name="${color.name}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-palette me-2"></i>
+                                                            <span th:text="${color.name}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los IDs -->
+                                            <input type="hidden" id="colorIds" name="colorIds" value="">
+                                        </div>
+                                        
+                                        <!-- Selección múltiple de talles -->
+                                        <div class="col-md-6 mb-3">
+                                            <label for="talles" class="form-label">
+                                                Talles Disponibles
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona los talles disponibles para este producto"></i>
+                                            </label>
+                                            
+                                            <!-- Talles seleccionados (chips) -->
+                                            <div id="selected-talles" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-talles" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Haz clic en los talles de abajo para seleccionarlos
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de talles disponibles -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="talleDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar talles
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="talleDropdown">
+                                                    <li th:each="talle : ${talles}">
+                                                        <a class="dropdown-item talle-option" 
+                                                           th:data-talle-name="${talle.name()}" 
+                                                           th:data-talle-display="${talle.displayName}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-rulers me-2"></i>
+                                                            <span th:text="${talle.displayName}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los nombres -->
+                                            <input type="hidden" id="talleNames" name="talleNames" value="">
+                                        </div>
+                                    </div>
+
+                                    <!-- Selección múltiple de géneros y temporadas -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="generos" class="form-label">
+                                                Géneros
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona uno o más géneros para este producto"></i>
+                                            </label>
+                                            
+                                            <!-- Géneros seleccionados (chips) -->
+                                            <div id="selected-generos" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-generos" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Haz clic en los géneros de abajo para seleccionarlos
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de géneros disponibles -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="generoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar géneros
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="generoDropdown">
+                                                    <li th:each="genero : ${generos}">
+                                                        <a class="dropdown-item genero-option" 
+                                                           th:data-genero-name="${genero.name()}" 
+                                                           th:data-genero-display="${genero.displayName}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-person me-2"></i>
+                                                            <span th:text="${genero.displayName}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los nombres -->
+                                            <input type="hidden" id="generoNames" name="generoNames" value="">
+                                        </div>
+                                        
+                                        <div class="col-md-6 mb-3">
+                                            <label for="temporadas" class="form-label">
+                                                Temporadas
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona una o más temporadas para este producto"></i>
+                                            </label>
+                                            
+                                            <!-- Temporadas seleccionadas (chips) -->
+                                            <div id="selected-temporadas" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-temporadas" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Haz clic en las temporadas de abajo para seleccionarlas
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de temporadas disponibles -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="temporadaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar temporadas
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="temporadaDropdown">
+                                                    <li th:each="temporada : ${temporadas}">
+                                                        <a class="dropdown-item temporada-option" 
+                                                           th:data-temporada-name="${temporada.name()}" 
+                                                           th:data-temporada-display="${temporada.displayName}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-calendar me-2"></i>
+                                                            <span th:text="${temporada.displayName}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los nombres -->
+                                            <input type="hidden" id="temporadaNames" name="temporadaNames" value="">
+                                        </div>
+                                    </div>
+            
+                                    <!-- Checkboxes y etiqueta promocional -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="esDestacado" th:field="*{esDestacado}">
+                                                <label class="form-check-label" for="esDestacado">
+                                                    Producto Destacado
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="esNuevo" th:field="*{esNuevo}">
+                                                <label class="form-check-label" for="esNuevo">
+                                                    Producto Nuevo
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="etiquetaPromocional" class="form-label">
+                                                Etiqueta Promocional
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Texto que aparecerá en la tarjeta del producto (ej: -10% OFF, HOT SALE, NUEVO)"></i>
+                                            </label>
+                                            <input type="text" class="form-control" id="etiquetaPromocional" th:field="*{etiquetaPromocional}" maxlength="50" placeholder="Ej: -10% OFF">
+                                            <div class="form-text">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-lightbulb me-1"></i>
+                                                    <strong>Ejemplos:</strong> -10% OFF, HOT SALE, NUEVO
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            
+            
+                        <!-- Sidebar - Guía de Imagen Ideal -->
+                        <div class="col-md-4">
+                            <!-- Guía de Imagen Ideal -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-image me-2"></i>Guía de Imagen Ideal
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <h6 class="text-primary mb-2">
+                                            <i class="bi bi-check-circle me-1"></i>Recomendaciones:
+                                        </h6>
+                                        <ul class="list-unstyled small mb-3">
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Dimensiones:</strong> 1000px × 1500px (óptimo)</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Mínimo:</strong> 800px × 1200px</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Relación:</strong> 2:3 (vertical/portrait)</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Tamaño archivo:</strong> 500KB - 800KB máximo</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Formato:</strong> WebP (preferido) o JPG</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Fondo:</strong> Blanco/neutro</li>
+                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Composición:</strong> Producto centrado</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="alert alert-info py-2 mb-0">
+                                        <small class="mb-0">
+                                            <i class="bi bi-lightbulb me-1"></i>
+                                            <strong>Tip:</strong> Las imágenes verticales (2:3) se adaptan mejor a todos los dispositivos y mejoran las ventas
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ejemplos de Categorías Múltiples -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                        <i class="bi bi-lightbulb me-2"></i>Ejemplos de Categorías
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                    <div class="mb-3">
+                                        <h6 class="text-primary mb-2">
+                                            <i class="bi bi-tag me-1"></i>Ejemplos Prácticos:
+                                        </h6>
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <div class="p-2 bg-light rounded">
+                                                    <strong>Musculosa Verano:</strong><br>
+                                                    <small class="text-muted">Categorías: Remeras, Verano<br>
+                                                    Géneros: Niño, Niña, Unisex<br>
+                                                    Temporadas: Verano, Primavera</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="p-2 bg-light rounded">
+                                                    <strong>Jean Clásico:</strong><br>
+                                                    <small class="text-muted">Categorías: Pantalones de Jean<br>
+                                                    Géneros: Hombre, Mujer<br>
+                                                    Temporadas: Todo el año</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="p-2 bg-light rounded">
+                                                    <strong>Buzo Oversize:</strong><br>
+                                                    <small class="text-muted">Categorías: Buzos, Invierno<br>
+                                                    Géneros: Hombre, Mujer, Unisex<br>
+                                                    Temporadas: Invierno, Otoño</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="p-2 bg-light rounded">
+                                                    <strong>Vestido Casual:</strong><br>
+                                                    <small class="text-muted">Categorías: Vestidos, Primavera<br>
+                                                    Géneros: Mujer<br>
+                                                    Temporadas: Primavera, Verano</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                
+                                    <div class="alert alert-info py-2">
+                                        <small class="mb-0">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            <strong>Tip:</strong> Un producto puede tener múltiples categorías, géneros y temporadas para mejor organización y búsqueda.
+                                        </small>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                <!-- Botones de acción -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/admin/products" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>
+                                <span th:if="${product.pId == null}">Guardar Producto</span>
+                                <span th:if="${product.pId != null}">Actualizar Producto</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/Detodoya-messages.js}"></script>
+    <script>
+        let selectedCategories = [];
+        let selectedColors = [];
+        let selectedTalles = [];
+        let selectedGeneros = [];
+        let selectedTemporadas = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+            
+            // Inicializar valores seleccionados para edición
+            initializeSelectedValues();
+        });
+        
+        function initializeSelectedValues() {
+            console.log('Inicializando valores seleccionados...');
+            
+            // Buscar el div oculto que contiene los datos del producto
+            // Este es el primer div con style="display: none;" antes del formulario
+            const allHiddenDivs = document.querySelectorAll('div[style*="display: none"]');
+            let hiddenDataDiv = null;
+            
+            // El primer div oculto es el que contiene los datos del producto
+            if (allHiddenDivs.length > 0) {
+                hiddenDataDiv = allHiddenDivs[0];
+            }
+            
+            console.log('Hidden data div found:', hiddenDataDiv ? 'Yes' : 'No');
+            
+            if (hiddenDataDiv) {
+                const categoryElements = hiddenDataDiv.querySelectorAll('[data-category-id]');
+                console.log('Elementos de categorías encontrados:', categoryElements.length);
+                categoryElements.forEach(element => {
+                    const id = element.getAttribute('data-category-id');
+                    const name = element.getAttribute('data-category-name');
+                    if (id && name) {
+                        selectedCategories.push({ id: id, name: name });
+                        console.log('Categoría agregada:', name);
+                    }
+                });
+            }
+            
+            if (hiddenDataDiv) {
+                // Leer datos de colores seleccionados SOLO del div oculto
+                const colorElements = hiddenDataDiv.querySelectorAll('[data-color-id]');
+                colorElements.forEach(element => {
+                    const id = element.getAttribute('data-color-id');
+                    const name = element.getAttribute('data-color-name');
+                    if (id && name) {
+                        selectedColors.push({ id: id, name: name });
+                    }
+                });
+                
+                // Leer datos de talles seleccionados SOLO del div oculto
+                const talleElements = hiddenDataDiv.querySelectorAll('[data-talle-name]');
+                talleElements.forEach(element => {
+                    const name = element.getAttribute('data-talle-name');
+                    const display = element.getAttribute('data-talle-display');
+                    if (name && display) {
+                        selectedTalles.push({ name: name, display: display });
+                    }
+                });
+                
+                // Leer datos de géneros seleccionados SOLO del div oculto
+                const generoElements = hiddenDataDiv.querySelectorAll('[data-genero-name]');
+                generoElements.forEach(element => {
+                    const name = element.getAttribute('data-genero-name');
+                    const display = element.getAttribute('data-genero-display');
+                    if (name && display) {
+                        selectedGeneros.push({ name: name, display: display });
+                    }
+                });
+                
+                // Leer datos de temporadas seleccionadas SOLO del div oculto
+                const temporadaElements = hiddenDataDiv.querySelectorAll('[data-temporada-name]');
+                temporadaElements.forEach(element => {
+                    const name = element.getAttribute('data-temporada-name');
+                    const display = element.getAttribute('data-temporada-display');
+                    if (name && display) {
+                        selectedTemporadas.push({ name: name, display: display });
+                    }
+                });
+            }
+            
+            // Actualizar displays
+            updateCategoryDisplay();
+            updateColorDisplay();
+            updateTalleDisplay();
+            updateGeneroDisplay();
+            updateTemporadaDisplay();
+            
+            // Actualizar inputs ocultos
+            updateHiddenInput();
+            updateColorHiddenInput();
+            updateTalleHiddenInput();
+            updateGeneroHiddenInput();
+            updateTemporadaHiddenInput();
+        }
+
+        function addCategory(categoryId, categoryName) {
+            // Verificar si ya existe
+            if (selectedCategories.find(cat => cat.id === categoryId)) {
+                return; // Ya existe, no hacer nada
+            }
+            
+            // Agregar categoría
+            selectedCategories.push({ id: categoryId, name: categoryName });
+            
+            // Actualizar UI
+            updateCategoryDisplay();
+            updateHiddenInput();
+            updateDropdownOptions();
+        }
+
+        function removeCategory(categoryId) {
+            selectedCategories = selectedCategories.filter(cat => cat.id !== categoryId);
+            updateCategoryDisplay();
+            updateHiddenInput();
+            updateDropdownOptions();
+        }
+
+        function updateCategoryDisplay() {
+            const container = document.getElementById('selected-categories');
+            
+            if (selectedCategories.length === 0) {
+                container.innerHTML = '<div id="no-categories" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en las categorías de abajo para seleccionarlas</div>';
+            } else {
+                container.innerHTML = selectedCategories.map(cat => 
+                    '<span class="category-chip">' +
+                        '<i class="bi bi-tag me-1"></i>' + cat.name +
+                        '<span class="remove-btn" data-category-id="' + cat.id + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateDropdownOptions() {
+            document.querySelectorAll('.category-option').forEach(option => {
+                const categoryId = option.getAttribute('data-category-id');
+                const categoryName = option.getAttribute('data-category-name');
+                const isSelected = selectedCategories.find(cat => cat.id === categoryId);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + categoryName + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-tag me-2"></i><span>' + categoryName + '</span>';
+                }
+            });
+        }
+
+        function updateHiddenInput() {
+            const categoryIds = selectedCategories.map(cat => cat.id).join(',');
+            document.getElementById('categoryIds').value = categoryIds;
+        }
+
+        // Funciones para colores
+        function addColor(colorId, colorName) {
+            if (!selectedColors.find(color => color.id === colorId)) {
+                selectedColors.push({ id: colorId, name: colorName });
+                updateColorDisplay();
+                updateColorHiddenInput();
+                updateColorDropdownOptions();
+            }
+        }
+
+        function removeColor(colorId) {
+            selectedColors = selectedColors.filter(color => color.id !== colorId);
+            updateColorDisplay();
+            updateColorHiddenInput();
+            updateColorDropdownOptions();
+        }
+
+        function updateColorDisplay() {
+            const container = document.getElementById('selected-colors');
+            
+            if (selectedColors.length === 0) {
+                container.innerHTML = '<div id="no-colors" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en los colores de abajo para seleccionarlos</div>';
+            } else {
+                container.innerHTML = selectedColors.map(color => 
+                    '<span class="color-chip">' +
+                        '<i class="bi bi-palette me-1"></i>' + color.name +
+                        '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateColorDropdownOptions() {
+            document.querySelectorAll('.color-option').forEach(option => {
+                const colorId = option.getAttribute('data-color-id');
+                const colorName = option.getAttribute('data-color-name');
+                const isSelected = selectedColors.find(color => color.id === colorId);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + colorName + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-palette me-2"></i><span>' + colorName + '</span>';
+                }
+            });
+        }
+
+        function updateColorHiddenInput() {
+            const colorIds = selectedColors.map(color => color.id).join(',');
+            document.getElementById('colorIds').value = colorIds;
+        }
+
+        // Funciones para talles
+        function addTalle(talleName, talleDisplay) {
+            if (!selectedTalles.find(talle => talle.name === talleName)) {
+                selectedTalles.push({ name: talleName, display: talleDisplay });
+                updateTalleDisplay();
+                updateTalleHiddenInput();
+                updateTalleDropdownOptions();
+            }
+        }
+
+        function removeTalle(talleName) {
+            selectedTalles = selectedTalles.filter(talle => talle.name !== talleName);
+            updateTalleDisplay();
+            updateTalleHiddenInput();
+            updateTalleDropdownOptions();
+        }
+
+        function updateTalleDisplay() {
+            const container = document.getElementById('selected-talles');
+            
+            if (selectedTalles.length === 0) {
+                container.innerHTML = '<div id="no-talles" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en los talles de abajo para seleccionarlos</div>';
+            } else {
+                container.innerHTML = selectedTalles.map(talle => 
+                    '<span class="talle-chip">' +
+                        '<i class="bi bi-rulers me-1"></i>' + talle.display +
+                        '<span class="remove-btn" data-talle-name="' + talle.name + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateTalleDropdownOptions() {
+            document.querySelectorAll('.talle-option').forEach(option => {
+                const talleName = option.getAttribute('data-talle-name');
+                const talleDisplay = option.getAttribute('data-talle-display');
+                const isSelected = selectedTalles.find(talle => talle.name === talleName);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + talleDisplay + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-rulers me-2"></i><span>' + talleDisplay + '</span>';
+                }
+            });
+        }
+
+        function updateTalleHiddenInput() {
+            const talleNames = selectedTalles.map(talle => talle.name).join(',');
+            document.getElementById('talleNames').value = talleNames;
+        }
+
+        // Funciones para géneros
+        function addGenero(generoName, generoDisplay) {
+            if (!selectedGeneros.find(genero => genero.name === generoName)) {
+                selectedGeneros.push({ name: generoName, display: generoDisplay });
+                updateGeneroDisplay();
+                updateGeneroHiddenInput();
+                updateGeneroDropdownOptions();
+            }
+        }
+
+        function removeGenero(generoName) {
+            selectedGeneros = selectedGeneros.filter(genero => genero.name !== generoName);
+            updateGeneroDisplay();
+            updateGeneroHiddenInput();
+            updateGeneroDropdownOptions();
+        }
+
+        function updateGeneroDisplay() {
+            const container = document.getElementById('selected-generos');
+            
+            if (selectedGeneros.length === 0) {
+                container.innerHTML = '<div id="no-generos" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en los géneros de abajo para seleccionarlos</div>';
+            } else {
+                container.innerHTML = selectedGeneros.map(genero => 
+                    '<span class="genero-chip">' +
+                        '<i class="bi bi-person me-1"></i>' + genero.display +
+                        '<span class="remove-btn" data-genero-name="' + genero.name + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateGeneroDropdownOptions() {
+            document.querySelectorAll('.genero-option').forEach(option => {
+                const generoName = option.getAttribute('data-genero-name');
+                const generoDisplay = option.getAttribute('data-genero-display');
+                const isSelected = selectedGeneros.find(genero => genero.name === generoName);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + generoDisplay + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-person me-2"></i><span>' + generoDisplay + '</span>';
+                }
+            });
+        }
+
+        function updateGeneroHiddenInput() {
+            const generoNames = selectedGeneros.map(genero => genero.name).join(',');
+            document.getElementById('generoNames').value = generoNames;
+        }
+
+        // Funciones para temporadas
+        function addTemporada(temporadaName, temporadaDisplay) {
+            if (!selectedTemporadas.find(temporada => temporada.name === temporadaName)) {
+                selectedTemporadas.push({ name: temporadaName, display: temporadaDisplay });
+                updateTemporadaDisplay();
+                updateTemporadaHiddenInput();
+                updateTemporadaDropdownOptions();
+            }
+        }
+
+        function removeTemporada(temporadaName) {
+            selectedTemporadas = selectedTemporadas.filter(temporada => temporada.name !== temporadaName);
+            updateTemporadaDisplay();
+            updateTemporadaHiddenInput();
+            updateTemporadaDropdownOptions();
+        }
+
+        function updateTemporadaDisplay() {
+            const container = document.getElementById('selected-temporadas');
+            
+            if (selectedTemporadas.length === 0) {
+                container.innerHTML = '<div id="no-temporadas" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en las temporadas de abajo para seleccionarlas</div>';
+            } else {
+                container.innerHTML = selectedTemporadas.map(temporada => 
+                    '<span class="temporada-chip">' +
+                        '<i class="bi bi-calendar me-1"></i>' + temporada.display +
+                        '<span class="remove-btn" data-temporada-name="' + temporada.name + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateTemporadaDropdownOptions() {
+            document.querySelectorAll('.temporada-option').forEach(option => {
+                const temporadaName = option.getAttribute('data-temporada-name');
+                const temporadaDisplay = option.getAttribute('data-temporada-display');
+                const isSelected = selectedTemporadas.find(temporada => temporada.name === temporadaName);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + temporadaDisplay + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-calendar me-2"></i><span>' + temporadaDisplay + '</span>';
+                }
+            });
+        }
+
+        function updateTemporadaHiddenInput() {
+            const temporadaNames = selectedTemporadas.map(temporada => temporada.name).join(',');
+            document.getElementById('temporadaNames').value = temporadaNames;
+        }
+
+        // Event delegation para manejar todos los clicks
+        document.addEventListener('click', function(e) {
+            // Click en opciones del dropdown de categorías
+            let categoryOption = e.target.closest('.category-option');
+            if (categoryOption) {
+                e.preventDefault();
+                const categoryId = categoryOption.getAttribute('data-category-id');
+                const categoryName = categoryOption.getAttribute('data-category-name');
+                addCategory(categoryId, categoryName);
+                return;
+            }
+            
+            // Click en opciones del dropdown de colores
+            let colorOption = e.target.closest('.color-option');
+            if (colorOption) {
+                e.preventDefault();
+                const colorId = colorOption.getAttribute('data-color-id');
+                const colorName = colorOption.getAttribute('data-color-name');
+                addColor(colorId, colorName);
+                return;
+            }
+            
+            // Click en opciones del dropdown de talles
+            let talleOption = e.target.closest('.talle-option');
+            if (talleOption) {
+                e.preventDefault();
+                const talleName = talleOption.getAttribute('data-talle-name');
+                const talleDisplay = talleOption.getAttribute('data-talle-display');
+                addTalle(talleName, talleDisplay);
+                return;
+            }
+            
+            // Click en opciones del dropdown de géneros
+            let generoOption = e.target.closest('.genero-option');
+            if (generoOption) {
+                e.preventDefault();
+                const generoName = generoOption.getAttribute('data-genero-name');
+                const generoDisplay = generoOption.getAttribute('data-genero-display');
+                addGenero(generoName, generoDisplay);
+                return;
+            }
+            
+            // Click en opciones del dropdown de temporadas
+            let temporadaOption = e.target.closest('.temporada-option');
+            if (temporadaOption) {
+                e.preventDefault();
+                const temporadaName = temporadaOption.getAttribute('data-temporada-name');
+                const temporadaDisplay = temporadaOption.getAttribute('data-temporada-display');
+                addTemporada(temporadaName, temporadaDisplay);
+                return;
+            }
+            
+            // Click en botón de remover categoría
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-category-id')) {
+                e.preventDefault();
+                const categoryId = e.target.getAttribute('data-category-id');
+                removeCategory(categoryId);
+            }
+            
+            // Click en botón de remover color
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-color-id')) {
+                e.preventDefault();
+                const colorId = e.target.getAttribute('data-color-id');
+                removeColor(colorId);
+            }
+            
+            // Click en botón de remover talle
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-talle-name')) {
+                e.preventDefault();
+                const talleName = e.target.getAttribute('data-talle-name');
+                removeTalle(talleName);
+            }
+            
+            // Click en botón de remover género
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-genero-name')) {
+                e.preventDefault();
+                const generoName = e.target.getAttribute('data-genero-name');
+                removeGenero(generoName);
+            }
+            
+            // Click en botón de remover temporada
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-temporada-name')) {
+                e.preventDefault();
+                const temporadaName = e.target.getAttribute('data-temporada-name');
+                removeTemporada(temporadaName);
+            }
+        });
+
+        // Validación de formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            // const qty = document.getElementById('qty').value; // Campo comentado
+            const medidas = document.getElementById('medidas').value;
+
+            if (!name || selectedCategories.length === 0 || !price || !medidas) {
+                e.preventDefault();
+                DetodoyaMessages.showError('Por favor completa todos los campos obligatorios');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
