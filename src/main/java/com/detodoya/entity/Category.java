@@ -67,6 +67,10 @@ public class Category {
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
     
+    // Relación One-to-Many con Subcategorias (una categoría puede tener muchas subcategorías)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Subcategoria> subcategorias = new ArrayList<>();
+    
     // Campo para compatibilidad con backups del servidor Node
     @Transient
     private List<Long> productIds = new ArrayList<>();
@@ -261,6 +265,50 @@ public class Category {
         this.productIds = productIds;
     }
     
+    public TipoProducto getTipoProductoDefault() {
+        return tipoProductoDefault;
+    }
+    
+    public void setTipoProductoDefault(TipoProducto tipoProductoDefault) {
+        this.tipoProductoDefault = tipoProductoDefault;
+    }
+    
+    public List<Subcategoria> getSubcategorias() {
+        return subcategorias;
+    }
+    
+    public void setSubcategorias(List<Subcategoria> subcategorias) {
+        this.subcategorias = subcategorias;
+    }
+    
+    // Métodos para manejar subcategorías
+    public void agregarSubcategoria(Subcategoria subcategoria) {
+        if (!subcategorias.contains(subcategoria)) {
+            subcategorias.add(subcategoria);
+            subcategoria.setCategory(this);
+        }
+    }
+    
+    public void removerSubcategoria(Subcategoria subcategoria) {
+        if (subcategorias.remove(subcategoria)) {
+            subcategoria.setCategory(null);
+        }
+    }
+    
+    public boolean tieneSubcategorias() {
+        return subcategorias != null && !subcategorias.isEmpty();
+    }
+    
+    public List<Subcategoria> getSubcategoriasActivas() {
+        return subcategorias.stream()
+                .filter(sub -> Boolean.TRUE.equals(sub.getIsActive()))
+                .sorted((s1, s2) -> {
+                    Integer order1 = s1.getDisplayOrder() != null ? s1.getDisplayOrder() : 0;
+                    Integer order2 = s2.getDisplayOrder() != null ? s2.getDisplayOrder() : 0;
+                    return Integer.compare(order1, order2);
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
     
     @Override
     public String toString() {

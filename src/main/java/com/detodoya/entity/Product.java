@@ -170,6 +170,15 @@ public class Product {
     )
     private List<Category> categories = new ArrayList<>();
     
+    // Relación con subcategorías (Many-to-Many) - OPCIONAL
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "product_subcategorias",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "subcategoria_id")
+    )
+    private List<Subcategoria> subcategorias = new ArrayList<>();
+    
 
     // Método para obtener la imagen principal
     public ProductImage getImagenPrincipal() {
@@ -246,6 +255,28 @@ public class Product {
                 .map(Category::getName)
                 .reduce((a, b) -> a + ", " + b)
                 .orElse("Sin categorías");
+    }
+    
+    // Métodos para manejar subcategorías
+    public void agregarSubcategoria(Subcategoria subcategoria) {
+        if (!subcategorias.contains(subcategoria)) {
+            subcategorias.add(subcategoria);
+        }
+    }
+    
+    public void removerSubcategoria(Subcategoria subcategoria) {
+        subcategorias.remove(subcategoria);
+    }
+    
+    public boolean tieneSubcategoria(Subcategoria subcategoria) {
+        return subcategorias.contains(subcategoria);
+    }
+    
+    public String getSubcategoriasComoTexto() {
+        return subcategorias.stream()
+                .map(Subcategoria::getName)
+                .reduce((a, b) -> a + ", " + b)
+                .orElse("Sin subcategorías");
     }
     
     // Método para obtener la categoría principal (primera de la lista)
@@ -382,6 +413,35 @@ public class Product {
     public Double getPrecioOriginal() { return precioOriginal; }
     public void setPrecioOriginal(Double precioOriginal) { this.precioOriginal = precioOriginal; }
     
+    // Getters y setters para campos genéricos
+    public String getEspecificaciones() { return especificaciones; }
+    public void setEspecificaciones(String especificaciones) { this.especificaciones = especificaciones; }
+    
+    public String getMarca() { return marca; }
+    public void setMarca(String marca) { this.marca = marca; }
+    
+    public String getModelo() { return modelo; }
+    public void setModelo(String modelo) { this.modelo = modelo; }
+    
+    public String getGarantia() { return garantia; }
+    public void setGarantia(String garantia) { this.garantia = garantia; }
+    
+    public TipoProducto getTipoProducto() { return tipoProducto; }
+    public void setTipoProducto(TipoProducto tipoProducto) { this.tipoProducto = tipoProducto; }
+    
+    // Getters y setters para campos de integración marketplace
+    public String getCodigoProducto() { return codigoProducto; }
+    public void setCodigoProducto(String codigoProducto) { this.codigoProducto = codigoProducto; }
+    
+    public String getLinkVenta() { return linkVenta; }
+    public void setLinkVenta(String linkVenta) { this.linkVenta = linkVenta; }
+    
+    public String getContactoVendedor() { return contactoVendedor; }
+    public void setContactoVendedor(String contactoVendedor) { this.contactoVendedor = contactoVendedor; }
+    
+    public String getUbicacion() { return ubicacion; }
+    public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+    
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
     
@@ -401,6 +461,9 @@ public class Product {
     
     public List<Category> getCategories() { return categories; }
     public void setCategories(List<Category> categories) { this.categories = categories; }
+    
+    public List<Subcategoria> getSubcategorias() { return subcategorias; }
+    public void setSubcategorias(List<Subcategoria> subcategorias) { this.subcategorias = subcategorias; }
     
     public Color getColorEntity() { return colorEntity; }
     public void setColorEntity(Color colorEntity) { this.colorEntity = colorEntity; }

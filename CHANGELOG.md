@@ -56,10 +56,38 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
   - Cambio de enfoque: de catálogo de indumentaria a catálogo genérico de productos
   - Renombrado completo del proyecto
   - Actualización de todas las configuraciones
+  - **Actualización de Java 17 a Java 21** - Compatibilidad con servidor Ubuntu
+  - **Limpieza de código legacy** - Eliminación completa de carpeta `com.orioladenim` (62 archivos legacy)
 
 ### Added
 - Nueva estructura de documentación organizada
 - Documentación de estado del proyecto
+- **Sistema flexible de productos con TipoProducto**
+  - Nuevo enum `TipoProducto` (INDUMENTARIA, ELECTRONICA, HOGAR, DEPORTES, JUGUETES, LIBROS, BELLEZA, AUTOMOTOR, OTROS)
+  - Campo `tipoProducto` en entidad `Product`
+  - Campo `tipoProductoDefault` en entidad `Category`
+  - Renderizado condicional de campos según tipo de producto (preparado para frontend)
+- **Sistema de subcategorías**
+  - Nueva entidad `Subcategoria` con relación Many-to-One con `Category`
+  - Relación Many-to-Many entre `Product` y `Subcategoria`
+  - `SubcategoriaRepository`, `SubcategoriaService` y `SubcategoriaController`
+  - Integración en formulario de productos con filtrado dinámico por categoría
+- **Campos adicionales en Product para integración con marketplaces**
+  - `especificaciones` (TEXT) - Especificaciones técnicas del producto
+  - `marca` (VARCHAR 100) - Marca del producto
+  - `modelo` (VARCHAR 100) - Modelo del producto
+  - `garantia` (VARCHAR 100) - Información de garantía
+  - `codigoProducto` (VARCHAR 100) - Código SKU o identificador único
+  - `linkVenta` (VARCHAR 500) - Enlace a marketplace o sitio de venta
+  - `contactoVendedor` (VARCHAR 200) - Información de contacto del vendedor
+  - `ubicacion` (VARCHAR 200) - Ubicación del vendedor/producto
+- **Categorías principales por defecto**
+  - Tecnología, Indumentaria y Calzado, Hogar y Muebles, Electrodomésticos, Bebés y Niños, Deportes y Fitness, Librería Arte y Educación, Automotor, Otros
+  - Subcategorías predefinidas para Tecnología e Indumentaria
+
+### Fixed
+- **Problemas de reconocimiento de Lombok en IDE** - Agregados getters/setters manuales para nuevos campos en `Product` y `Category` para compatibilidad con IDE
+- **Compilación Maven** - Verificada compilación exitosa después de limpieza de código legacy
 
 ---
 

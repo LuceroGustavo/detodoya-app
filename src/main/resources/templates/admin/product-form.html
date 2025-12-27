@@ -278,6 +278,8 @@
                 <div th:if="${product.pId != null}" style="display: none;">
                     <!-- Categorías seleccionadas -->
                     <div th:each="category : ${product.categories}" th:data-category-id="${category.id}" th:data-category-name="${category.name}"></div>
+                    <!-- Subcategorías seleccionadas -->
+                    <div th:each="subcategoria : ${product.subcategorias}" th:data-subcategoria-id="${subcategoria.id}" th:data-subcategoria-name="${subcategoria.name}"></div>
                     
                     <!-- Colores seleccionados -->
                     <div th:each="color : ${product.colores}" th:data-color-id="${color.id}" th:data-color-name="${color.name}"></div>
@@ -387,6 +389,59 @@
                                                 </a>
                                                 <small class="text-muted ms-2">
                                                     <strong>Ejemplos:</strong> Camperas + Invierno + Casual
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Subcategorías (Opcional) -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="subcategorias" class="form-label">
+                                                Subcategorías
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Selecciona subcategorías opcionales para una clasificación más específica"></i>
+                                            </label>
+                                            
+                                            <!-- Subcategorías seleccionadas (chips) -->
+                                            <div id="selected-subcategorias" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                <div id="no-subcategorias" class="text-muted small">
+                                                    <i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en las subcategorías de abajo para seleccionarlas
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Dropdown de subcategorías disponibles (filtrado por categorías seleccionadas) -->
+                                            <div class="dropdown mb-2">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="subcategoriaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-plus-circle me-1"></i>Agregar subcategorías
+                                                </button>
+                                                <ul class="dropdown-menu w-100" aria-labelledby="subcategoriaDropdown" id="subcategoriaDropdownMenu">
+                                                    <li th:each="subcat : ${subcategorias}">
+                                                        <a class="dropdown-item subcategoria-option" 
+                                                           th:data-subcategoria-id="${subcat.id}" 
+                                                           th:data-subcategoria-name="${subcat.name}"
+                                                           th:data-category-id="${subcat.category != null ? subcat.category.id : ''}"
+                                                           th:data-category-name="${subcat.category != null ? subcat.category.name : ''}"
+                                                           href="javascript:void(0)">
+                                                            <i class="bi bi-tag-fill me-2"></i>
+                                                            <span th:text="${subcat.category != null ? subcat.category.name + ' > ' : ''}"></span>
+                                                            <span th:text="${subcat.name}"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <!-- Input oculto para enviar los IDs -->
+                                            <input type="hidden" id="subcategoriaIds" name="subcategoriaIds" value="">
+                                            
+                                            <div class="form-text">
+                                                <a th:href="@{/admin/subcategorias}" target="_blank" class="text-decoration-none">
+                                                    <i class="bi bi-plus-circle me-1"></i>Gestionar subcategorías
+                                                </a>
+                                                <small class="text-muted ms-2">
+                                                    <strong>Opcional:</strong> Las subcategorías permiten una clasificación más específica dentro de las categorías principales
                                                 </small>
                                             </div>
                                         </div>
@@ -708,6 +763,7 @@
     <script th:src="@{/js/Detodoya-messages.js}"></script>
     <script>
         let selectedCategories = [];
+        let selectedSubcategorias = [];
         let selectedColors = [];
         let selectedTalles = [];
         let selectedGeneros = [];
@@ -796,6 +852,7 @@
             
             // Actualizar displays
             updateCategoryDisplay();
+            updateSubcategoriaDisplay();
             updateColorDisplay();
             updateTalleDisplay();
             updateGeneroDisplay();
@@ -803,10 +860,14 @@
             
             // Actualizar inputs ocultos
             updateHiddenInput();
+            updateSubcategoriaHiddenInput();
             updateColorHiddenInput();
             updateTalleHiddenInput();
             updateGeneroHiddenInput();
             updateTemporadaHiddenInput();
+            
+            // Filtrar subcategorías según categorías seleccionadas
+            filterSubcategoriasByCategories();
         }
 
         function addCategory(categoryId, categoryName) {
@@ -822,6 +883,9 @@
             updateCategoryDisplay();
             updateHiddenInput();
             updateDropdownOptions();
+            
+            // Filtrar subcategorías según las categorías seleccionadas
+            filterSubcategoriasByCategories();
         }
 
         function removeCategory(categoryId) {
@@ -829,6 +893,9 @@
             updateCategoryDisplay();
             updateHiddenInput();
             updateDropdownOptions();
+            
+            // Filtrar subcategorías según las categorías seleccionadas
+            filterSubcategoriasByCategories();
         }
 
         function updateCategoryDisplay() {
@@ -865,6 +932,82 @@
         function updateHiddenInput() {
             const categoryIds = selectedCategories.map(cat => cat.id).join(',');
             document.getElementById('categoryIds').value = categoryIds;
+        }
+        
+        // Funciones para subcategorías
+        function addSubcategoria(subcategoriaId, subcategoriaName) {
+            // Verificar si ya existe
+            if (selectedSubcategorias.find(sub => sub.id === subcategoriaId)) {
+                return; // Ya existe, no hacer nada
+            }
+            
+            // Agregar subcategoría
+            selectedSubcategorias.push({ id: subcategoriaId, name: subcategoriaName });
+            
+            // Actualizar UI
+            updateSubcategoriaDisplay();
+            updateSubcategoriaHiddenInput();
+            updateSubcategoriaDropdownOptions();
+        }
+
+        function removeSubcategoria(subcategoriaId) {
+            selectedSubcategorias = selectedSubcategorias.filter(sub => sub.id !== subcategoriaId);
+            updateSubcategoriaDisplay();
+            updateSubcategoriaHiddenInput();
+            updateSubcategoriaDropdownOptions();
+        }
+
+        function updateSubcategoriaDisplay() {
+            const container = document.getElementById('selected-subcategorias');
+            
+            if (selectedSubcategorias.length === 0) {
+                container.innerHTML = '<div id="no-subcategorias" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en las subcategorías de abajo para seleccionarlas</div>';
+            } else {
+                container.innerHTML = selectedSubcategorias.map(sub => 
+                    '<span class="category-chip">' +
+                        '<i class="bi bi-tag-fill me-1"></i>' + sub.name +
+                        '<span class="remove-btn" data-subcategoria-id="' + sub.id + '">×</span>' +
+                    '</span>'
+                ).join('');
+            }
+        }
+
+        function updateSubcategoriaDropdownOptions() {
+            document.querySelectorAll('.subcategoria-option').forEach(option => {
+                const subcategoriaId = option.getAttribute('data-subcategoria-id');
+                const subcategoriaName = option.getAttribute('data-subcategoria-name');
+                const categoryName = option.getAttribute('data-category-name') || '';
+                const isSelected = selectedSubcategorias.find(sub => sub.id === subcategoriaId);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + (categoryName ? categoryName + ' > ' : '') + subcategoriaName + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-tag-fill me-2"></i><span>' + (categoryName ? categoryName + ' > ' : '') + subcategoriaName + '</span>';
+                }
+            });
+        }
+        
+        function updateSubcategoriaHiddenInput() {
+            const subcategoriaIds = selectedSubcategorias.map(sub => sub.id).join(',');
+            document.getElementById('subcategoriaIds').value = subcategoriaIds;
+        }
+        
+        // Filtrar subcategorías según las categorías seleccionadas
+        function filterSubcategoriasByCategories() {
+            const subcategoriaOptions = document.querySelectorAll('.subcategoria-option');
+            const selectedCategoryIds = selectedCategories.map(cat => cat.id);
+            
+            subcategoriaOptions.forEach(option => {
+                const categoryId = option.getAttribute('data-category-id');
+                // Mostrar todas las subcategorías si no hay categorías seleccionadas, o solo las de las categorías seleccionadas
+                if (selectedCategoryIds.length === 0 || selectedCategoryIds.includes(categoryId)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
         }
 
         // Funciones para colores
@@ -1091,6 +1234,16 @@
                 return;
             }
             
+            // Click en opciones del dropdown de subcategorías
+            let subcategoriaOption = e.target.closest('.subcategoria-option');
+            if (subcategoriaOption) {
+                e.preventDefault();
+                const subcategoriaId = subcategoriaOption.getAttribute('data-subcategoria-id');
+                const subcategoriaName = subcategoriaOption.getAttribute('data-subcategoria-name');
+                addSubcategoria(subcategoriaId, subcategoriaName);
+                return;
+            }
+            
             // Click en opciones del dropdown de colores
             let colorOption = e.target.closest('.color-option');
             if (colorOption) {
@@ -1136,6 +1289,15 @@
                 e.preventDefault();
                 const categoryId = e.target.getAttribute('data-category-id');
                 removeCategory(categoryId);
+                return;
+            }
+            
+            // Click en botón de remover subcategoría
+            if (e.target.classList.contains('remove-btn') && e.target.getAttribute('data-subcategoria-id')) {
+                e.preventDefault();
+                const subcategoriaId = e.target.getAttribute('data-subcategoria-id');
+                removeSubcategoria(subcategoriaId);
+                return;
             }
             
             // Click en botón de remover color

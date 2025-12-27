@@ -22,13 +22,24 @@
 - [x] Actualización de nombres de base de datos en todos los perfiles
 - [x] Organización de documentación (limpieza y estructuración)
 
-### Fase 2: Adaptación de Entidades (Pendiente)
-- [ ] Modificar entidad `Product` para productos genéricos
-  - [ ] Eliminar campos específicos de indumentaria (talles, géneros, temporadas)
-  - [ ] Adaptar campo `medidas` a `especificaciones` o similar
-  - [ ] Mantener campos universales (name, price, description, categories, colors)
-- [ ] Revisar y adaptar enums (Talle, Genero, Temporada)
-- [ ] Actualizar repositorios y servicios relacionados
+### Fase 2: Adaptación de Entidades (En Progreso)
+- [x] Modificar entidad `Product` para productos genéricos
+  - [x] Agregar campo `especificaciones` (mantiene `medidas` para indumentaria)
+  - [x] Agregar campos genéricos: `marca`, `modelo`, `garantia`
+  - [x] Agregar campo `tipoProducto` (enum `TipoProducto`)
+  - [x] Agregar campos para marketplace: `codigoProducto`, `linkVenta`, `contactoVendedor`, `ubicacion`
+  - [x] Mantener campos de indumentaria (talles, géneros, temporadas) para compatibilidad
+- [x] Crear enum `TipoProducto` con 9 tipos de productos
+- [x] Agregar campo `tipoProductoDefault` en entidad `Category`
+- [x] Crear entidad `Subcategoria` con relación Many-to-One con `Category`
+- [x] Crear relación Many-to-Many entre `Product` y `Subcategoria`
+- [x] Crear `SubcategoriaRepository`, `SubcategoriaService` y `SubcategoriaController`
+- [x] Integrar subcategorías en formulario de productos con filtrado dinámico
+- [x] Actualizar `CategoryService` con categorías principales por defecto y subcategorías
+- [x] Actualizar `ProductController` para manejar subcategorías
+- [x] Agregar getters/setters manuales para compatibilidad con IDE (Lombok)
+- [x] Actualizar `pom.xml` a Java 21
+- [x] Eliminar código legacy (carpeta `com.orioladenim` - 62 archivos)
 
 ### Fase 3: Frontend y Branding (Pendiente)
 - [ ] Actualizar templates HTML con referencias a "Detodoya"
@@ -63,9 +74,9 @@
 
 ## 📊 Progreso General
 
-**Completado:** ~30%  
+**Completado:** ~60%  
 **En progreso:** ~20%  
-**Pendiente:** ~50%
+**Pendiente:** ~20%
 
 ---
 
@@ -84,4 +95,12 @@
 ---
 
 **Última actualización:** Enero 2025
+
+### Cambios Recientes (Última Sesión)
+- ✅ Eliminación completa de código legacy (`com.orioladenim`)
+- ✅ Actualización a Java 21
+- ✅ Implementación de sistema flexible de productos con `TipoProducto`
+- ✅ Implementación de sistema de subcategorías
+- ✅ Agregados campos para integración con marketplaces
+- ✅ Corrección de problemas de reconocimiento de Lombok en IDE
 

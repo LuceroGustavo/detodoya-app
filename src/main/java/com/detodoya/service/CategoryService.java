@@ -32,6 +32,9 @@ public class CategoryService {
     @Autowired
     private CategoryImageService categoryImageService;
     
+    @Autowired
+    private SubcategoriaService subcategoriaService;
+    
     /**
      * Obtener todas las categorías activas ordenadas
      */
@@ -375,7 +378,7 @@ public class CategoryService {
     }
     
     /**
-     * Crear categorías por defecto
+     * Crear categorías por defecto con sus subcategorías
      */
     public void createDefaultCategories() {
         // Verificar si ya existen categorías
@@ -383,25 +386,118 @@ public class CategoryService {
             return;
         }
         
-        // Crear categorías por defecto (solo tipos de prenda, no géneros ni temporadas)
-        Category[] defaultCategories = {
-            // CATEGORÍAS POR TIPO DE PRENDA
-            new Category("Remeras", "Camisetas de algodón, básicas y estampadas para todas las temporadas"),
-            new Category("Pantalones de Jean", "Jeans clásicos y modernos, diferentes cortes y lavados"),
-            new Category("Buzos", "Buzos con capucha, oversize y básicos para invierno"),
-            new Category("Camperas", "Abrigos y camperas para todas las estaciones"),
-            new Category("Shorts", "Shorts de jean, básicos y desgastados para el verano"),
-            new Category("Vestidos", "Vestidos casuales y formales para mujer"),
-            new Category("Accesorios", "Cinturones, gorras, bolsos y otros accesorios"),
-            
-            // CATEGORÍA ESPECIAL
-            new Category("Sin Categoría", "Productos sin clasificar temporalmente")
-        };
+        // Crear categorías principales por defecto
+        Category tecnologia = new Category("Tecnología", "Productos tecnológicos, electrónicos y dispositivos");
+        tecnologia.setDisplayOrder(1);
+        tecnologia.setTipoProductoDefault(com.detodoya.enums.TipoProducto.ELECTRONICA);
+        tecnologia = categoryRepository.save(tecnologia);
         
-        for (int i = 0; i < defaultCategories.length; i++) {
-            defaultCategories[i].setDisplayOrder(i + 1);
-            categoryRepository.save(defaultCategories[i]);
-        }
+        Category indumentaria = new Category("Indumentaria y Calzado", "Ropa, calzado y accesorios de vestir");
+        indumentaria.setDisplayOrder(2);
+        indumentaria.setTipoProductoDefault(com.detodoya.enums.TipoProducto.INDUMENTARIA);
+        indumentaria = categoryRepository.save(indumentaria);
+        
+        Category hogar = new Category("Hogar y Muebles", "Muebles, decoración y artículos para el hogar");
+        hogar.setDisplayOrder(3);
+        hogar.setTipoProductoDefault(com.detodoya.enums.TipoProducto.HOGAR);
+        hogar = categoryRepository.save(hogar);
+        
+        Category electrodomesticos = new Category("Electrodomésticos", "Electrodomésticos y artefactos para el hogar");
+        electrodomesticos.setDisplayOrder(4);
+        electrodomesticos.setTipoProductoDefault(com.detodoya.enums.TipoProducto.HOGAR);
+        electrodomesticos = categoryRepository.save(electrodomesticos);
+        
+        Category bebes = new Category("Bebés y Niños", "Productos para bebés, niños y niñas");
+        bebes.setDisplayOrder(5);
+        bebes.setTipoProductoDefault(com.detodoya.enums.TipoProducto.JUGUETES);
+        bebes = categoryRepository.save(bebes);
+        
+        Category deportes = new Category("Deportes y Fitness", "Artículos deportivos y de fitness");
+        deportes.setDisplayOrder(6);
+        deportes.setTipoProductoDefault(com.detodoya.enums.TipoProducto.DEPORTES);
+        deportes = categoryRepository.save(deportes);
+        
+        Category libreria = new Category("Librería, Arte y Educación", "Libros, materiales de arte y educativos");
+        libreria.setDisplayOrder(7);
+        libreria.setTipoProductoDefault(com.detodoya.enums.TipoProducto.LIBROS);
+        libreria = categoryRepository.save(libreria);
+        
+        Category automotor = new Category("Automotor", "Repuestos, accesorios y productos para vehículos");
+        automotor.setDisplayOrder(8);
+        automotor.setTipoProductoDefault(com.detodoya.enums.TipoProducto.AUTOMOTOR);
+        automotor = categoryRepository.save(automotor);
+        
+        Category otros = new Category("Otros", "Productos sin clasificar en otras categorías");
+        otros.setDisplayOrder(9);
+        otros.setTipoProductoDefault(com.detodoya.enums.TipoProducto.OTROS);
+        otros = categoryRepository.save(otros);
+        
+        // Crear subcategorías para Tecnología
+        com.detodoya.entity.Subcategoria sub1 = new com.detodoya.entity.Subcategoria("Celulares y smartphones", "Teléfonos móviles y smartphones", tecnologia);
+        sub1.setDisplayOrder(1);
+        subcategoriaService.createSubcategoria(sub1);
+        
+        com.detodoya.entity.Subcategoria sub2 = new com.detodoya.entity.Subcategoria("Computación", "PC, notebooks, periféricos y accesorios informáticos", tecnologia);
+        sub2.setDisplayOrder(2);
+        subcategoriaService.createSubcategoria(sub2);
+        
+        com.detodoya.entity.Subcategoria sub3 = new com.detodoya.entity.Subcategoria("Audio y video", "Equipos de audio, video y entretenimiento", tecnologia);
+        sub3.setDisplayOrder(3);
+        subcategoriaService.createSubcategoria(sub3);
+        
+        com.detodoya.entity.Subcategoria sub4 = new com.detodoya.entity.Subcategoria("Accesorios", "Accesorios tecnológicos y cables", tecnologia);
+        sub4.setDisplayOrder(4);
+        subcategoriaService.createSubcategoria(sub4);
+        
+        com.detodoya.entity.Subcategoria sub5 = new com.detodoya.entity.Subcategoria("Gaming", "Consolas, videojuegos y accesorios gaming", tecnologia);
+        sub5.setDisplayOrder(5);
+        subcategoriaService.createSubcategoria(sub5);
+        
+        // Crear subcategorías para Indumentaria y Calzado (las antiguas categorías ahora son subcategorías)
+        com.detodoya.entity.Subcategoria sub6 = new com.detodoya.entity.Subcategoria("Ropa femenina", "Ropa y prendas para mujer", indumentaria);
+        sub6.setDisplayOrder(1);
+        subcategoriaService.createSubcategoria(sub6);
+        
+        com.detodoya.entity.Subcategoria sub7 = new com.detodoya.entity.Subcategoria("Ropa masculina", "Ropa y prendas para hombre", indumentaria);
+        sub7.setDisplayOrder(2);
+        subcategoriaService.createSubcategoria(sub7);
+        
+        com.detodoya.entity.Subcategoria sub8 = new com.detodoya.entity.Subcategoria("Ropa infantil", "Ropa y prendas para niños y niñas", indumentaria);
+        sub8.setDisplayOrder(3);
+        subcategoriaService.createSubcategoria(sub8);
+        
+        com.detodoya.entity.Subcategoria sub9 = new com.detodoya.entity.Subcategoria("Calzado", "Zapatos, zapatillas y calzado en general", indumentaria);
+        sub9.setDisplayOrder(4);
+        subcategoriaService.createSubcategoria(sub9);
+        
+        com.detodoya.entity.Subcategoria sub10 = new com.detodoya.entity.Subcategoria("Accesorios", "Relojes, carteras, bolsos y otros accesorios", indumentaria);
+        sub10.setDisplayOrder(5);
+        subcategoriaService.createSubcategoria(sub10);
+        
+        // Subcategorías específicas de indumentaria (las antiguas categorías)
+        com.detodoya.entity.Subcategoria sub11 = new com.detodoya.entity.Subcategoria("Remeras", "Camisetas de algodón, básicas y estampadas", indumentaria);
+        sub11.setDisplayOrder(6);
+        subcategoriaService.createSubcategoria(sub11);
+        
+        com.detodoya.entity.Subcategoria sub12 = new com.detodoya.entity.Subcategoria("Pantalones de Jean", "Jeans clásicos y modernos, diferentes cortes y lavados", indumentaria);
+        sub12.setDisplayOrder(7);
+        subcategoriaService.createSubcategoria(sub12);
+        
+        com.detodoya.entity.Subcategoria sub13 = new com.detodoya.entity.Subcategoria("Buzos", "Buzos con capucha, oversize y básicos para invierno", indumentaria);
+        sub13.setDisplayOrder(8);
+        subcategoriaService.createSubcategoria(sub13);
+        
+        com.detodoya.entity.Subcategoria sub14 = new com.detodoya.entity.Subcategoria("Camperas", "Abrigos y camperas para todas las estaciones", indumentaria);
+        sub14.setDisplayOrder(9);
+        subcategoriaService.createSubcategoria(sub14);
+        
+        com.detodoya.entity.Subcategoria sub15 = new com.detodoya.entity.Subcategoria("Shorts", "Shorts de jean, básicos y desgastados para el verano", indumentaria);
+        sub15.setDisplayOrder(10);
+        subcategoriaService.createSubcategoria(sub15);
+        
+        com.detodoya.entity.Subcategoria sub16 = new com.detodoya.entity.Subcategoria("Vestidos", "Vestidos casuales y formales para mujer", indumentaria);
+        sub16.setDisplayOrder(11);
+        subcategoriaService.createSubcategoria(sub16);
     }
     
     /**

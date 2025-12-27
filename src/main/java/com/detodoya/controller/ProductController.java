@@ -4,7 +4,6 @@ import com.detodoya.entity.Product;
 import com.detodoya.entity.Category;
 import com.detodoya.entity.Color;
 import com.detodoya.entity.ProductImage;
-import com.detodoya.entity.ProductVideo;
 import com.detodoya.enums.Talle;
 import com.detodoya.enums.Genero;
 import com.detodoya.enums.Temporada;
@@ -15,6 +14,8 @@ import com.detodoya.service.CategoryService;
 import com.detodoya.service.ColorService;
 import com.detodoya.service.ImageProcessingService;
 import com.detodoya.service.VideoProcessingService;
+import com.detodoya.service.SubcategoriaService;
+import com.detodoya.entity.Subcategoria;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,9 @@ public class ProductController {
     
     @Autowired
     private ColorService colorService;
+    
+    @Autowired
+    private SubcategoriaService subcategoriaService;
 
     @GetMapping
     public String listProducts(@RequestParam(required = false) String search,
@@ -90,6 +94,7 @@ public class ProductController {
         product.setPId(null); // Asegurar que no tenga ID para detectar como nuevo
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getActiveCategories());
+        model.addAttribute("subcategorias", subcategoriaService.getActiveSubcategorias());
         model.addAttribute("colors", colorService.getAllColors());
         model.addAttribute("tiposProducto", TipoProducto.values());
         model.addAttribute("talles", Talle.values());
@@ -101,6 +106,7 @@ public class ProductController {
     @PostMapping("/save")
     public String addProduct(@Valid Product product, 
                            @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds,
+                           @RequestParam(value = "subcategoriaIds", required = false) List<Long> subcategoriaIds,
                            @RequestParam(value = "colorIds", required = false) List<Long> colorIds,
                            @RequestParam(value = "talleNames", required = false) List<String> talleNames,
                            @RequestParam(value = "generoNames", required = false) List<String> generoNames,
@@ -109,7 +115,9 @@ public class ProductController {
         if (result.hasErrors()) {
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("subcategorias", subcategoriaService.getActiveSubcategorias());
             model.addAttribute("colors", colorService.getAllColors());
+            model.addAttribute("tiposProducto", TipoProducto.values());
             model.addAttribute("talles", Talle.values());
             model.addAttribute("generos", Genero.values());
             model.addAttribute("temporadas", Temporada.values());
@@ -126,6 +134,15 @@ public class ProductController {
                 }
             }
             product.setCategories(selectedCategories);
+        }
+        
+        // Manejar subcategorías múltiples (opcional)
+        if (subcategoriaIds != null && !subcategoriaIds.isEmpty()) {
+            List<Subcategoria> selectedSubcategorias = new ArrayList<>();
+            for (Long subcategoriaId : subcategoriaIds) {
+                subcategoriaService.getSubcategoriaById(subcategoriaId).ifPresent(selectedSubcategorias::add);
+            }
+            product.setSubcategorias(selectedSubcategorias);
         }
         
         // Manejar colores múltiples
@@ -191,6 +208,7 @@ public class ProductController {
             .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getActiveCategories());
+        model.addAttribute("subcategorias", subcategoriaService.getActiveSubcategorias());
         model.addAttribute("colors", colorService.getAllColors());
         model.addAttribute("tiposProducto", TipoProducto.values());
         model.addAttribute("talles", Talle.values());
@@ -200,6 +218,7 @@ public class ProductController {
         // Debug: Verificar qué datos tiene el producto
         System.out.println("Producto ID: " + product.getPId());
         System.out.println("Categorías del producto: " + product.getCategories().size());
+        System.out.println("Subcategorías del producto: " + (product.getSubcategorias() != null ? product.getSubcategorias().size() : 0));
         System.out.println("Colores del producto: " + product.getColores().size());
         System.out.println("Talles del producto: " + product.getTalles().size());
         System.out.println("Géneros del producto: " + product.getGeneros().size());
@@ -212,6 +231,7 @@ public class ProductController {
     public String updateProduct(@PathVariable Integer pId, 
                               @Valid Product product,
                               @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds,
+                              @RequestParam(value = "subcategoriaIds", required = false) List<Long> subcategoriaIds,
                               @RequestParam(value = "colorIds", required = false) List<Long> colorIds,
                               @RequestParam(value = "talleNames", required = false) List<String> talleNames,
                               @RequestParam(value = "generoNames", required = false) List<String> generoNames,
@@ -220,6 +240,7 @@ public class ProductController {
         if (result.hasErrors()) {
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.getActiveCategories());
+            model.addAttribute("subcategorias", subcategoriaService.getActiveSubcategorias());
             model.addAttribute("colors", colorService.getAllColors());
             model.addAttribute("tiposProducto", TipoProducto.values());
             model.addAttribute("talles", Talle.values());
@@ -276,6 +297,17 @@ public class ProductController {
             existingProduct.setCategories(selectedCategories);
         } else {
             existingProduct.setCategories(new ArrayList<>());
+        }
+        
+        // Manejar subcategorías múltiples (opcional)
+        if (subcategoriaIds != null && !subcategoriaIds.isEmpty()) {
+            List<Subcategoria> selectedSubcategorias = new ArrayList<>();
+            for (Long subcategoriaId : subcategoriaIds) {
+                subcategoriaService.getSubcategoriaById(subcategoriaId).ifPresent(selectedSubcategorias::add);
+            }
+            existingProduct.setSubcategorias(selectedSubcategorias);
+        } else {
+            existingProduct.setSubcategorias(new ArrayList<>());
         }
         
         // Manejar colores múltiples
