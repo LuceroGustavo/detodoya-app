@@ -79,6 +79,14 @@ public class SubcategoriaService {
     }
     
     /**
+     * Buscar subcategorías activas por ID de categoría (alias para claridad)
+     */
+    @Transactional(readOnly = true)
+    public List<Subcategoria> getActiveSubcategoriasByCategoryId(Long categoryId) {
+        return subcategoriaRepository.findByCategoryId(categoryId);
+    }
+    
+    /**
      * Buscar subcategoría por nombre
      */
     @Transactional(readOnly = true)
@@ -118,8 +126,14 @@ public class SubcategoriaService {
      * Actualizar subcategoría existente
      */
     public Subcategoria updateSubcategoria(Long id, Subcategoria subcategoriaData) {
+        System.out.println("🔄 [updateSubcategoria] Actualizando subcategoría ID: " + id);
+        
         Subcategoria existingSubcategoria = subcategoriaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Subcategoría no encontrada con ID: " + id));
+        
+        System.out.println("📦 [updateSubcategoria] Subcategoría encontrada: " + existingSubcategoria.getName());
+        System.out.println("📦 [updateSubcategoria] Categoría actual: " + (existingSubcategoria.getCategory() != null ? existingSubcategoria.getCategory().getName() : "null"));
+        System.out.println("📦 [updateSubcategoria] Nueva categoría: " + (subcategoriaData.getCategory() != null ? subcategoriaData.getCategory().getName() : "null"));
         
         // Validar que el nuevo nombre no exista en otra subcategoría de la misma categoría
         if (subcategoriaData.getCategory() != null && subcategoriaData.getCategory().getId() != null) {
@@ -135,39 +149,62 @@ public class SubcategoriaService {
         // Actualizar campos
         existingSubcategoria.setName(subcategoriaData.getName());
         existingSubcategoria.setDescription(subcategoriaData.getDescription());
-        existingSubcategoria.setIsActive(subcategoriaData.getIsActive());
+        // Manejar isActive (si viene null del formulario, mantener el valor actual o establecer a true por defecto)
+        if (subcategoriaData.getIsActive() != null) {
+            existingSubcategoria.setIsActive(subcategoriaData.getIsActive());
+        } else {
+            // Si no viene el valor, mantener el actual o establecer a true por defecto
+            if (existingSubcategoria.getIsActive() == null) {
+                existingSubcategoria.setIsActive(true);
+            }
+        }
         existingSubcategoria.setDisplayOrder(subcategoriaData.getDisplayOrder());
         
         // Actualizar categoría si cambió
         if (subcategoriaData.getCategory() != null && 
             (existingSubcategoria.getCategory() == null || 
              !existingSubcategoria.getCategory().getId().equals(subcategoriaData.getCategory().getId()))) {
+            System.out.println("🔄 [updateSubcategoria] Cambiando categoría de " + 
+                (existingSubcategoria.getCategory() != null ? existingSubcategoria.getCategory().getName() : "null") + 
+                " a " + subcategoriaData.getCategory().getName());
             existingSubcategoria.setCategory(subcategoriaData.getCategory());
         }
         
-        return subcategoriaRepository.save(existingSubcategoria);
+        Subcategoria saved = subcategoriaRepository.save(existingSubcategoria);
+        System.out.println("✅ [updateSubcategoria] Subcategoría actualizada exitosamente");
+        
+        return saved;
     }
     
     /**
      * Eliminar subcategoría (eliminación en cascada)
      */
     public void deleteSubcategoria(Long id) {
+        System.out.println("🗑️ [Service] Eliminando subcategoría ID: " + id);
+        
         Subcategoria subcategoria = subcategoriaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Subcategoría no encontrada con ID: " + id));
+        
+        System.out.println("📦 [Service] Subcategoría encontrada: " + subcategoria.getName());
         
         // Obtener todos los productos asociados a esta subcategoría
         List<Product> productsWithSubcategoria = productRepository.findAll().stream()
                 .filter(p -> p.getSubcategorias() != null && p.getSubcategorias().contains(subcategoria))
                 .collect(java.util.stream.Collectors.toList());
         
+        System.out.println("📦 [Service] Productos asociados encontrados: " + productsWithSubcategoria.size());
+        
         // Remover la subcategoría de todos los productos asociados
         for (Product product : productsWithSubcategoria) {
+            System.out.println("  - Removiendo subcategoría de producto: " + product.getName());
             product.getSubcategorias().remove(subcategoria);
             productRepository.save(product);
         }
         
         // Eliminar la subcategoría
         subcategoriaRepository.delete(subcategoria);
+        
+        System.out.println("✅ [Service] Subcategoría eliminada exitosamente");
     }
     
     /**

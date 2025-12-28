@@ -321,6 +321,16 @@ class DetodoyaMessages {
 // Crear instancia global
 const detodoyaMessages = new DetodoyaMessages();
 
+// Exponer DetodoyaMessages como objeto estático para compatibilidad
+window.DetodoyaMessages = {
+    showError: (message, duration) => detodoyaMessages.showError(message, duration),
+    showSuccess: (message, duration) => detodoyaMessages.showSuccess(message, duration),
+    showInfo: (message, duration) => detodoyaMessages.showInfo(message, duration),
+    showWarning: (message, duration) => detodoyaMessages.showWarning(message, duration),
+    confirm: (message, confirmText, cancelText) => detodoyaMessages.confirm(message, confirmText, cancelText),
+    clearAll: () => detodoyaMessages.clearAll()
+};
+
 // Función global para compatibilidad con código existente
 function showOriolaMessage(type, message, duration) {
     switch(type) {

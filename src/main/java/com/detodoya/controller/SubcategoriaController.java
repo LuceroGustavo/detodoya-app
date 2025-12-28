@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -108,12 +109,24 @@ public class SubcategoriaController {
     @PostMapping("/create")
     public String createSubcategoria(
             @Valid @ModelAttribute("subcategoria") Subcategoria subcategoria,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
         
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error", "Error en los datos de la subcategoría");
             return "redirect:/admin/subcategorias/new";
+        }
+        
+        // Establecer la categoría si se proporciona el ID
+        if (categoryId != null && (subcategoria.getCategory() == null || subcategoria.getCategory().getId() == null)) {
+            Category category = categoryService.findById(categoryId);
+            if (category != null) {
+                subcategoria.setCategory(category);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Categoría no encontrada");
+                return "redirect:/admin/subcategorias/new";
+            }
         }
         
         try {
@@ -133,12 +146,24 @@ public class SubcategoriaController {
     public String updateSubcategoria(
             @PathVariable Long id,
             @Valid @ModelAttribute("subcategoria") Subcategoria subcategoria,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
         
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error", "Error en los datos de la subcategoría");
             return "redirect:/admin/subcategorias/edit/" + id;
+        }
+        
+        // Establecer la categoría si se proporciona el ID
+        if (categoryId != null && (subcategoria.getCategory() == null || subcategoria.getCategory().getId() == null || !subcategoria.getCategory().getId().equals(categoryId))) {
+            Category category = categoryService.findById(categoryId);
+            if (category != null) {
+                subcategoria.setCategory(category);
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Categoría no encontrada");
+                return "redirect:/admin/subcategorias/edit/" + id;
+            }
         }
         
         try {
@@ -156,21 +181,40 @@ public class SubcategoriaController {
      */
     @PostMapping("/delete/{id}")
     @ResponseBody
+    @Transactional
     public Map<String, Object> deleteSubcategoria(@PathVariable Long id) {
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         try {
+            System.out.println("🗑️ [deleteSubcategoria] Eliminando subcategoría ID: " + id);
+            
             Subcategoria subcategoria = subcategoriaService.findById(id);
-            Long categoryId = subcategoria != null && subcategoria.getCategory() != null ? 
+            if (subcategoria == null) {
+                response.put("success", false);
+                response.put("message", "Subcategoría no encontrada");
+                return response;
+            }
+            
+            Long categoryId = subcategoria.getCategory() != null ? 
                 subcategoria.getCategory().getId() : null;
             
+            System.out.println("🗑️ [deleteSubcategoria] Subcategoría encontrada: " + subcategoria.getName());
+            System.out.println("🗑️ [deleteSubcategoria] Categoría ID: " + categoryId);
+            
+            // Eliminar la subcategoría (el servicio maneja la eliminación de relaciones con productos)
             subcategoriaService.deleteSubcategoria(id);
+            
+            System.out.println("✅ [deleteSubcategoria] Subcategoría eliminada exitosamente");
+            
             response.put("success", true);
             response.put("message", "Subcategoría eliminada exitosamente");
             response.put("categoryId", categoryId);
         } catch (IllegalArgumentException e) {
+            System.err.println("❌ [deleteSubcategoria] Error: " + e.getMessage());
             response.put("success", false);
             response.put("message", e.getMessage());
         } catch (Exception e) {
+            System.err.println("❌ [deleteSubcategoria] Error inesperado: " + e.getMessage());
+            e.printStackTrace();
             response.put("success", false);
             response.put("message", "Error al eliminar la subcategoría: " + e.getMessage());
         }
@@ -207,7 +251,8 @@ public class SubcategoriaController {
     @GetMapping("/api/by-category/{categoryId}")
     @ResponseBody
     public List<Map<String, Object>> getSubcategoriasByCategory(@PathVariable Long categoryId) {
-        List<Subcategoria> subcategorias = subcategoriaService.getSubcategoriasByCategoryId(categoryId);
+        // Obtener solo subcategorías activas
+        List<Subcategoria> subcategorias = subcategoriaService.getActiveSubcategoriasByCategoryId(categoryId);
         return subcategorias.stream()
                 .map(sub -> {
                     Map<String, Object> subcategoriaData = new java.util.HashMap<>();
@@ -247,5 +292,7 @@ public class SubcategoriaController {
                 .collect(java.util.stream.Collectors.toList());
     }
 }
+
+
 
 

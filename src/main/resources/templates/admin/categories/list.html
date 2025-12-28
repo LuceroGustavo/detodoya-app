@@ -83,6 +83,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="/admin/subcategorias">
+                                <i class="bi bi-tag me-2"></i>Subcategorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/admin/colors">
                                 <i class="bi bi-palette me-2"></i>Colores
                             </a>
@@ -188,6 +193,10 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
+                                                <a th:href="@{/admin/subcategorias(categoryId=${category.id})}" 
+                                                   class="btn btn-sm btn-outline-info" title="Ver Subcategorías">
+                                                    <i class="bi bi-tag"></i>
+                                                </a>
                                                 <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}" 
                                                    class="btn btn-sm btn-outline-primary" title="Editar">
                                                     <i class="bi bi-pencil"></i>

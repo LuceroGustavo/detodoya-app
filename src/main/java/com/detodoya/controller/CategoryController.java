@@ -406,6 +406,30 @@ public class CategoryController {
     }
     
     /**
+     * API REST - Obtener tipo de producto por defecto de una categoría (para AJAX)
+     */
+    @GetMapping("/api/{id}/tipo-producto")
+    @ResponseBody
+    public Map<String, Object> getTipoProducto(@PathVariable Long id) {
+        Map<String, Object> response = new java.util.HashMap<>();
+        try {
+            Category category = categoryService.findById(id);
+            if (category != null && category.getTipoProductoDefault() != null) {
+                response.put("success", true);
+                response.put("tipoProducto", category.getTipoProductoDefault().name());
+                response.put("tipoProductoDisplay", category.getTipoProductoDefault().getDisplayName());
+            } else {
+                response.put("success", false);
+                response.put("tipoProducto", null);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+    
+    /**
      * Actualizar contadores de productos de todas las categorías
      */
     @PostMapping("/update-product-counts")

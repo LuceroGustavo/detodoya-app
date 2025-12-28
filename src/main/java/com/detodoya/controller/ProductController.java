@@ -23,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.ArrayList;
 import java.nio.file.Paths;
@@ -58,6 +59,12 @@ public class ProductController {
                               @RequestParam(required = false) String activo,
                               Model model) {
         List<Product> products = productRepository.findAll();
+        
+        // Debug: Verificar valores de esNuevo al cargar la lista
+        System.out.println("📋 [listProducts] Cargando lista de productos, total: " + products.size());
+        for (Product p : products) {
+            System.out.println("  - Producto ID: " + p.getPId() + ", Nombre: " + p.getName() + ", esNuevo: " + p.getEsNuevo());
+        }
         
         // Aplicar filtros
         if (search != null && !search.trim().isEmpty()) {
@@ -216,13 +223,15 @@ public class ProductController {
         model.addAttribute("temporadas", Temporada.values());
         
         // Debug: Verificar qué datos tiene el producto
-        System.out.println("Producto ID: " + product.getPId());
-        System.out.println("Categorías del producto: " + product.getCategories().size());
-        System.out.println("Subcategorías del producto: " + (product.getSubcategorias() != null ? product.getSubcategorias().size() : 0));
-        System.out.println("Colores del producto: " + product.getColores().size());
-        System.out.println("Talles del producto: " + product.getTalles().size());
-        System.out.println("Géneros del producto: " + product.getGeneros().size());
-        System.out.println("Temporadas del producto: " + product.getTemporadas().size());
+        System.out.println("📝 [editProduct] Producto ID: " + product.getPId());
+        System.out.println("📝 [editProduct] Nombre: " + product.getName());
+        System.out.println("📝 [editProduct] esNuevo: " + product.getEsNuevo());
+        System.out.println("📝 [editProduct] Categorías del producto: " + product.getCategories().size());
+        System.out.println("📝 [editProduct] Subcategorías del producto: " + (product.getSubcategorias() != null ? product.getSubcategorias().size() : 0));
+        System.out.println("📝 [editProduct] Colores del producto: " + product.getColores().size());
+        System.out.println("📝 [editProduct] Talles del producto: " + product.getTalles().size());
+        System.out.println("📝 [editProduct] Géneros del producto: " + product.getGeneros().size());
+        System.out.println("📝 [editProduct] Temporadas del producto: " + product.getTemporadas().size());
         
         return "admin/product-form";
     }
@@ -275,8 +284,20 @@ public class ProductController {
         existingProduct.setLinkVenta(product.getLinkVenta());
         existingProduct.setContactoVendedor(product.getContactoVendedor());
         existingProduct.setUbicacion(product.getUbicacion());
+        // Nuevos campos para libros
+        existingProduct.setAutor(product.getAutor());
+        existingProduct.setEditorial(product.getEditorial());
+        existingProduct.setIsbn(product.getIsbn());
+        existingProduct.setPaginas(product.getPaginas());
+        // Nuevos campos genéricos
+        existingProduct.setPeso(product.getPeso());
+        existingProduct.setDimensiones(product.getDimensiones());
+        // Nuevos campos para electrónica
+        existingProduct.setPotencia(product.getPotencia());
+        existingProduct.setConsumo(product.getConsumo());
         existingProduct.setEsDestacado(product.getEsDestacado());
-        existingProduct.setEsNuevo(product.getEsNuevo());
+        // NO actualizar esNuevo desde el formulario - se maneja mediante el endpoint toggle-vista-inicio
+        // existingProduct.setEsNuevo(product.getEsNuevo());
         existingProduct.setEtiquetaPromocional(product.getEtiquetaPromocional());
         existingProduct.setDescuentoPorcentaje(product.getDescuentoPorcentaje());
         existingProduct.setPrecioOriginal(product.getPrecioOriginal());
@@ -370,7 +391,18 @@ public class ProductController {
         }
         
         existingProduct.setFechaActualizacion(java.time.LocalDateTime.now());
+        
+        // IMPORTANTE: Preservar el valor de esNuevo que fue establecido mediante toggle-vista-inicio
+        // No se debe sobrescribir con el valor del formulario
+        System.out.println("💾 [updateProduct] Guardando producto ID: " + existingProduct.getPId());
+        System.out.println("💾 [updateProduct] esNuevo antes de guardar: " + existingProduct.getEsNuevo());
+        System.out.println("💾 [updateProduct] esNuevo del formulario (ignorado): " + product.getEsNuevo());
+        
         productRepository.save(existingProduct);
+        productRepository.flush(); // Asegurar persistencia
+        
+        System.out.println("✅ [updateProduct] Producto guardado, esNuevo preservado: " + existingProduct.getEsNuevo());
+        
         return "redirect:/admin/products";
     }
 
@@ -519,22 +551,52 @@ public class ProductController {
     
     @PostMapping("/{pId}/toggle-vista-inicio")
     @ResponseBody
+    @Transactional
     public java.util.Map<String, Object> toggleVistaInicio(@PathVariable Integer pId) {
         try {
+            System.out.println("🔄 [toggleVistaInicio] Iniciando toggle para producto ID: " + pId);
+            
+            // Obtener el producto desde la base de datos
             Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
             
-            // Cambiar el estado de vista en inicio
-            product.setEsNuevo(!product.getEsNuevo());
-            productRepository.save(product);
+            System.out.println("📦 [toggleVistaInicio] Producto encontrado: " + product.getName());
+            System.out.println("📦 [toggleVistaInicio] Valor actual de esNuevo: " + product.getEsNuevo());
+            
+            // Cambiar el estado de vista en inicio (manejar null como false)
+            Boolean currentValue = product.getEsNuevo();
+            if (currentValue == null) {
+                currentValue = false;
+                System.out.println("⚠️ [toggleVistaInicio] esNuevo era null, establecido a false");
+            }
+            
+            Boolean newValue = !currentValue;
+            System.out.println("🔄 [toggleVistaInicio] Cambiando esNuevo de " + currentValue + " a " + newValue);
+            
+            product.setEsNuevo(newValue);
+            
+            // Guardar el producto y hacer flush para asegurar persistencia inmediata
+            Product savedProduct = productRepository.save(product);
+            System.out.println("💾 [toggleVistaInicio] Producto guardado, esNuevo en objeto guardado: " + savedProduct.getEsNuevo());
+            
+            productRepository.flush(); // Forzar la escritura inmediata en la base de datos
+            System.out.println("✅ [toggleVistaInicio] Flush completado");
+            
+            // Verificar que se guardó correctamente leyendo de nuevo desde la base de datos
+            Product verifyProduct = productRepository.findById(pId).orElse(null);
+            if (verifyProduct != null) {
+                System.out.println("✅ [toggleVistaInicio] Verificación: esNuevo en BD: " + verifyProduct.getEsNuevo());
+            }
             
             java.util.Map<String, Object> response = new java.util.HashMap<>();
             response.put("success", true);
-            response.put("message", product.getEsNuevo() ? "Producto agregado a la vista de inicio" : "Producto removido de la vista de inicio");
-            response.put("esNuevo", product.getEsNuevo());
+            response.put("message", newValue ? "Producto agregado a la vista de inicio" : "Producto removido de la vista de inicio");
+            response.put("esNuevo", newValue);
             
             return response;
         } catch (Exception e) {
+            System.err.println("❌ [toggleVistaInicio] Error: " + e.getMessage());
+            e.printStackTrace();
             java.util.Map<String, Object> response = new java.util.HashMap<>();
             response.put("success", false);
             response.put("message", "Error al cambiar la vista en inicio: " + e.getMessage());

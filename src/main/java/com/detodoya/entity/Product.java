@@ -129,6 +129,33 @@ public class Product {
     @Column(name = "ubicacion", nullable = true, length = 200)
     private String ubicacion; // Ubicación del vendedor o del producto
 
+    // Campos para libros
+    @Column(name = "autor", nullable = true, length = 200)
+    private String autor; // Autor del libro
+    
+    @Column(name = "editorial", nullable = true, length = 200)
+    private String editorial; // Editorial del libro
+    
+    @Column(name = "isbn", nullable = true, length = 20)
+    private String isbn; // ISBN del libro
+    
+    @Column(name = "paginas", nullable = true)
+    private Integer paginas; // Número de páginas del libro
+    
+    // Campos genéricos para dimensiones y peso
+    @Column(name = "peso", nullable = true, length = 50)
+    private String peso; // Peso del producto (ej: "500g", "2.5kg", "1.2 libras")
+    
+    @Column(name = "dimensiones", nullable = true, length = 100)
+    private String dimensiones; // Dimensiones del producto (ej: "20x15x5 cm", "200x80x75 cm")
+    
+    // Campos para electrónica/electrodomésticos
+    @Column(name = "potencia", nullable = true, length = 50)
+    private String potencia; // Potencia (ej: "220V", "50W", "1000W")
+    
+    @Column(name = "consumo", nullable = true, length = 100)
+    private String consumo; // Consumo energético (ej: "220V, 50W", "Clase A+")
+
     @Column(name = "es_destacado")
     private Boolean esDestacado = false;
 
@@ -441,6 +468,33 @@ public class Product {
     
     public String getUbicacion() { return ubicacion; }
     public void setUbicacion(String ubicacion) { this.ubicacion = ubicacion; }
+    
+    // Getters y setters para campos de libros
+    public String getAutor() { return autor; }
+    public void setAutor(String autor) { this.autor = autor; }
+    
+    public String getEditorial() { return editorial; }
+    public void setEditorial(String editorial) { this.editorial = editorial; }
+    
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+    
+    public Integer getPaginas() { return paginas; }
+    public void setPaginas(Integer paginas) { this.paginas = paginas; }
+    
+    // Getters y setters para campos genéricos (peso y dimensiones)
+    public String getPeso() { return peso; }
+    public void setPeso(String peso) { this.peso = peso; }
+    
+    public String getDimensiones() { return dimensiones; }
+    public void setDimensiones(String dimensiones) { this.dimensiones = dimensiones; }
+    
+    // Getters y setters para campos de electrónica
+    public String getPotencia() { return potencia; }
+    public void setPotencia(String potencia) { this.potencia = potencia; }
+    
+    public String getConsumo() { return consumo; }
+    public void setConsumo(String consumo) { this.consumo = consumo; }
     
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }

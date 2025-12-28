@@ -297,7 +297,7 @@
                 <form th:action="${product.pId != null ? '/admin/products/edit/' + product.pId : '/admin/products/save'}" th:object="${product}" method="post" enctype="multipart/form-data">
                 <div class="row">
                         <!-- Información del Producto -->
-                        <div class="col-md-8">
+                        <div class="col-12">
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">
@@ -305,53 +305,15 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="name" class="form-label">Nombre del Producto *</label>
-                                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
-                                            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="price" class="form-label">Precio *</label>
-                                            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" required>
-                                            <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback" th:errors="*{price}"></div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="medidas" class="form-label">Medidas *</label>
-                                            <input type="text" class="form-control" id="medidas" th:field="*{medidas}" required>
-                                            <div th:if="${#fields.hasErrors('medidas')}" class="invalid-feedback" th:errors="*{medidas}"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="material" class="form-label">Material</label>
-                                            <input type="text" class="form-control" id="material" th:field="*{material}">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="cuidados" class="form-label">Cuidados</label>
-                                            <input type="text" class="form-control" id="cuidados" th:field="*{cuidados}">
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-3">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="descripcion" class="form-label">Descripción</label>
-                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
-                                        </div>
-                                    </div>
-
+                                    <!-- PASO 1: Seleccionar Categoría (PRIMERO) -->
                                     <div class="row mb-3">
                                         <div class="col-md-12 mb-3">
                                             <label for="categories" class="form-label">
-                                                Categorías *
+                                                Categoría * <span class="text-danger">(Selecciona primero)</span>
                                                 <i class="bi bi-question-circle text-primary ms-1" 
                                                    data-bs-toggle="tooltip" 
                                                    data-bs-placement="top" 
-                                                   title="Selecciona una o más categorías para clasificar el producto"></i>
+                                                   title="Selecciona una categoría primero. Esto determinará el tipo de producto y las subcategorías disponibles"></i>
                                             </label>
                                             
                                             <!-- Categorías seleccionadas (chips) -->
@@ -387,14 +349,63 @@
                                                 <a th:href="@{/admin/categories}" target="_blank" class="text-decoration-none">
                                                     <i class="bi bi-plus-circle me-1"></i>Gestionar categorías
                                                 </a>
-                                                <small class="text-muted ms-2">
-                                                    <strong>Ejemplos:</strong> Camperas + Invierno + Casual
-                                                </small>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Subcategorías (Opcional) -->
+                                    <!-- PASO 2: Tipo de Producto (Auto-seleccionado según categoría) -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="tipoProducto" class="form-label">
+                                                Tipo de Producto <span class="text-danger">*</span>
+                                                <i class="bi bi-question-circle text-primary ms-1" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Se selecciona automáticamente según la categoría, pero puedes cambiarlo manualmente"></i>
+                                            </label>
+                                            <select class="form-select" id="tipoProducto" name="tipoProducto" 
+                                                    onchange="actualizarCamposSegunTipo()" required>
+                                                <option value="">-- Selecciona primero una categoría --</option>
+                                                <option th:each="tipo : ${tiposProducto}" 
+                                                        th:value="${tipo.name()}" 
+                                                        th:text="${tipo.displayName}"
+                                                        th:selected="${product.tipoProducto != null and product.tipoProducto.name() == tipo.name()}"></option>
+                                            </select>
+                                            <small class="form-text text-muted">
+                                                <span id="tipo-producto-info">Se seleccionará automáticamente al elegir una categoría</span>
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- PASO 3: Nombre del Producto -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="name" class="form-label">Nombre del Producto *</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                            <div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:errors="*{name}"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="price" class="form-label">Precio *</label>
+                                            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" required>
+                                            <div th:if="${#fields.hasErrors('price')}" class="invalid-feedback" th:errors="*{price}"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="qty" class="form-label">Cantidad Disponible</label>
+                                            <input type="number" class="form-control" id="qty" th:field="*{qty}" min="0">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="descripcion" class="form-label">Descripción</label>
+                                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Subcategorías (Opcional) - Se cargan dinámicamente según categoría seleccionada -->
                                     <div class="row mb-3">
                                         <div class="col-md-12 mb-3">
                                             <label for="subcategorias" class="form-label">
@@ -402,33 +413,24 @@
                                                 <i class="bi bi-question-circle text-primary ms-1" 
                                                    data-bs-toggle="tooltip" 
                                                    data-bs-placement="top" 
-                                                   title="Selecciona subcategorías opcionales para una clasificación más específica"></i>
+                                                   title="Selecciona subcategorías opcionales. Se cargan automáticamente según la categoría seleccionada"></i>
                                             </label>
                                             
                                             <!-- Subcategorías seleccionadas (chips) -->
                                             <div id="selected-subcategorias" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
                                                 <div id="no-subcategorias" class="text-muted small">
-                                                    <i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en las subcategorías de abajo para seleccionarlas
+                                                    <i class="bi bi-info-circle me-1"></i>Selecciona primero una categoría para ver las subcategorías disponibles
                                                 </div>
                                             </div>
                                             
-                                            <!-- Dropdown de subcategorías disponibles (filtrado por categorías seleccionadas) -->
+                                            <!-- Dropdown de subcategorías disponibles (se carga dinámicamente) -->
                                             <div class="dropdown mb-2">
-                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="subcategoriaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="subcategoriaDropdown" data-bs-toggle="dropdown" aria-expanded="false" disabled>
                                                     <i class="bi bi-plus-circle me-1"></i>Agregar subcategorías
                                                 </button>
                                                 <ul class="dropdown-menu w-100" aria-labelledby="subcategoriaDropdown" id="subcategoriaDropdownMenu">
-                                                    <li th:each="subcat : ${subcategorias}">
-                                                        <a class="dropdown-item subcategoria-option" 
-                                                           th:data-subcategoria-id="${subcat.id}" 
-                                                           th:data-subcategoria-name="${subcat.name}"
-                                                           th:data-category-id="${subcat.category != null ? subcat.category.id : ''}"
-                                                           th:data-category-name="${subcat.category != null ? subcat.category.name : ''}"
-                                                           href="javascript:void(0)">
-                                                            <i class="bi bi-tag-fill me-2"></i>
-                                                            <span th:text="${subcat.category != null ? subcat.category.name + ' > ' : ''}"></span>
-                                                            <span th:text="${subcat.name}"></span>
-                                                        </a>
+                                                    <li class="dropdown-item-text text-muted">
+                                                        <i class="bi bi-info-circle me-2"></i>Selecciona primero una categoría
                                                     </li>
                                                 </ul>
                                             </div>
@@ -447,6 +449,35 @@
                                         </div>
                                     </div>
 
+                                    <!-- Sección: Campos de INDUMENTARIA -->
+                                    <div id="seccion-indumentaria" class="seccion-tipo-producto" style="display: none;">
+                                        <h5 class="mt-4 mb-3 text-primary">
+                                            <i class="bi bi-tshirt"></i> Información de Indumentaria
+                                        </h5>
+                                        
+                                        <!-- Medidas -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="medidas" class="form-label">Medidas de la Prenda</label>
+                                                <input type="text" class="form-control" id="medidas" th:field="*{medidas}" 
+                                                       placeholder="Ej: Pecho 100cm, Cintura 80cm, Largo 70cm">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Material y Cuidados -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="material" class="form-label">Material</label>
+                                                <input type="text" class="form-control" id="material" th:field="*{material}" 
+                                                       placeholder="Ej: 100% Algodón, Poliéster">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="cuidados" class="form-label">Instrucciones de Cuidado</label>
+                                                <input type="text" class="form-control" id="cuidados" th:field="*{cuidados}" 
+                                                       placeholder="Ej: Lavar a mano, No usar secadora">
+                                            </div>
+                                        </div>
+                                        
                                     <!-- Selección múltiple de colores y talles -->
                                     <div class="row mb-3">
                                         <div class="col-md-6 mb-3">
@@ -605,6 +636,192 @@
                                             <input type="hidden" id="temporadaNames" name="temporadaNames" value="">
                                         </div>
                                     </div>
+                                    </div>
+                                    <!-- Fin Sección: Campos de INDUMENTARIA -->
+            
+                                    <!-- Sección: Campos de ELECTRÓNICA -->
+                                    <div id="seccion-electronica" class="seccion-tipo-producto" style="display: none;">
+                                        <h5 class="mt-4 mb-3 text-primary">
+                                            <i class="bi bi-cpu"></i> Información de Electrónica
+                                        </h5>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="marca" class="form-label">Marca</label>
+                                                <input type="text" class="form-control" id="marca" th:field="*{marca}" 
+                                                       placeholder="Ej: Samsung, Apple, Sony">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="modelo" class="form-label">Modelo</label>
+                                                <input type="text" class="form-control" id="modelo" th:field="*{modelo}" 
+                                                       placeholder="Ej: Galaxy S21, iPhone 13">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="garantia" class="form-label">Garantía</label>
+                                                <input type="text" class="form-control" id="garantia" th:field="*{garantia}" 
+                                                       placeholder="Ej: 12 meses, 2 años">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="potencia" class="form-label">Potencia</label>
+                                                <input type="text" class="form-control" id="potencia" th:field="*{potencia}" 
+                                                       placeholder="Ej: 220V, 50W">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="consumo" class="form-label">Consumo Energético</label>
+                                                <input type="text" class="form-control" id="consumo" th:field="*{consumo}" 
+                                                       placeholder="Ej: 220V, 50W, Clase A+">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="peso-electronica" class="form-label">Peso</label>
+                                                <input type="text" class="form-control" id="peso-electronica" name="peso" th:field="*{peso}" 
+                                                       placeholder="Ej: 200g, 2.5kg">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="dimensiones-electronica" class="form-label">Dimensiones</label>
+                                                <input type="text" class="form-control" id="dimensiones-electronica" name="dimensiones" th:field="*{dimensiones}" 
+                                                       placeholder="Ej: 20x15x5 cm">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="especificaciones-electronica" class="form-label">Especificaciones Técnicas</label>
+                                                <textarea class="form-control" id="especificaciones-electronica" name="especificaciones" th:field="*{especificaciones}" rows="5"
+                                                          placeholder="Ej: Procesador: Snapdragon 888, RAM: 8GB, Almacenamiento: 128GB"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Sección: Campos de ELECTRÓNICA -->
+                                    
+                                    <!-- Sección: Campos de LIBROS -->
+                                    <div id="seccion-libros" class="seccion-tipo-producto" style="display: none;">
+                                        <h5 class="mt-4 mb-3 text-primary">
+                                            <i class="bi bi-book"></i> Información del Libro
+                                        </h5>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="autor" class="form-label">Autor</label>
+                                                <input type="text" class="form-control" id="autor" th:field="*{autor}" 
+                                                       placeholder="Ej: Gabriel García Márquez">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="editorial" class="form-label">Editorial</label>
+                                                <input type="text" class="form-control" id="editorial" th:field="*{editorial}" 
+                                                       placeholder="Ej: Sudamericana, Planeta">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="isbn" class="form-label">ISBN</label>
+                                                <input type="text" class="form-control" id="isbn" th:field="*{isbn}" 
+                                                       placeholder="Ej: 978-950-07-1234-5">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="paginas" class="form-label">Número de Páginas</label>
+                                                <input type="number" class="form-control" id="paginas" th:field="*{paginas}" 
+                                                       placeholder="Ej: 350" min="1">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="peso-libros" class="form-label">Peso</label>
+                                                <input type="text" class="form-control" id="peso-libros" name="peso" th:field="*{peso}" 
+                                                       placeholder="Ej: 500g, 1.2kg">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="dimensiones-libros" class="form-label">Dimensiones</label>
+                                                <input type="text" class="form-control" id="dimensiones-libros" name="dimensiones" th:field="*{dimensiones}" 
+                                                       placeholder="Ej: 23x15x2 cm">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="especificaciones-libros" class="form-label">Sinopsis / Descripción Adicional</label>
+                                                <textarea class="form-control" id="especificaciones-libros" name="especificaciones" th:field="*{especificaciones}" rows="5"
+                                                          placeholder="Sinopsis del libro..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Sección: Campos de LIBROS -->
+                                    
+                                    <!-- Sección: Campos Genéricos (HOGAR, DEPORTES, JUGUETES, BELLEZA, AUTOMOTOR, OTROS) -->
+                                    <div id="seccion-genericos" class="seccion-tipo-producto" style="display: none;">
+                                        <h5 class="mt-4 mb-3 text-primary">
+                                            <i class="bi bi-box"></i> Información Adicional
+                                        </h5>
+                                        
+                                        <div class="row mb-3" id="campo-marca">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="marca-generico" class="form-label">Marca</label>
+                                                <input type="text" class="form-control" id="marca-generico" name="marca" th:field="*{marca}" 
+                                                       placeholder="Ej: Samsung, Nike, Fisher-Price">
+                                            </div>
+                                            <div class="col-md-6 mb-3" id="campo-modelo">
+                                                <label for="modelo-generico" class="form-label">Modelo</label>
+                                                <input type="text" class="form-control" id="modelo-generico" name="modelo" th:field="*{modelo}" 
+                                                       placeholder="Ej: Modelo XYZ">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3" id="campo-material">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="material-generico" class="form-label">Material</label>
+                                                <input type="text" class="form-control" id="material-generico" name="material" th:field="*{material}" 
+                                                       placeholder="Ej: Madera, Plástico, Metal">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3" id="campo-dimensiones">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="dimensiones-generico" class="form-label">Dimensiones</label>
+                                                <input type="text" class="form-control" id="dimensiones-generico" name="dimensiones" th:field="*{dimensiones}" 
+                                                       placeholder="Ej: 200x80x75 cm">
+                                            </div>
+                                            <div class="col-md-6 mb-3" id="campo-peso">
+                                                <label for="peso-generico" class="form-label">Peso</label>
+                                                <input type="text" class="form-control" id="peso-generico" name="peso" th:field="*{peso}" 
+                                                       placeholder="Ej: 500g, 2.5kg">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3" id="campo-especificaciones">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="especificaciones-generico" class="form-label">Especificaciones</label>
+                                                <textarea class="form-control" id="especificaciones-generico" name="especificaciones" th:field="*{especificaciones}" rows="5"
+                                                          placeholder="Especificaciones técnicas o descripción adicional..."></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3" id="campo-cuidados">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="cuidados-generico" class="form-label">Instrucciones de Cuidado / Mantenimiento</label>
+                                                <textarea class="form-control" id="cuidados-generico" name="cuidados" th:field="*{cuidados}" rows="3"
+                                                          placeholder="Instrucciones de cuidado o mantenimiento..."></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3" id="campo-garantia">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="garantia-generico" class="form-label">Garantía</label>
+                                                <input type="text" class="form-control" id="garantia-generico" name="garantia" th:field="*{garantia}" 
+                                                       placeholder="Ej: 12 meses">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Sección: Campos Genéricos -->
             
                                     <!-- Checkboxes y etiqueta promocional -->
                                     <div class="row mb-3">
@@ -645,99 +862,6 @@
                             </div>
                         </div>
             
-            
-                        <!-- Sidebar - Guía de Imagen Ideal -->
-                        <div class="col-md-4">
-                            <!-- Guía de Imagen Ideal -->
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">
-                                        <i class="bi bi-image me-2"></i>Guía de Imagen Ideal
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <h6 class="text-primary mb-2">
-                                            <i class="bi bi-check-circle me-1"></i>Recomendaciones:
-                                        </h6>
-                                        <ul class="list-unstyled small mb-3">
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Dimensiones:</strong> 1000px × 1500px (óptimo)</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Mínimo:</strong> 800px × 1200px</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Relación:</strong> 2:3 (vertical/portrait)</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Tamaño archivo:</strong> 500KB - 800KB máximo</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Formato:</strong> WebP (preferido) o JPG</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Fondo:</strong> Blanco/neutro</li>
-                                            <li class="mb-2"><i class="bi bi-arrow-right me-1 text-primary"></i><strong>Composición:</strong> Producto centrado</li>
-                                        </ul>
-                                    </div>
-                                    
-                                    <div class="alert alert-info py-2 mb-0">
-                                        <small class="mb-0">
-                                            <i class="bi bi-lightbulb me-1"></i>
-                                            <strong>Tip:</strong> Las imágenes verticales (2:3) se adaptan mejor a todos los dispositivos y mejoran las ventas
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Ejemplos de Categorías Múltiples -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                        <i class="bi bi-lightbulb me-2"></i>Ejemplos de Categorías
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                    <div class="mb-3">
-                                        <h6 class="text-primary mb-2">
-                                            <i class="bi bi-tag me-1"></i>Ejemplos Prácticos:
-                                        </h6>
-                                        <div class="row g-2">
-                                            <div class="col-12">
-                                                <div class="p-2 bg-light rounded">
-                                                    <strong>Musculosa Verano:</strong><br>
-                                                    <small class="text-muted">Categorías: Remeras, Verano<br>
-                                                    Géneros: Niño, Niña, Unisex<br>
-                                                    Temporadas: Verano, Primavera</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="p-2 bg-light rounded">
-                                                    <strong>Jean Clásico:</strong><br>
-                                                    <small class="text-muted">Categorías: Pantalones de Jean<br>
-                                                    Géneros: Hombre, Mujer<br>
-                                                    Temporadas: Todo el año</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="p-2 bg-light rounded">
-                                                    <strong>Buzo Oversize:</strong><br>
-                                                    <small class="text-muted">Categorías: Buzos, Invierno<br>
-                                                    Géneros: Hombre, Mujer, Unisex<br>
-                                                    Temporadas: Invierno, Otoño</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="p-2 bg-light rounded">
-                                                    <strong>Vestido Casual:</strong><br>
-                                                    <small class="text-muted">Categorías: Vestidos, Primavera<br>
-                                                    Géneros: Mujer<br>
-                                                    Temporadas: Primavera, Verano</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </div>
-                                
-                                    <div class="alert alert-info py-2">
-                                        <small class="mb-0">
-                                            <i class="bi bi-info-circle me-1"></i>
-                                            <strong>Tip:</strong> Un producto puede tener múltiples categorías, géneros y temporadas para mejor organización y búsqueda.
-                                        </small>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
 
                 <!-- Botones de acción -->
                 <div class="row mt-4">
@@ -866,8 +990,14 @@
             updateGeneroHiddenInput();
             updateTemporadaHiddenInput();
             
-            // Filtrar subcategorías según categorías seleccionadas
-            filterSubcategoriasByCategories();
+            // Si hay categorías seleccionadas, cargar subcategorías
+            if (selectedCategories.length > 0) {
+                if (selectedCategories.length === 1) {
+                    loadSubcategoriasForCategory(selectedCategories[0].id);
+                } else {
+                    loadSubcategoriasForAllSelectedCategories();
+                }
+            }
         }
 
         function addCategory(categoryId, categoryName) {
@@ -884,8 +1014,11 @@
             updateHiddenInput();
             updateDropdownOptions();
             
-            // Filtrar subcategorías según las categorías seleccionadas
-            filterSubcategoriasByCategories();
+            // Cargar subcategorías dinámicamente para esta categoría
+            loadSubcategoriasForCategory(categoryId);
+            
+            // Obtener y auto-seleccionar tipo de producto de la categoría
+            loadTipoProductoForCategory(categoryId);
         }
 
         function removeCategory(categoryId) {
@@ -894,8 +1027,148 @@
             updateHiddenInput();
             updateDropdownOptions();
             
-            // Filtrar subcategorías según las categorías seleccionadas
-            filterSubcategoriasByCategories();
+            // Si no hay categorías seleccionadas, limpiar subcategorías y tipo de producto
+            if (selectedCategories.length === 0) {
+                document.getElementById('subcategoriaDropdownMenu').innerHTML = '<li class="dropdown-item-text text-muted"><i class="bi bi-info-circle me-2"></i>Selecciona primero una categoría</li>';
+                document.getElementById('subcategoriaDropdown').disabled = true;
+                document.getElementById('tipoProducto').value = '';
+                document.getElementById('tipo-producto-info').innerHTML = 'Se seleccionará automáticamente al elegir una categoría';
+                actualizarCamposSegunTipo();
+            } else {
+                // Recargar subcategorías para las categorías restantes
+                loadSubcategoriasForAllSelectedCategories();
+            }
+        }
+        
+        // Cargar subcategorías dinámicamente para una categoría
+        function loadSubcategoriasForCategory(categoryId) {
+            fetch('/admin/subcategorias/api/by-category/' + categoryId)
+                .then(response => response.json())
+                .then(subcategorias => {
+                    const dropdownMenu = document.getElementById('subcategoriaDropdownMenu');
+                    const dropdownButton = document.getElementById('subcategoriaDropdown');
+                    
+                    // Limpiar el menú
+                    dropdownMenu.innerHTML = '';
+                    
+                    if (subcategorias.length === 0) {
+                        dropdownMenu.innerHTML = '<li class="dropdown-item-text text-muted"><i class="bi bi-info-circle me-2"></i>No hay subcategorías disponibles para esta categoría</li>';
+                        dropdownButton.disabled = true;
+                    } else {
+                        dropdownButton.disabled = false;
+                        // Agregar subcategorías al menú
+                        subcategorias.forEach(sub => {
+                            if (sub.isActive) { // Solo mostrar subcategorías activas
+                                const li = document.createElement('li');
+                                li.innerHTML = `
+                                    <a class="dropdown-item subcategoria-option" 
+                                       data-subcategoria-id="${sub.id}" 
+                                       data-subcategoria-name="${sub.name}"
+                                       data-category-id="${sub.categoryId}"
+                                       data-category-name="${sub.categoryName || ''}"
+                                       href="javascript:void(0)">
+                                        <i class="bi bi-tag-fill me-2"></i>
+                                        <span>${sub.categoryName ? sub.categoryName + ' > ' : ''}${sub.name}</span>
+                                    </a>
+                                `;
+                                dropdownMenu.appendChild(li);
+                            }
+                        });
+                        
+                        // Si hay múltiples categorías seleccionadas, cargar subcategorías de todas
+                        if (selectedCategories.length > 1) {
+                            loadSubcategoriasForAllSelectedCategories();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar subcategorías:', error);
+                    const dropdownMenu = document.getElementById('subcategoriaDropdownMenu');
+                    dropdownMenu.innerHTML = '<li class="dropdown-item-text text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al cargar subcategorías</li>';
+                });
+        }
+        
+        // Cargar subcategorías para todas las categorías seleccionadas
+        function loadSubcategoriasForAllSelectedCategories() {
+            const dropdownMenu = document.getElementById('subcategoriaDropdownMenu');
+            dropdownMenu.innerHTML = '';
+            
+            // Cargar subcategorías de todas las categorías seleccionadas
+            const promises = selectedCategories.map(cat => 
+                fetch('/admin/subcategorias/api/by-category/' + cat.id)
+                    .then(response => response.json())
+            );
+            
+            Promise.all(promises)
+                .then(results => {
+                    const allSubcategorias = results.flat();
+                    const uniqueSubcategorias = [];
+                    const seenIds = new Set();
+                    
+                    allSubcategorias.forEach(sub => {
+                        if (sub.isActive && !seenIds.has(sub.id)) {
+                            seenIds.add(sub.id);
+                            uniqueSubcategorias.push(sub);
+                        }
+                    });
+                    
+                    if (uniqueSubcategorias.length === 0) {
+                        dropdownMenu.innerHTML = '<li class="dropdown-item-text text-muted"><i class="bi bi-info-circle me-2"></i>No hay subcategorías disponibles</li>';
+                        document.getElementById('subcategoriaDropdown').disabled = true;
+                    } else {
+                        document.getElementById('subcategoriaDropdown').disabled = false;
+                        uniqueSubcategorias.forEach(sub => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <a class="dropdown-item subcategoria-option" 
+                                   data-subcategoria-id="${sub.id}" 
+                                   data-subcategoria-name="${sub.name}"
+                                   data-category-id="${sub.categoryId}"
+                                   data-category-name="${sub.categoryName || ''}"
+                                   href="javascript:void(0)">
+                                    <i class="bi bi-tag-fill me-2"></i>
+                                    <span>${sub.categoryName ? sub.categoryName + ' > ' : ''}${sub.name}</span>
+                                </a>
+                            `;
+                            dropdownMenu.appendChild(li);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar subcategorías:', error);
+                });
+        }
+        
+        // Cargar y auto-seleccionar tipo de producto según categoría
+        function loadTipoProductoForCategory(categoryId) {
+            fetch('/admin/categories/api/' + categoryId + '/tipo-producto')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.tipoProducto) {
+                        const tipoProductoSelect = document.getElementById('tipoProducto');
+                        const tipoProductoInfo = document.getElementById('tipo-producto-info');
+                        
+                        // Si el tipo de producto no está seleccionado, auto-seleccionarlo
+                        if (!tipoProductoSelect.value || tipoProductoSelect.value === '') {
+                            console.log('🔄 Auto-seleccionando tipo de producto:', data.tipoProducto);
+                            tipoProductoSelect.value = data.tipoProducto;
+                            tipoProductoInfo.innerHTML = '<i class="bi bi-check-circle text-success me-1"></i>Auto-seleccionado: <strong>' + data.tipoProductoDisplay + '</strong> (puedes cambiarlo)';
+                            
+                            // Actualizar campos visibles - usar setTimeout para asegurar que el DOM se actualizó
+                            setTimeout(() => {
+                                actualizarCamposSegunTipo();
+                            }, 100);
+                        } else {
+                            // Si ya hay un tipo seleccionado, solo mostrar info
+                            tipoProductoInfo.innerHTML = '<i class="bi bi-info-circle me-1"></i>Sugerido: <strong>' + data.tipoProductoDisplay + '</strong> (actual: ' + tipoProductoSelect.options[tipoProductoSelect.selectedIndex].text + ')';
+                        }
+                    } else {
+                        document.getElementById('tipo-producto-info').innerHTML = '<i class="bi bi-info-circle me-1"></i>Esta categoría no tiene tipo de producto sugerido';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar tipo de producto:', error);
+                });
         }
 
         function updateCategoryDisplay() {
@@ -994,20 +1267,10 @@
             document.getElementById('subcategoriaIds').value = subcategoriaIds;
         }
         
-        // Filtrar subcategorías según las categorías seleccionadas
+        // Filtrar subcategorías según las categorías seleccionadas (ya no se usa, ahora se cargan dinámicamente)
         function filterSubcategoriasByCategories() {
-            const subcategoriaOptions = document.querySelectorAll('.subcategoria-option');
-            const selectedCategoryIds = selectedCategories.map(cat => cat.id);
-            
-            subcategoriaOptions.forEach(option => {
-                const categoryId = option.getAttribute('data-category-id');
-                // Mostrar todas las subcategorías si no hay categorías seleccionadas, o solo las de las categorías seleccionadas
-                if (selectedCategoryIds.length === 0 || selectedCategoryIds.includes(categoryId)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
+            // Esta función ya no es necesaria porque las subcategorías se cargan dinámicamente
+            // Se mantiene por compatibilidad pero no hace nada
         }
 
         // Funciones para colores
@@ -1329,14 +1592,166 @@
             }
         });
 
+        // Mapeo de tipos de producto a secciones a mostrar
+        const mapeoTiposProducto = {
+            'INDUMENTARIA': {
+                mostrar: ['seccion-indumentaria'],
+                ocultar: ['seccion-electronica', 'seccion-libros', 'seccion-genericos']
+            },
+            'ELECTRONICA': {
+                mostrar: ['seccion-electronica'],
+                ocultar: ['seccion-indumentaria', 'seccion-libros', 'seccion-genericos']
+            },
+            'LIBROS': {
+                mostrar: ['seccion-libros'],
+                ocultar: ['seccion-indumentaria', 'seccion-electronica', 'seccion-genericos']
+            },
+            'HOGAR': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-marca', 'campo-modelo', 'campo-material', 'campo-dimensiones', 'campo-peso', 'campo-especificaciones', 'campo-cuidados']
+                }
+            },
+            'DEPORTES': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-marca', 'campo-modelo', 'campo-material', 'campo-dimensiones', 'campo-peso', 'campo-especificaciones']
+                }
+            },
+            'JUGUETES': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-material', 'campo-dimensiones', 'campo-peso', 'campo-especificaciones', 'campo-cuidados']
+                }
+            },
+            'BELLEZA': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-marca', 'campo-modelo', 'campo-dimensiones', 'campo-peso', 'campo-especificaciones', 'campo-cuidados']
+                }
+            },
+            'AUTOMOTOR': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-marca', 'campo-modelo', 'campo-dimensiones', 'campo-peso', 'campo-especificaciones', 'campo-garantia']
+                }
+            },
+            'OTROS': {
+                mostrar: ['seccion-genericos'],
+                camposEspecificos: {
+                    mostrar: ['campo-especificaciones', 'campo-dimensiones', 'campo-peso']
+                }
+            }
+        };
+
+        function actualizarCamposSegunTipo() {
+            const tipoProductoSelect = document.getElementById('tipoProducto');
+            if (!tipoProductoSelect) {
+                console.warn('No se encontró el select de tipoProducto');
+                return;
+            }
+            
+            const tipoProducto = tipoProductoSelect.value;
+            console.log('🔄 Actualizando campos según tipo de producto:', tipoProducto);
+            
+            // Ocultar todas las secciones primero
+            document.querySelectorAll('.seccion-tipo-producto').forEach(seccion => {
+                seccion.style.display = 'none';
+            });
+            
+            // Si no hay tipo seleccionado, no mostrar nada
+            if (!tipoProducto) {
+                console.log('⚠️ No hay tipo de producto seleccionado');
+                return;
+            }
+            
+            // Obtener configuración para este tipo
+            const config = mapeoTiposProducto[tipoProducto];
+            
+            if (!config) {
+                console.warn('❌ Tipo de producto no encontrado en mapeo:', tipoProducto);
+                console.log('Tipos disponibles:', Object.keys(mapeoTiposProducto));
+                return;
+            }
+            
+            console.log('✅ Configuración encontrada:', config);
+            
+            // Mostrar secciones correspondientes
+            config.mostrar.forEach(seccionId => {
+                const seccion = document.getElementById(seccionId);
+                if (seccion) {
+                    seccion.style.display = 'block';
+                    console.log('✅ Mostrando sección:', seccionId);
+                } else {
+                    console.warn('⚠️ No se encontró la sección:', seccionId);
+                }
+            });
+            
+            // Ocultar secciones no correspondientes
+            if (config.ocultar) {
+                config.ocultar.forEach(seccionId => {
+                    const seccion = document.getElementById(seccionId);
+                    if (seccion) {
+                        seccion.style.display = 'none';
+                        console.log('❌ Ocultando sección:', seccionId);
+                    }
+                });
+            }
+            
+            // Si hay campos específicos a mostrar/ocultar dentro de sección genérica
+            if (config.camposEspecificos) {
+                // Ocultar todos los campos dentro de sección genérica
+                document.querySelectorAll('#seccion-genericos .row.mb-3').forEach(campo => {
+                    campo.style.display = 'none';
+                });
+                
+                // Mostrar solo los campos especificados
+                if (config.camposEspecificos.mostrar) {
+                    config.camposEspecificos.mostrar.forEach(campoId => {
+                        const campo = document.getElementById(campoId);
+                        if (campo) {
+                            campo.style.display = 'block';
+                            console.log('✅ Mostrando campo:', campoId);
+                        } else {
+                            console.warn('⚠️ No se encontró el campo:', campoId);
+                        }
+                    });
+                }
+            } else if (tipoProducto === 'HOGAR' || tipoProducto === 'DEPORTES' || tipoProducto === 'JUGUETES' || 
+                       tipoProducto === 'BELLEZA' || tipoProducto === 'AUTOMOTOR' || tipoProducto === 'OTROS') {
+                // Si es un tipo genérico pero no tiene campos específicos definidos, mostrar todos
+                document.querySelectorAll('#seccion-genericos .row.mb-3').forEach(campo => {
+                    campo.style.display = 'block';
+                });
+            }
+            
+            console.log('✅ Actualización de campos completada');
+        }
+
+        // Ejecutar al cargar la página (para edición de productos existentes)
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoProducto = document.getElementById('tipoProducto');
+            if (tipoProducto && tipoProducto.value) {
+                actualizarCamposSegunTipo();
+            }
+            
+            // Si hay categorías seleccionadas al cargar (edición), cargar subcategorías
+            if (selectedCategories.length > 0) {
+                if (selectedCategories.length === 1) {
+                    loadSubcategoriasForCategory(selectedCategories[0].id);
+                } else {
+                    loadSubcategoriasForAllSelectedCategories();
+                }
+            }
+        });
+
         // Validación de formulario
         document.querySelector('form').addEventListener('submit', function(e) {
             const name = document.getElementById('name').value;
             const price = document.getElementById('price').value;
-            // const qty = document.getElementById('qty').value; // Campo comentado
-            const medidas = document.getElementById('medidas').value;
+            const tipoProducto = document.getElementById('tipoProducto').value;
 
-            if (!name || selectedCategories.length === 0 || !price || !medidas) {
+            if (!name || selectedCategories.length === 0 || !price || !tipoProducto) {
                 e.preventDefault();
                 DetodoyaMessages.showError('Por favor completa todos los campos obligatorios');
                 return false;

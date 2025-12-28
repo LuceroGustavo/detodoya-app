@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Subcategorías - Detodoya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/Detodoya-messages.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/categories">
+                <i class="bi bi-tags me-2"></i>Detodoya - Subcategorías
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/categories">
+                    <i class="bi bi-arrow-left me-1"></i>Volver a Categorías
+                </a>
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="bi bi-speedometer2 me-1"></i>Panel de Admin
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/subcategorias">
+                                <i class="bi bi-tag me-2"></i>Subcategorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-tag me-2"></i>Gestión de Subcategorías
+                        <span th:if="${selectedCategory != null}" class="text-muted fs-5">
+                            - <span th:text="${selectedCategory.name}">Categoría</span>
+                        </span>
+                    </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <a th:href="@{/admin/subcategorias/new(categoryId=${selectedCategory != null ? selectedCategory.id : ''})}" 
+                           class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Nueva Subcategoría
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form id="filterForm" th:action="@{/admin/subcategorias}" method="get" class="row g-3">
+                            <div class="col-md-4">
+                                <label for="categoryFilter" class="form-label">Filtrar por Categoría</label>
+                                <select class="form-select" id="categoryFilter" name="categoryId" onchange="this.form.submit()">
+                                    <option value="">Todas las categorías</option>
+                                    <option th:each="cat : ${categories}"
+                                            th:value="${cat.id}"
+                                            th:text="${cat.name}"
+                                            th:selected="${categoryId != null and categoryId == cat.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="search" class="form-label">Buscar Subcategoría</label>
+                                <input type="text" class="form-control" id="search" name="search" 
+                                       th:value="${search}" placeholder="Buscar por nombre...">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-search me-1"></i>Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista de subcategorías -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-ul me-2"></i>Lista de Subcategorías
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${subcategorias != null and !subcategorias.isEmpty()}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Categoría</th>
+                                        <th>Descripción</th>
+                                        <th>Productos</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="subcategoria : ${subcategorias}">
+                                        <td>
+                                            <strong th:text="${subcategoria.name}">Subcategoría</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${subcategoria.category != null ? subcategoria.category.name : 'Sin categoría'}">Categoría</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted" th:text="${subcategoria.description != null and !subcategoria.description.isEmpty() ? subcategoria.description : 'Sin descripción'}">Descripción</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary" th:text="${subcategoria.productCount != null ? subcategoria.productCount : 0}">0</span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${subcategoria.isActive}" class="badge bg-success">Activa</span>
+                                            <span th:unless="${subcategoria.isActive}" class="badge bg-secondary">Inactiva</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a th:href="@{/admin/subcategorias/edit/{id}(id=${subcategoria.id})}" 
+                                                   class="btn btn-sm btn-outline-primary" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form th:action="@{/admin/subcategorias/toggle-status/{id}(id=${subcategoria.id})}" 
+                                                      method="post" class="d-inline">
+                                                    <button type="submit" 
+                                                            th:class="'btn btn-sm ' + (${subcategoria.isActive} ? 'btn-outline-warning' : 'btn-outline-success')"
+                                                            th:title="${subcategoria.isActive} ? 'Desactivar' : 'Activar'">
+                                                        <i th:class="'bi ' + (${subcategoria.isActive} ? 'bi-pause' : 'bi-play')"></i>
+                                                    </button>
+                                                </form>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        th:data-subcategoria-id="${subcategoria.id}"
+                                                        th:onclick="'handleDeleteSubcategoria(' + ${subcategoria.id} + ', this)'"
+                                                        title="Eliminar">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${subcategorias == null or subcategorias.isEmpty()}" 
+                             class="text-center py-5">
+                            <i class="bi bi-tag fs-1 text-muted"></i>
+                            <h5 class="text-muted mt-3">No hay subcategorías registradas</h5>
+                            <p class="text-muted" th:if="${selectedCategory == null}">
+                                Comienza creando tu primera subcategoría
+                            </p>
+                            <p class="text-muted" th:if="${selectedCategory != null}">
+                                No hay subcategorías para la categoría "<span th:text="${selectedCategory.name}"></span>"
+                            </p>
+                            <a th:href="@{/admin/subcategorias/new(categoryId=${selectedCategory != null ? selectedCategory.id : ''})}" 
+                               class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Crear Primera Subcategoría
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/detodoya-messages.js}"></script>
+    <script>
+        // Verificar que DetodoyaMessages esté disponible después de cargar el script
+        (function() {
+            function checkDetodoyaMessages() {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.confirm === 'function') {
+                    console.log('✅ DetodoyaMessages está disponible');
+                    return true;
+                } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.confirm === 'function') {
+                    // Crear alias si solo existe la instancia
+                    window.DetodoyaMessages = {
+                        showError: (msg, dur) => detodoyaMessages.showError(msg, dur),
+                        showSuccess: (msg, dur) => detodoyaMessages.showSuccess(msg, dur),
+                        showInfo: (msg, dur) => detodoyaMessages.showInfo(msg, dur),
+                        showWarning: (msg, dur) => detodoyaMessages.showWarning(msg, dur),
+                        confirm: (msg, confirmText, cancelText) => detodoyaMessages.confirm(msg, confirmText, cancelText),
+                        clearAll: () => detodoyaMessages.clearAll()
+                    };
+                    console.log('✅ DetodoyaMessages creado desde detodoyaMessages');
+                    return true;
+                }
+                return false;
+            }
+            
+            // Intentar inmediatamente
+            if (!checkDetodoyaMessages()) {
+                // Si no está disponible, esperar a DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (!checkDetodoyaMessages()) {
+                        console.error('❌ DetodoyaMessages no está disponible después de cargar');
+                    }
+                });
+            }
+        })();
+    </script>
+    <script>
+        // Mostrar mensajes flash
+        document.addEventListener('DOMContentLoaded', function() {
+            /*[[${success}]]*/ var successMessage = null;
+            /*[[${error}]]*/ var errorMessage = null;
+            
+            if (successMessage) {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showSuccess === 'function') {
+                    DetodoyaMessages.showSuccess(successMessage);
+                } else {
+                    alert(successMessage);
+                }
+            }
+            if (errorMessage) {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                    DetodoyaMessages.showError(errorMessage);
+                } else {
+                    alert(errorMessage);
+                }
+            }
+        });
+
+        async function handleDeleteSubcategoria(subcategoriaId, buttonElement) {
+            const message = '¿Estás seguro de eliminar esta subcategoría? Esta acción no se puede deshacer.';
+            
+            // Intentar usar DetodoyaMessages, si no está disponible usar confirm nativo
+            let confirmed = false;
+            try {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.confirm === 'function') {
+                    confirmed = await DetodoyaMessages.confirm(message);
+                } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.confirm === 'function') {
+                    confirmed = await detodoyaMessages.confirm(message);
+                } else {
+                    // Fallback a confirm nativo
+                    confirmed = confirm(message);
+                }
+            } catch (error) {
+                console.error('Error al mostrar confirmación:', error);
+                confirmed = confirm(message);
+            }
+            
+            if (confirmed) {
+                buttonElement.disabled = true;
+                buttonElement.style.opacity = '0.6';
+                
+                try {
+                    const response = await fetch(`/admin/subcategorias/delete/${subcategoriaId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Mostrar mensaje de éxito
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showSuccess === 'function') {
+                            DetodoyaMessages.showSuccess(data.message);
+                        } else {
+                            alert(data.message);
+                        }
+                        setTimeout(() => {
+                            if (data.categoryId) {
+                                window.location.href = `/admin/subcategorias?categoryId=${data.categoryId}`;
+                            } else {
+                                location.reload();
+                            }
+                        }, 1000);
+                    } else {
+                        // Mostrar mensaje de error
+                        const errorMsg = data.message || 'No se pudo eliminar la subcategoría.';
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                            DetodoyaMessages.showError(errorMsg);
+                        } else {
+                            alert(errorMsg);
+                        }
+                        buttonElement.disabled = false;
+                        buttonElement.style.opacity = '1';
+                    }
+                } catch (fetchError) {
+                    console.error('Error al eliminar subcategoría:', fetchError);
+                    const errorMsg = 'Error al eliminar la subcategoría: ' + fetchError.message;
+                    if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                        DetodoyaMessages.showError(errorMsg);
+                    } else {
+                        alert(errorMsg);
+                    }
+                    buttonElement.disabled = false;
+                    buttonElement.style.opacity = '1';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

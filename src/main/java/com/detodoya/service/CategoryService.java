@@ -449,7 +449,7 @@ public class CategoryService {
         sub4.setDisplayOrder(4);
         subcategoriaService.createSubcategoria(sub4);
         
-        com.detodoya.entity.Subcategoria sub5 = new com.detodoya.entity.Subcategoria("Gaming", "Consolas, videojuegos y accesorios gaming", tecnologia);
+        com.detodoya.entity.Subcategoria sub5 = new com.detodoya.entity.Subcategoria("Consolas y Videojuegos", "Consolas de videojuegos, videojuegos y accesorios gaming", tecnologia);
         sub5.setDisplayOrder(5);
         subcategoriaService.createSubcategoria(sub5);
         
