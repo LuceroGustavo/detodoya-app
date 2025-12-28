@@ -886,6 +886,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/Detodoya-messages.js}"></script>
     <script>
+        // IMPORTANTE: Inicializar arrays vacíos para producto nuevo
         let selectedCategories = [];
         let selectedSubcategorias = [];
         let selectedColors = [];
@@ -894,13 +895,21 @@
         let selectedTemporadas = [];
         
         document.addEventListener('DOMContentLoaded', function() {
+            // Asegurar que los arrays estén vacíos al inicio (para producto nuevo)
+            selectedCategories = [];
+            selectedSubcategorias = [];
+            selectedColors = [];
+            selectedTalles = [];
+            selectedGeneros = [];
+            selectedTemporadas = [];
+            
             // Inicializar tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
             
-            // Inicializar valores seleccionados para edición
+            // Inicializar valores seleccionados para edición (solo si hay producto existente)
             initializeSelectedValues();
         });
         
@@ -919,7 +928,10 @@
             
             console.log('Hidden data div found:', hiddenDataDiv ? 'Yes' : 'No');
             
+            // IMPORTANTE: Solo inicializar valores si el div oculto existe (producto existente)
+            // Si no existe, los arrays deben permanecer vacíos (producto nuevo)
             if (hiddenDataDiv) {
+                // Leer categorías seleccionadas
                 const categoryElements = hiddenDataDiv.querySelectorAll('[data-category-id]');
                 console.log('Elementos de categorías encontrados:', categoryElements.length);
                 categoryElements.forEach(element => {
@@ -930,48 +942,63 @@
                         console.log('Categoría agregada:', name);
                     }
                 });
-            }
-            
-            if (hiddenDataDiv) {
+                
                 // Leer datos de colores seleccionados SOLO del div oculto
                 const colorElements = hiddenDataDiv.querySelectorAll('[data-color-id]');
+                console.log('Colores encontrados en div oculto:', colorElements.length);
                 colorElements.forEach(element => {
                     const id = element.getAttribute('data-color-id');
                     const name = element.getAttribute('data-color-name');
                     if (id && name) {
                         selectedColors.push({ id: id, name: name });
+                        console.log('Color agregado:', name);
                     }
                 });
                 
                 // Leer datos de talles seleccionados SOLO del div oculto
                 const talleElements = hiddenDataDiv.querySelectorAll('[data-talle-name]');
+                console.log('Talles encontrados en div oculto:', talleElements.length);
                 talleElements.forEach(element => {
                     const name = element.getAttribute('data-talle-name');
                     const display = element.getAttribute('data-talle-display');
                     if (name && display) {
                         selectedTalles.push({ name: name, display: display });
+                        console.log('Talle agregado:', display);
                     }
                 });
                 
                 // Leer datos de géneros seleccionados SOLO del div oculto
                 const generoElements = hiddenDataDiv.querySelectorAll('[data-genero-name]');
+                console.log('Géneros encontrados en div oculto:', generoElements.length);
                 generoElements.forEach(element => {
                     const name = element.getAttribute('data-genero-name');
                     const display = element.getAttribute('data-genero-display');
                     if (name && display) {
                         selectedGeneros.push({ name: name, display: display });
+                        console.log('Género agregado:', display);
                     }
                 });
                 
                 // Leer datos de temporadas seleccionadas SOLO del div oculto
                 const temporadaElements = hiddenDataDiv.querySelectorAll('[data-temporada-name]');
+                console.log('Temporadas encontradas en div oculto:', temporadaElements.length);
                 temporadaElements.forEach(element => {
                     const name = element.getAttribute('data-temporada-name');
                     const display = element.getAttribute('data-temporada-display');
                     if (name && display) {
                         selectedTemporadas.push({ name: name, display: display });
+                        console.log('Temporada agregada:', display);
                     }
                 });
+            } else {
+                // Producto nuevo: asegurar que los arrays estén vacíos
+                console.log('Producto nuevo detectado - inicializando arrays vacíos');
+                selectedCategories = [];
+                selectedSubcategorias = [];
+                selectedColors = [];
+                selectedTalles = [];
+                selectedGeneros = [];
+                selectedTemporadas = [];
             }
             
             // Actualizar displays

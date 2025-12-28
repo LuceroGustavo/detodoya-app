@@ -10,6 +10,7 @@ import com.detodoya.enums.Temporada;
 import com.detodoya.enums.TipoProducto;
 import com.detodoya.repo.ProductRepository;
 import com.detodoya.repo.ProductImageRepository;
+import com.detodoya.repo.ProductViewRepository;
 import com.detodoya.service.CategoryService;
 import com.detodoya.service.ColorService;
 import com.detodoya.service.ImageProcessingService;
@@ -52,6 +53,9 @@ public class ProductController {
     
     @Autowired
     private SubcategoriaService subcategoriaService;
+    
+    @Autowired
+    private ProductViewRepository productViewRepository;
 
     @GetMapping
     public String listProducts(@RequestParam(required = false) String search,
@@ -408,24 +412,54 @@ public class ProductController {
 
     @PostMapping("/delete/{pId}")
     @ResponseBody
+    @Transactional
     public java.util.Map<String, Object> deleteProduct(@PathVariable Integer pId) {
         java.util.Map<String, Object> response = new java.util.HashMap<>();
         try {
+            System.out.println("🗑️ [deleteProduct] Eliminando producto ID: " + pId);
+            
             Product product = productRepository.findById(pId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
             
-            // Verificar si tiene relaciones que impidan la eliminación
-            // (esto se manejará automáticamente por la base de datos, pero podemos intentar eliminar)
-            productRepository.deleteById(pId);
+            System.out.println("📦 [deleteProduct] Producto encontrado: " + product.getName());
+            
+            // PASO 1: Eliminar todas las vistas del producto (product_views)
+            try {
+                List<com.detodoya.entity.ProductView> productViews = productViewRepository.findByProductId(pId);
+                if (!productViews.isEmpty()) {
+                    System.out.println("📊 [deleteProduct] Eliminando " + productViews.size() + " vistas del producto");
+                    productViewRepository.deleteAll(productViews);
+                    productViewRepository.flush();
+                    System.out.println("✅ [deleteProduct] Vistas del producto eliminadas");
+                } else {
+                    System.out.println("ℹ️ [deleteProduct] No hay vistas asociadas al producto");
+                }
+            } catch (Exception e) {
+                System.err.println("⚠️ [deleteProduct] Error al eliminar vistas (continuando): " + e.getMessage());
+                // Continuar con la eliminación del producto aunque falle la eliminación de vistas
+            }
+            
+            // PASO 2: Las imágenes y videos ya se eliminan automáticamente por cascade
+            // PASO 3: Las relaciones many-to-many (categorías, colores, talles, etc.) se eliminan automáticamente
+            
+            // PASO 4: Eliminar el producto
+            productRepository.delete(product);
+            productRepository.flush(); // Forzar la escritura inmediata
+            
+            System.out.println("✅ [deleteProduct] Producto eliminado exitosamente");
             
             response.put("success", true);
             response.put("message", "Producto eliminado correctamente");
             return response;
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.err.println("❌ [deleteProduct] Error de integridad: " + e.getMessage());
+            e.printStackTrace();
             response.put("success", false);
-            response.put("message", "No se puede eliminar el producto porque tiene datos asociados (vistas, imágenes, etc.). Primero elimina o desasocia estos datos.");
+            response.put("message", "No se puede eliminar el producto porque tiene datos asociados. Error: " + e.getMessage());
             return response;
         } catch (Exception e) {
+            System.err.println("❌ [deleteProduct] Error inesperado: " + e.getMessage());
+            e.printStackTrace();
             response.put("success", false);
             response.put("message", "Error al eliminar el producto: " + e.getMessage());
             return response;

@@ -149,7 +149,7 @@
                         <!-- 3. Subida de Imágenes y Videos -->
                         <div class="upload-section mb-4">
                             <h6 class="mb-3">
-                                <i class="bi bi-cloud-upload me-2"></i>Subir Imágenes o Videos (Máximo 5)
+                                <i class="bi bi-cloud-upload me-2"></i>Subir Imágenes o Videos (Máximo 8)
                             </h6>
                             
                             <!-- Dropzone para subida múltiple -->
@@ -157,8 +157,8 @@
                                 <div class="text-center py-5">
                                     <i class="bi bi-cloud-upload" style="font-size: 3rem; color: var(--primary-color);"></i>
                                     <h5 class="mt-3">Arrastra y suelta las imágenes o videos aquí</h5>
-                                    <p class="text-muted">o haz clic para seleccionar archivos (máximo 5 archivos por producto)</p>
-                                    <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;" max="5">
+                                    <p class="text-muted">o haz clic para seleccionar archivos (máximo 8 archivos por producto)</p>
+                                    <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;" max="8">
                                     <button class="btn btn-Detodoya" onclick="document.getElementById('fileInput').click()">
                                         <i class="bi bi-plus-circle me-2"></i>SELECCIONAR ARCHIVOS
                                     </button>
@@ -187,7 +187,41 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/Detodoya-messages.js}"></script>
+    <script th:src="@{/js/detodoya-messages.js}"></script>
+    <script>
+        // Verificar que DetodoyaMessages esté disponible después de cargar el script
+        (function() {
+            function checkDetodoyaMessages() {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.confirm === 'function') {
+                    console.log('✅ DetodoyaMessages está disponible');
+                    return true;
+                } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.confirm === 'function') {
+                    // Crear alias si solo existe la instancia
+                    window.DetodoyaMessages = {
+                        showError: (msg, dur) => detodoyaMessages.showError(msg, dur),
+                        showSuccess: (msg, dur) => detodoyaMessages.showSuccess(msg, dur),
+                        showInfo: (msg, dur) => detodoyaMessages.showInfo(msg, dur),
+                        showWarning: (msg, dur) => detodoyaMessages.showWarning(msg, dur),
+                        confirm: (msg, confirmText, cancelText) => detodoyaMessages.confirm(msg, confirmText, cancelText),
+                        clearAll: () => detodoyaMessages.clearAll()
+                    };
+                    console.log('✅ DetodoyaMessages creado desde detodoyaMessages');
+                    return true;
+                }
+                return false;
+            }
+            
+            // Intentar inmediatamente
+            if (!checkDetodoyaMessages()) {
+                // Si no está disponible, esperar a DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (!checkDetodoyaMessages()) {
+                        console.error('❌ DetodoyaMessages no está disponible después de cargar');
+                    }
+                });
+            }
+        })();
+    </script>
     <script>
         // Obtener el productId de la URL
         const urlParts = window.location.pathname.split('/');
@@ -208,7 +242,7 @@
 
         // Validar archivos
         function validateFiles(files) {
-            const maxFiles = 5;
+            const maxFiles = 8;
             const maxSizeImage = 2 * 1024 * 1024; // 2MB para imágenes (se comprimen automáticamente)
             const maxSizeVideo = 3 * 1024 * 1024; // 3MB para videos
             const allowedTypes = [
@@ -249,7 +283,7 @@
             if (validateFiles(files)) {
                 // Obtener número de imágenes existentes del producto
                 const existingImages = document.querySelectorAll('.image-card').length;
-                const maxTotalImages = 5;
+                const maxTotalImages = 8;
                 
                 // Calcular cuántas imágenes se pueden agregar
                 const availableSlots = maxTotalImages - existingImages;
@@ -530,26 +564,72 @@
         }
 
         async function deleteImage(imageId) {
-            const confirmed = await DetodoyaMessages.confirm('¿Estás seguro de que quieres eliminar esta imagen?');
+            const message = '¿Estás seguro de que quieres eliminar esta imagen?';
+            
+            // Intentar usar DetodoyaMessages, si no está disponible usar confirm nativo
+            let confirmed = false;
+            try {
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.confirm === 'function') {
+                    confirmed = await DetodoyaMessages.confirm(message);
+                } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.confirm === 'function') {
+                    confirmed = await detodoyaMessages.confirm(message);
+                } else {
+                    // Fallback a confirm nativo
+                    confirmed = confirm(message);
+                }
+            } catch (error) {
+                console.error('Error al mostrar confirmación:', error);
+                confirmed = confirm(message);
+            }
+            
             if (confirmed) {
-                fetch(`/admin/image/${imageId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                    showMessage('success', 'Imagen eliminada correctamente');
-                    // Actualizar la interfaz sin recargar la página
-                    setTimeout(() => {
-                        updateImageInterface();
-                    }, 500);
-                    } else {
-                        showMessage('error', data.message || 'Error al eliminar imagen');
+                try {
+                    const response = await fetch(`/admin/image/${imageId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
                     }
-                })
-                .catch(error => {
-                    showMessage('error', 'Error al eliminar imagen: ' + error.message);
-                });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Mostrar mensaje de éxito
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showSuccess === 'function') {
+                            DetodoyaMessages.showSuccess('Imagen eliminada correctamente');
+                        } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.showSuccess === 'function') {
+                            detodoyaMessages.showSuccess('Imagen eliminada correctamente');
+                        } else {
+                            showMessage('success', 'Imagen eliminada correctamente');
+                        }
+                        
+                        // Actualizar la interfaz sin recargar la página
+                        setTimeout(() => {
+                            updateImageInterface();
+                        }, 500);
+                    } else {
+                        // Mostrar mensaje de error
+                        const errorMsg = data.message || 'Error al eliminar imagen';
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                            DetodoyaMessages.showError(errorMsg);
+                        } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.showError === 'function') {
+                            detodoyaMessages.showError(errorMsg);
+                        } else {
+                            showMessage('error', errorMsg);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar imagen:', error);
+                    const errorMsg = 'Error al eliminar imagen: ' + error.message;
+                    if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                        DetodoyaMessages.showError(errorMsg);
+                    } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.showError === 'function') {
+                        detodoyaMessages.showError(errorMsg);
+                    } else {
+                        showMessage('error', errorMsg);
+                    }
+                }
             }
         }
     </script>

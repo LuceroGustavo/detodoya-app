@@ -107,4 +107,20 @@ public interface ProductViewRepository extends JpaRepository<ProductView, Long> 
         @Param("productId") Integer productId,
         @Param("ipAddress") String ipAddress,
         @Param("oneHourAgo") LocalDateTime oneHourAgo);
+    
+    /**
+     * Elimina todas las vistas de un producto
+     * @param productId ID del producto
+     */
+    @Modifying
+    @Query("DELETE FROM ProductView p WHERE p.product.pId = :productId")
+    void deleteByProductId(@Param("productId") Integer productId);
+    
+    /**
+     * Obtiene todas las vistas de un producto
+     * @param productId ID del producto
+     * @return Lista de vistas del producto
+     */
+    @Query("SELECT p FROM ProductView p WHERE p.product.pId = :productId")
+    List<ProductView> findByProductId(@Param("productId") Integer productId);
 }

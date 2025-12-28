@@ -713,44 +713,78 @@
         }
 
         async function handleDeleteProduct(productId, buttonElement) {
+            const message = '¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.';
+            
+            // Intentar usar DetodoyaMessages, si no está disponible usar confirm nativo
+            let confirmed = false;
             try {
-                const confirmed = await DetodoyaMessages.confirm('¿Estás seguro de que quieres eliminar este producto? Esta acción no se puede deshacer.');
-                if (confirmed) {
-                    // Deshabilitar el botón mientras se procesa
-                    buttonElement.disabled = true;
-                    buttonElement.style.opacity = '0.6';
-                    
-                    try {
-                        const response = await fetch(`/admin/products/delete/${productId}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            showMessage('success', data.message);
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        } else {
-                            showMessage('error', data.message || 'No se pudo eliminar el producto.');
-                            buttonElement.disabled = false;
-                            buttonElement.style.opacity = '1';
+                if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.confirm === 'function') {
+                    confirmed = await DetodoyaMessages.confirm(message);
+                } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.confirm === 'function') {
+                    confirmed = await detodoyaMessages.confirm(message);
+                } else {
+                    // Fallback a confirm nativo
+                    confirmed = confirm(message);
+                }
+            } catch (error) {
+                console.error('Error al mostrar confirmación:', error);
+                confirmed = confirm(message);
+            }
+            
+            if (confirmed) {
+                // Deshabilitar el botón mientras se procesa
+                buttonElement.disabled = true;
+                buttonElement.style.opacity = '0.6';
+                
+                try {
+                    const response = await fetch(`/admin/products/delete/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
-                    } catch (fetchError) {
-                        showMessage('error', 'Error al eliminar el producto: ' + fetchError.message);
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Mostrar mensaje de éxito
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showSuccess === 'function') {
+                            DetodoyaMessages.showSuccess(data.message);
+                        } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.showSuccess === 'function') {
+                            detodoyaMessages.showSuccess(data.message);
+                        } else {
+                            showMessage('success', data.message);
+                        }
+                        
+                        // Recargar la página inmediatamente después de mostrar el mensaje
+                        setTimeout(() => {
+                            window.location.reload(true); // Forzar recarga desde el servidor
+                        }, 500); // Reducido a 500ms para respuesta más rápida
+                    } else {
+                        // Mostrar mensaje de error
+                        const errorMsg = data.message || 'No se pudo eliminar el producto.';
+                        if (typeof DetodoyaMessages !== 'undefined' && typeof DetodoyaMessages.showError === 'function') {
+                            DetodoyaMessages.showError(errorMsg);
+                        } else if (typeof detodoyaMessages !== 'undefined' && typeof detodoyaMessages.showError === 'function') {
+                            detodoyaMessages.showError(errorMsg);
+                        } else {
+                            showMessage('error', errorMsg);
+                        }
                         buttonElement.disabled = false;
                         buttonElement.style.opacity = '1';
                     }
+                } catch (fetchError) {
+                    console.error('Error al eliminar producto:', fetchError);
+                    const errorMsg = 'Error al eliminar el producto: ' + fetchError.message;
+                    showMessage('error', errorMsg);
+                    buttonElement.disabled = false;
+                    buttonElement.style.opacity = '1';
                 }
-            } catch (error) {
-                DetodoyaMessages.showError('Error al procesar la eliminación: ' + error.message);
-                buttonElement.disabled = false;
-                buttonElement.style.opacity = '1';
             }
         }
     </script>
