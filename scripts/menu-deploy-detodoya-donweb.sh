@@ -1,7 +1,7 @@
 #!/bin/bash
 # menu-deploy-detodoya-donweb.sh - Menú interactivo para gestión de Detodoya.com
 # Servidor: Donweb - 149.50.144.53
-# Puerto: 8080 (Fulbito usa 8081, NO TOCAR)
+# Puerto: 8080
 
 # Colores para output
 RED='\033[0;31m'
@@ -46,15 +46,6 @@ check_app_status() {
     fi
 }
 
-# Función para verificar Fulbito (NO TOCAR)
-check_fulbito_status() {
-    if netstat -tlnp | grep -q ":8081 "; then
-        echo -e "${GREEN}🟢 Fulbito corriendo en puerto 8081 (NO TOCAR)${NC}"
-    else
-        echo -e "${YELLOW}🟡 Fulbito no detectado en puerto 8081${NC}"
-    fi
-}
-
 # Función para parar la aplicación
 stop_app() {
     print_option "1️⃣ Parando aplicación Detodoya..."
@@ -70,8 +61,6 @@ stop_app() {
     else
         print_warning "No hay aplicación Detodoya corriendo"
     fi
-    echo ""
-    check_fulbito_status
 }
 
 # Función para actualizar código
@@ -80,19 +69,39 @@ update_code() {
     # Obtener el directorio del script y usarlo como base
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     cd "$SCRIPT_DIR" || { print_error "Error: No se pudo cambiar al directorio del proyecto"; return 1; }
+    
+    # Verificar si hay cambios locales
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        print_warning "Hay cambios locales sin commitear. Guardando cambios..."
+        git stash push -m "Cambios locales guardados automáticamente antes de pull - $(date +%Y-%m-%d_%H:%M:%S)"
+        print_success "Cambios locales guardados en stash"
+    fi
+    
     git fetch origin
+    
     # Intentar con main primero, luego master como fallback
     if git rev-parse --verify origin/main > /dev/null 2>&1; then
         if git pull origin main; then
             print_success "Código actualizado desde main"
+            # Intentar aplicar los cambios guardados si existen
+            if git stash list | grep -q "Cambios locales guardados"; then
+                print_warning "Intentando aplicar cambios locales guardados..."
+                if git stash pop; then
+                    print_success "Cambios locales aplicados correctamente"
+                else
+                    print_warning "No se pudieron aplicar los cambios locales automáticamente. Usa 'git stash list' para verlos."
+                fi
+            fi
         else
             print_error "Error al actualizar código desde main"
+            return 1
         fi
     else
         if git pull origin master; then
             print_success "Código actualizado desde master"
         else
             print_error "Error al actualizar código"
+            return 1
         fi
     fi
 }
@@ -140,8 +149,6 @@ start_app() {
         print_error "Error al iniciar la aplicación"
         print_warning "Revisa los logs: tail -f app.log"
     fi
-    echo ""
-    check_fulbito_status
 }
 
 # Función para despliegue completo
@@ -183,9 +190,6 @@ system_status() {
     echo -e "${CYAN}=== APLICACIÓN DETODOYA ===${NC}"
     check_app_status
     echo ""
-    echo -e "${CYAN}=== APLICACIÓN FULBITO (NO TOCAR) ===${NC}"
-    check_fulbito_status
-    echo ""
     echo -e "${CYAN}=== RECURSOS DEL SERVIDOR ===${NC}"
     echo "Uso de CPU y memoria:"
     top -bn1 | head -5
@@ -199,8 +203,6 @@ system_status() {
     echo -e "${CYAN}=== PUERTOS EN USO ===${NC}"
     echo "Puerto 8080 (Detodoya):"
     netstat -tlnp | grep ":8080 " || echo "  No hay aplicación en puerto 8080"
-    echo "Puerto 8081 (Fulbito - NO TOCAR):"
-    netstat -tlnp | grep ":8081 " || echo "  No hay aplicación en puerto 8081"
 }
 
 # Función para reiniciar aplicación
@@ -235,9 +237,8 @@ project_info() {
     echo "Perfil: donweb"
     echo "Base de datos: detodoya"
     echo ""
-    echo -e "${CYAN}=== APLICACIONES EN EL SERVIDOR ===${NC}"
+    echo -e "${CYAN}=== APLICACIÓN DETODOYA ===${NC}"
     check_app_status
-    check_fulbito_status
 }
 
 # Función para ver espacio en disco
@@ -324,8 +325,6 @@ while true; do
     print_header
     echo ""
     check_app_status
-    echo ""
-    check_fulbito_status
     echo ""
     print_option "Selecciona una opción:"
     echo ""

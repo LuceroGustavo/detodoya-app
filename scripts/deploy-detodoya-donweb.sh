@@ -1,7 +1,7 @@
 #!/bin/bash
 # deploy-detodoya-donweb.sh - Script de despliegue automático para Detodoya.com
 # Servidor: Donweb - 149.50.144.53
-# Puerto: 8080 (Fulbito usa 8081, NO TOCAR)
+# Puerto: 8080
 
 set -e  # Salir si hay algún error
 
@@ -67,24 +67,43 @@ else
     print_warning "No se encontró aplicación Detodoya corriendo"
 fi
 
-# Verificar que Fulbito sigue funcionando en 8081 (NO TOCAR)
-print_status "Verificando que Fulbito sigue funcionando en puerto 8081..."
-if netstat -tlnp | grep -q ":8081 "; then
-    print_success "✅ Fulbito está corriendo en puerto 8081 (correcto, no se toca)"
-else
-    print_warning "⚠️  Fulbito no está corriendo en puerto 8081 (puede ser normal si no está activo)"
-fi
-
 # 2. Hacer pull de cambios
 print_status "2️⃣ Actualizando código desde GitHub..."
+
+# Verificar si hay cambios locales
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    print_warning "Hay cambios locales sin commitear. Guardando cambios..."
+    git stash push -m "Cambios locales guardados automáticamente antes de pull - $(date +%Y-%m-%d_%H:%M:%S)"
+    print_success "Cambios locales guardados en stash"
+fi
+
 git fetch origin
+
 # Intentar con main primero, luego master como fallback
 if git rev-parse --verify origin/main > /dev/null 2>&1; then
-    git pull origin main
+    if git pull origin main; then
+        print_success "Código actualizado desde GitHub"
+        # Intentar aplicar los cambios guardados si existen
+        if git stash list | grep -q "Cambios locales guardados"; then
+            print_warning "Intentando aplicar cambios locales guardados..."
+            if git stash pop; then
+                print_success "Cambios locales aplicados correctamente"
+            else
+                print_warning "No se pudieron aplicar los cambios locales automáticamente. Usa 'git stash list' para verlos."
+            fi
+        fi
+    else
+        print_error "Error al actualizar código desde GitHub"
+        exit 1
+    fi
 else
-    git pull origin master
+    if git pull origin master; then
+        print_success "Código actualizado desde GitHub"
+    else
+        print_error "Error al actualizar código desde GitHub"
+        exit 1
+    fi
 fi
-print_success "Código actualizado desde GitHub"
 
 # 3. Compilar aplicación
 print_status "3️⃣ Compilando aplicación Detodoya..."
@@ -125,7 +144,6 @@ if pgrep -f "detodoya-0.0.1-SNAPSHOT.jar" > /dev/null; then
     echo ""
     print_status "Para ver los logs: tail -f app.log"
     print_status "Para parar la aplicación: pkill -f 'detodoya-0.0.1-SNAPSHOT.jar'"
-    print_status "⚠️  RECORDATORIO: Fulbito está en puerto 8081 (NO TOCAR)"
 else
     print_error "❌ Error: La aplicación Detodoya no se inició correctamente"
     print_status "Revisa los logs: cat app.log"
