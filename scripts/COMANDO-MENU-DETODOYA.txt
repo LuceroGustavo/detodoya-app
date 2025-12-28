@@ -1,0 +1,37 @@
+==========================================
+COMANDO PARA EJECUTAR EL MENÚ DE DETODOYA
+==========================================
+
+Desde la terminal VNC en el servidor, ejecuta:
+
+OPCIÓN 1 (Desde cualquier directorio):
+/home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+
+OPCIÓN 2 (Si estás en /home/detodoya/Detodoya.com/scripts):
+cd /home/detodoya
+/home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+
+OPCIÓN 3 (Si estás en /home/detodoya/Detodoya.com):
+cd /home/detodoya/Detodoya.com
+/home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+
+==========================================
+NOTA IMPORTANTE
+==========================================
+
+El nombre correcto del script es:
+menu-deploy-detodoya-donweb.sh
+
+NO es:
+- menu-deply-detodoya-donweb.sh (error de tipeo)
+- menu-deploy-detodoya-donweb (sin .sh)
+
+==========================================
+VERIFICAR QUE EL SCRIPT EXISTE
+==========================================
+
+ls -la /home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+
+Si no existe, verificar permisos:
+chmod +x /home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+

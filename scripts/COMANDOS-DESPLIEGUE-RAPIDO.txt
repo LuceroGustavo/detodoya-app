@@ -1,0 +1,109 @@
+==========================================
+COMANDOS RÁPIDOS PARA DESPLEGAR DETODOYA
+==========================================
+
+SERVIDOR: 149.50.144.53
+PUERTO SSH: 5638
+USUARIO: root
+CONTRASEÑA: Qbasic.1977.server
+
+==========================================
+PASO 1: CONECTAR AL SERVIDOR
+==========================================
+ssh -p5638 root@149.50.144.53
+
+==========================================
+PASO 2: PREPARAR DIRECTORIOS (EN EL SERVIDOR)
+==========================================
+mkdir -p /home/detodoya/scripts
+mkdir -p /home/detodoya/uploads
+mkdir -p /home/detodoya/backups
+chmod -R 755 /home/detodoya
+
+==========================================
+PASO 3: SUBIR SCRIPTS (DESDE WINDOWS)
+==========================================
+# Desde PowerShell en el directorio del proyecto:
+scp -P5638 scripts/deploy-detodoya-donweb.sh root@149.50.144.53:/home/detodoya/scripts/
+scp -P5638 scripts/menu-deploy-detodoya-donweb.sh root@149.50.144.53:/home/detodoya/scripts/
+
+# Hacer ejecutables (en el servidor):
+ssh -p5638 root@149.50.144.53 "chmod +x /home/detodoya/scripts/*.sh"
+
+==========================================
+PASO 4: CLONAR PROYECTO (EN EL SERVIDOR)
+==========================================
+# Conectado al servidor:
+cd /home/detodoya
+git clone https://github.com/LuceroGustavo/detodoya-app.git Detodoya.com
+# O el repositorio correcto donde esté Detodoya
+
+==========================================
+PASO 5: VERIFICAR BASE DE DATOS (EN EL SERVIDOR)
+==========================================
+mysql -u root -p
+# Dentro de MySQL:
+SHOW DATABASES;  # Debe aparecer 'detodoya'
+USE detodoya;
+SHOW TABLES;
+exit;
+
+# Si no existe, crearla:
+mysql -u root -p << EOF
+CREATE DATABASE IF NOT EXISTS detodoya CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'detodoya_user'@'localhost' IDENTIFIED BY 'DetodoyaDB2025!';
+GRANT ALL PRIVILEGES ON detodoya.* TO 'detodoya_user'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+
+==========================================
+PASO 6: DESPLEGAR (EN EL SERVIDOR)
+==========================================
+cd /home/detodoya/Detodoya.com
+/home/detodoya/scripts/deploy-detodoya-donweb.sh
+
+# O usar el menú interactivo:
+/home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+
+==========================================
+PASO 7: VERIFICAR
+==========================================
+# Verificar que está corriendo:
+ps aux | grep detodoya
+netstat -tlnp | grep 8080
+
+# Verificar que Fulbito sigue en 8081 (NO TOCAR):
+netstat -tlnp | grep 8081
+
+# Ver logs:
+tail -f /home/detodoya/Detodoya.com/app.log
+
+==========================================
+URLs DE ACCESO
+==========================================
+http://149.50.144.53:8080
+http://detodoya.com:8080
+http://149.50.144.53:8080/admin
+
+==========================================
+COMANDOS ÚTILES
+==========================================
+# Parar Detodoya:
+pkill -f "detodoya-0.0.1-SNAPSHOT.jar"
+
+# Reiniciar Detodoya:
+cd /home/detodoya/Detodoya.com
+/home/detodoya/scripts/menu-deploy-detodoya-donweb.sh
+# Opción 8: Reiniciar
+
+# Ver estado:
+ps aux | grep -E "(detodoya|8080|8081)"
+netstat -tlnp | grep -E "(8080|8081)"
+
+==========================================
+⚠️ IMPORTANTE
+==========================================
+- Fulbito está en puerto 8081 (NO TOCAR)
+- Detodoya usa puerto 8080
+- Verificar que el puerto 8080 esté libre antes de desplegar
+
