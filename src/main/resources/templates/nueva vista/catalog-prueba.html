@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Página de Catálogo de Productos Detodoya.com</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "primary-dark": "#0e62b8",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "surface-light": "#ffffff",
+              "surface-dark": "#182430",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-100 font-display transition-colors duration-200">
+<!-- Navigation Bar -->
+<nav class="sticky top-0 z-50 bg-surface-light dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<!-- Logo -->
+<div class="flex-shrink-0 flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-white font-bold text-xl">D</div>
+<span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Detodoya<span class="text-primary">.com</span></span>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-gray-900 dark:text-white font-medium hover:text-primary transition-colors" href="#">Inicio</a>
+<a class="text-primary font-medium" href="#">Catálogo</a>
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" href="#">Ofertas</a>
+<a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" href="#">Contacto</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center space-x-4">
+<button class="p-2 text-gray-400 hover:text-primary transition-colors">
+<span class="material-icons-round">search</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-primary transition-colors">
+<span class="material-icons-round">favorite_border</span>
+</button>
+<button class="relative p-2 text-gray-400 hover:text-primary transition-colors">
+<span class="material-icons-round">shopping_cart</span>
+<span class="absolute top-1 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary rounded-full">3</span>
+</button>
+<!-- User Avatar -->
+<div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden ml-2 cursor-pointer border border-gray-200 dark:border-gray-600">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Small user avatar showing a smiling person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcvnbUQfkoqqMXgazxgW6jybGOGMI13yNp-oOGoaxXNVHg6CryCuAPkgJyEBf1FGRn7MapddprDgqSn_FbROLpbJgREO72AhoPqEd3c5Pbri4UnMoQjfl0kOaPQDHvea7JgnQ-2iSWT817mjne1g6JdgakCivtvKmVlE8MUW_VcmyvdQIvZCC7VJe_WGq0aLkOv-_iz37O6AYOaFkCTHSsQlH2GUzaZp25RdxR7vligoVJm-xoLEygodoi_3AVOSL9PWDfZuuFWCox"/>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- Page Header & Title -->
+<header class="bg-surface-light dark:bg-surface-dark pt-8 pb-6 border-b border-gray-200 dark:border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex mb-4">
+<ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+<li><a class="hover:text-primary" href="#">Inicio</a></li>
+<li><span class="material-icons-round text-base mx-1">chevron_right</span></li>
+<li aria-current="page" class="font-medium text-gray-900 dark:text-white">Todos los Productos</li>
+</ol>
+</nav>
+<div class="md:flex md:items-center md:justify-between">
+<div>
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Explora Nuestro Catálogo</h1>
+<p class="mt-2 text-gray-500 dark:text-gray-400 max-w-2xl">Encuentra tecnología, hogar y estilo de vida con la mejor calidad del mercado.</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Filter & Search Toolbar -->
+<div class="sticky top-16 z-40 bg-background-light dark:bg-background-dark/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 py-4 shadow-sm">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+<!-- Filters Group -->
+<div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
+<!-- Search Input -->
+<div class="relative w-full sm:w-64">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-icons-round text-gray-400">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-surface-dark text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-shadow shadow-sm" placeholder="Buscar productos..." type="text"/>
+</div>
+<!-- Category Dropdown -->
+<div class="relative group">
+<button class="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-surface-dark border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:border-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-sm">
+<span class="material-icons-round text-primary text-lg">category</span>
+<span>Categorías</span>
+<span class="material-icons-round text-gray-400">expand_more</span>
+</button>
+</div>
+<!-- Price Filter -->
+<div class="relative group">
+<button class="flex items-center space-x-2 px-4 py-2 bg-white dark:bg-surface-dark border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:border-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-sm">
+<span class="material-icons-round text-gray-400 text-lg">attach_money</span>
+<span>Precio</span>
+<span class="material-icons-round text-gray-400">expand_more</span>
+</button>
+</div>
+<!-- Active Filters (Chips) -->
+<div class="hidden xl:flex items-center space-x-2">
+<span class="text-xs text-gray-500 font-medium uppercase tracking-wider mr-1">Filtros:</span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                            En Stock
+                            <button class="ml-1.5 inline-flex text-primary hover:text-primary-dark focus:outline-none">
+<span class="sr-only">Remove</span>
+<span class="material-icons-round text-sm">close</span>
+</button>
+</span>
+</div>
+</div>
+<!-- Sort & View Options -->
+<div class="flex items-center gap-3 w-full lg:w-auto justify-end">
+<span class="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline-block">Ordenar por:</span>
+<select class="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-lg bg-white dark:bg-surface-dark text-gray-900 dark:text-white shadow-sm cursor-pointer">
+<option>Relevancia</option>
+<option>Precio: Menor a Mayor</option>
+<option>Precio: Mayor a Menor</option>
+<option>Nuevos Lanzamientos</option>
+</select>
+<div class="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
+<button class="p-1.5 rounded-md bg-white dark:bg-surface-dark shadow-sm text-primary">
+<span class="material-icons-round text-xl">grid_view</span>
+</button>
+<button class="p-1.5 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+<span class="material-icons-round text-xl">view_list</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- Results Count -->
+<div class="mb-6 flex items-center justify-between">
+<h2 class="text-lg font-semibold text-gray-900 dark:text-white">Mostrando 12 de 145 productos</h2>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+<!-- Product Card 1 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<span class="absolute top-3 left-3 z-10 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">NUEVO</span>
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="High-end modern laptop on a desk" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Sleek laptop computer on minimal desk workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBALQVqwdK9B5hWGWbcIN0QecyuG0oiliQOlvVA-48o34sDOkvadX9n6KSHwOuCetm6qeCfOIbG1J-TZnmAzV5HR7-xEf9hb1mObfPe5v6gGrtJp54MtmDmVqyITfGwwnWTTcVr1_OwkFqpHJHu3nQpYd4mX2glyCetumSESYZ_E6d1LPHlFtzAaGGSAZWtPwvAeH33QhztyKJxD16W2Vw2s_IFIJ7dSSimIzVcmGu75wHytIgBUvQxX7BdMyxboqabFZbX1evyVOhy"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Electrónica</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.9</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">MacBook Pro M3 Max 16" Space Black</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Potencia extrema para profesionales creativos. Chip M3 Max.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$3,499.00</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<span class="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">-20% OFF</span>
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Premium wireless headphones" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Close up of modern wireless headphones on light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsLG7QGG3g0d7qemEeia003CUEUa1h40g8WHvar9Js3c28I6WOwxIY04AeOk4b-sIv46nSJxDcidHRepvrJIhinJUjk5_0ugUsR_mMYp65zYHuVqU9YoT4WGOCXCujUMHxUEyQNpY4lpjgpYmZNpdgKYrFLR_OY1pebfB9TytO7AISRawaWY20dOFhlHyBOF6Jv1-llnfsOOV4hbXSIdAlnRM9uSQIukNb3g-oUT_gzNVM7UPjZ3bnCrY_mNSRdz4aaeLhDSQxbEz5"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Audio</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.8</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Sony WH-1000XM5 Noise Canceling</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">La mejor cancelación de ruido del mercado con 30 horas de batería.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="text-xs text-gray-400 line-through mr-1">$399.00</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">$319.00</span>
+</div>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="White smartwatch product shot" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Modern white smartwatch isolated on simple background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSrIdWJ_M96LnFE4_Ckuz2EslRerj8z6gFnlLeMUlMuP2wmPBZ1gbcSaRe73XEDPrZNbUXeqHDaz-G3nqGCqSbel6EAXe6pPO6uSVzqqupQhdNI_qXQD7sz5n-AtzePy1R0qMzPK2qmljKWJImbhhTbD7y4CztKYW_0TprtLHN64Laf67qtO36qHeu3n98GcupIxqF7JKvmaUcqvB3RHXCIT-B88pVfBy76n1hE4SPpQ3otaijgad7z0yHRZY6M6rUlZ5fEMBVNozb"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Wearables</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.5</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Smart Watch Series 7 GPS</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Pantalla retina siempre activa, resistente al agua.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$279.00</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<span class="absolute top-3 left-3 z-10 bg-gray-800 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">AGOTADO</span>
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Red sneaker shoe" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 grayscale opacity-70" data-alt="Dynamic shot of red athletic sneaker shoe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC0H_fAye3qWgPwcu1tXVNu8t30XYhaXQpGWS1l8ApE151Y3wlUr1mWhEEwyPhljqUSue2dVZ2cCjeJDzV4a9roIxgOFQmBrKJWamZKU_aSXHOmPKJGSr2a1WgmHtROuBz6RJ9R1SlU1QW56Tq0_6wj1XXXIwuKA7aj9VZHhA_S-Cq2uFqyMph9jzpiDidBdclu9ssMydE53_Bu5NLU8CWInV4lzAkzSZkKchAD6tmzRKaj_5lRRSMKXXdNzmB8b9cHtft3FjRxsab"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Moda</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.7</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Nike Air Max 270 Red</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Estilo legendario con comodidad Air Max visible.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$149.00</span>
+<button class="p-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed">
+<span class="material-icons-round">notifications</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Modern camera lens" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Professional camera lens product photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc95a-hWx_K1EdJJRsj_ZBGHspp1bmqsHUe7px3kzifzROmIxLJLvwhwqjWfhvAxoObPibKvtilMusalc--_Ywx5Vaihp0gJolBlGhO1pgBw7vPe-Jv6Q5tY0m_uEieZa9ZSS2TS0gTl8POntk6HySsUTLixg2eVbUNr3-pFvA3MSL0ljZOWPjPYGZk1cZAlL8rYnFChOfs4U_nQffW9oD7lgmTom84BP4y0NO1IuOfwPEbMFCld0OyqLgohoo7Q07uHgSQHZ43ds9"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Fotografía</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">5.0</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Lens Pro 50mm f/1.8</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">El estándar de oro para retratos y fotografía con poca luz.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$1,199.00</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<span class="absolute top-3 left-3 z-10 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">ENVÍO GRATIS</span>
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Minimalist desk lamp" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Modern minimalist desk lamp illuminated" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBelNQ4iyigpjU5hg_2ho515t2audjo5x2K9OoZvdoqp9zsjATr3Z-yDAquVMEpSg65sEKgeNd8dXxqRAz9A8PpHVqd-LY44FYTf9h2TMSq-DM7qDOFR1L2lwxNUah_xHaQioeym8V2HY9I7xDwESCRAD1sNd6QffgmoD2z_4RohFu68A2U7znVVQHY9pVQE-cixNSQv02nGY0A_YKcq8UQHDhV7R6yXTtzpneTUxnsrgStcSFHp2dQsJfNObA8u_ibRYuZi-czIxkp"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Hogar</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.2</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Lámpara LED Escritorio Smart</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Control por voz, ajuste de temperatura de color y brillo.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$45.00</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 7 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Smart speaker device" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Round smart speaker on table surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr1oqvYcIbY0PDpz8yCBsI0u82rc4OgOJa7zjXYnBhJ3X2DdR-6pK0JcjRL37disS4MYR0vcSfPH1cKrz-LZP6hmzosn0BRqpjYuWdgST6FJiebdAAzwSuQaviMcKv2bwAjTJrC7clmXp6MhB7FZpQ2V7aszFfUIbkzRA15MN2kvAkwTb_iqNamzOjIQSdVxsgwMggfU4rX8NSBYqxVQBSZGXP_9zv7bbLQgMtxuxx177gIen4LZtxaLf47R-LuFribjrO7frKZjU6"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Smart Home</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.6</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Echo Dot 5ta Gen</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Tu asistente personal con sonido mejorado.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$59.99</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 8 -->
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 transition-all duration-300 flex flex-col h-full">
+<div class="relative overflow-hidden aspect-[4/3]">
+<span class="absolute top-3 left-3 z-10 bg-primary/90 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">DESTACADO</span>
+<button class="absolute top-3 right-3 z-10 p-2 bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-full text-gray-500 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Wireless gaming mouse" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="RGB gaming mouse on dark pad" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxpEH9I9nTOao4kL1I2FjakNE1U8mAyZxYthZ_2YT52rsCUeYlPM0soNUgr2mUxY1AI1FIsFjrSUbUrhTdlG1ayOCnAsXoU3hBPZ56m2efy5-l5_6zdtFigt80sOpQGvhSK_pFApurzxLf1_0TYRUaI7JZvJaMsTQHHaHsPYoRgRKUTqMKtUdcLCcvQ6PJtZL9YHPfkyNOVmRUivRqrnlp0epGijrW-kaFHMjFQEMCUqfI5cCBteXRKkQR-SaEDK6ByoBeLdTHvH7G"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<div class="flex items-center mb-2">
+<span class="text-xs font-semibold text-primary uppercase tracking-wider">Gaming</span>
+<div class="flex items-center ml-auto">
+<span class="material-icons-round text-yellow-400 text-sm">star</span>
+<span class="text-xs text-gray-500 ml-1">4.9</span>
+</div>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Logitech G Pro Wireless</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Diseñado con profesionales de eSports. Precisión milimétrica.</p>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-xl font-bold text-gray-900 dark:text-white">$129.00</span>
+<button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors">
+<span class="material-icons-round">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex justify-center">
+<nav aria-label="Pagination" class="flex items-center space-x-2">
+<button class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-500 hover:text-primary transition-colors disabled:opacity-50">
+<span class="material-icons-round">chevron_left</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-white font-medium border border-primary">1</button>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary transition-colors">2</button>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary transition-colors">3</button>
+<span class="px-2 text-gray-500">...</span>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary transition-colors">12</button>
+<button class="p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-500 hover:text-primary transition-colors">
+<span class="material-icons-round">chevron_right</span>
+</button>
+</nav>
+</div>
+</main>
+<!-- Promo Banner -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-blue-600 shadow-lg">
+<div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+<div class="relative px-6 py-10 md:px-12 md:py-16 flex flex-col md:flex-row items-center justify-between">
+<div class="mb-6 md:mb-0 text-center md:text-left">
+<h2 class="text-3xl font-bold text-white mb-2">¿Buscas algo especial?</h2>
+<p class="text-blue-100 text-lg max-w-lg">Suscríbete a nuestro boletín y recibe ofertas exclusivas antes que nadie.</p>
+</div>
+<div class="w-full md:w-auto">
+<form class="flex flex-col sm:flex-row gap-2">
+<input class="px-4 py-3 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white border-none w-full sm:w-64" placeholder="Tu correo electrónico" type="email"/>
+<button class="px-6 py-3 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-sm whitespace-nowrap" type="submit">
+                            Suscribirse
+                        </button>
+</form>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 pt-16 pb-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+<!-- Brand -->
+<div>
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-white font-bold text-xl">D</div>
+<span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Detodoya<span class="text-primary">.com</span></span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm mb-6">
+                        Tu tienda online de confianza. Calidad, rapidez y los mejores precios en tecnología y estilo de vida.
+                    </p>
+<div class="flex space-x-4">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round">facebook</i></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round">camera_alt</i></a> <!-- Using camera as Instagram placeholder -->
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round">alternate_email</i></a> <!-- Twitter placeholder -->
+</div>
+</div>
+<!-- Links 1 -->
+<div>
+<h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Comprar</h3>
+<ul class="space-y-3">
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Novedades</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Más Vendidos</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Ofertas Flash</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Tarjetas de Regalo</a></li>
+</ul>
+</div>
+<!-- Links 2 -->
+<div>
+<h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Ayuda</h3>
+<ul class="space-y-3">
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Estado del Pedido</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Envíos y Entregas</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Devoluciones</a></li>
+<li><a class="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm" href="#">Centro de Ayuda</a></li>
+</ul>
+</div>
+<!-- Contact Info -->
+<div>
+<h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">Contacto</h3>
+<ul class="space-y-3">
+<li class="flex items-start text-sm text-gray-500 dark:text-gray-400">
+<span class="material-icons-round text-primary mr-2 text-base">location_on</span>
+                            Av. Principal 123, Ciudad Comercio, CP 12345
+                        </li>
+<li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+<span class="material-icons-round text-primary mr-2 text-base">phone</span>
+                            +1 (555) 123-4567
+                        </li>
+<li class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+<span class="material-icons-round text-primary mr-2 text-base">email</span>
+                            hola@detodoya.com
+                        </li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+<p class="text-sm text-gray-400 text-center md:text-left">© 2023 Detodoya.com. Todos los derechos reservados.</p>
+<div class="flex space-x-6 mt-4 md:mt-0">
+<a class="text-sm text-gray-400 hover:text-gray-500" href="#">Privacidad</a>
+<a class="text-sm text-gray-400 hover:text-gray-500" href="#">Términos</a>
+<a class="text-sm text-gray-400 hover:text-gray-500" href="#">Cookies</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

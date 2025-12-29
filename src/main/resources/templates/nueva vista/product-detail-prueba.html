@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detodoya - Product Detail</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-[#111418] dark:text-gray-100 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 bg-white dark:bg-[#1a2632] border-b border-[#f0f2f4] dark:border-[#2a3642] w-full">
+<div class="px-4 md:px-10 py-3 flex items-center justify-between max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-4 text-[#111418] dark:text-white group" href="#">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight group-hover:text-primary transition-colors">Detodoya</h2>
+</a>
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Categorías</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Ofertas</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Novedades</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Contacto</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+<!-- Search -->
+<label class="hidden md:flex flex-col min-w-40 h-10 max-w-64 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-[#f0f2f4] dark:bg-[#2a3642] overflow-hidden focus-within:ring-2 ring-primary/20 transition-all">
+<div class="text-[#617589] flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-sm px-3 text-[#111418] dark:text-white placeholder:text-[#617589]" placeholder="Buscar productos..."/>
+</div>
+</label>
+<!-- Actions -->
+<div class="flex gap-2">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+<span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+<span class="absolute top-1 right-1 size-2 bg-red-500 rounded-full border border-white dark:border-[#1a2632]"></span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+<button class="md:hidden flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-8 py-6">
+<!-- Breadcrumbs -->
+<div class="flex flex-wrap gap-2 items-center text-sm mb-6 text-[#617589] dark:text-gray-400">
+<a class="hover:text-primary transition-colors" href="#">Inicio</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Electrónica</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Audio</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-[#111418] dark:text-white font-medium">Auriculares Noise Cancelling Pro</span>
+</div>
+<!-- Product Hero Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16">
+<!-- Left Column: Gallery (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-4">
+<!-- Main Image -->
+<div class="aspect-[4/3] w-full bg-white dark:bg-[#1a2632] rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm relative group">
+<img alt="Product main view of wireless headphones on a clean background" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Modern wireless headphones on a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrYedtNPrWEXa8vJSNK-mIDIheLXamwb2uCj1TVDZgfo5HyujxGfTMc7wkOCY_3hSNAFBwHB3ANmT77QF4UvnYXFOItcnMSrDa4qadGwHixxiP_7V4PB2vf2AbTwVvpwymioUv9MxS7tt1qsBx6nqJzyDXqbVLSHdQYd6eL_c0UbRRQmnITTun-V8Su14yXiv_wAQFZ5EXB-uBBBiH_hfN66GCd3eekjen__VhyGrqGLmewdy54ctfdDkG_ooe7DVRTZ077Dt2MSF-"/>
+<div class="absolute top-4 right-4 bg-white dark:bg-[#1a2632] p-2 rounded-full shadow-md cursor-pointer hover:text-red-500 transition-colors text-gray-400">
+<span class="material-symbols-outlined block">favorite</span>
+</div>
+</div>
+<!-- Thumbnails -->
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+<button class="shrink-0 w-24 aspect-square rounded-lg border-2 border-primary overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Side view of headphones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8Mdn0buJq1msXqfUY310TOtyk-ThJeg6l-Foh9bwmUAr4jDYA8TgRlUrWPs_FTkruH6c6oxrWO0ASHmAOhG1dRx3u_SsOCrAZ_6-cICGoYQXWmT0_olTfgUMjIE0JnYvnpHp0oe9THpI1a9TPXXOqME1eCi_vtL6eOVNMlONYEzsOADeoNbnO69jee76qxxjPT9RkNgiVXUGz7kQLpgF_dEy1Yv36RKSHUuVNnN88Jr7Gix3gHX1YVmZ15dl2JdSD7Veo4sQ4sllM"/>
+</button>
+<button class="shrink-0 w-24 aspect-square rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-gray-400 relative">
+<img class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" data-alt="Headphones case detail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOXDkcOFv-OcPbGHuTDUZCZf2Ug1jI5mEsYeOY2gePE6CH9H24f5qh1puf8viof7LllabIMRiiPURTFX_k-Y4hig2FfDv8M698-C3XWDOXTscA008IPxddw778ro4wL_5m4J7qpny088u1QL_ulITTlc8qQmwbuDwiW7CN4WnZcRKbAQIyk_MwribsRctl6xKsoGEhWxK9GT4agPPrl8t36CrVQ6LBu605ASbbwzbdUpRwWyCrKWbMIkr_hJm-LiuXEgjaRXxxe13c"/>
+</button>
+<button class="shrink-0 w-24 aspect-square rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-gray-400 relative">
+<img class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" data-alt="Headphones lifestyle usage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZDdQl4jWm_X7L565bUnYhPIEx6zDpKIUuB2jIPEgsq8fxcbyDqj6RZcGsg-pySKtCazxZYj7qGKYvHk9Da42CVj3DkcXqvZzqyyi7EJQjlMykcfTvDxh_DCNjEBCEYeAwuw-r0-jVpvIqDcVx6XNCjO-JMtr3QXHnVPNGSeJrOQeo4q96dtEvmhB6JIxsB2f4OQGiIuQF1o3RGjioT8pylLfV3AojcbnoJLCWpoonh-vZMsGbzrv2fdBSBQVmOTCY60adm88yXGeH"/>
+</button>
+<!-- Video Thumbnail -->
+<button class="shrink-0 w-24 aspect-square rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-gray-400 relative group">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 flex items-center justify-center z-10 transition-colors">
+<div class="bg-white/90 rounded-full p-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">play_arrow</span>
+</div>
+</div>
+<img class="w-full h-full object-cover opacity-80" data-alt="Video thumbnail of product review" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHTVnX2erU2UluLzYpV5obeMEAeWW-miu7sBn2fYgVBlbIEQyr9QLCGTZuMxUQtJ6XrSHrnaDv8ZGfsks46ziu2484tt3j1Kvxlq5tgV1Fa4zb5wajEvzp9DDCH0IjrnXXT8zj4BQGKxuEoM6NKzIbpl4kKLzanbRqGtuIPxDBQJP5Cw49fYuj428Zng1CGtRDkfXIXV_QLZuCA5PdrvcIzkcBZvV9oi4Hu5gtCO3I_h4pDdamt1hZ1sies9hiVVCVn2ftDTL8HWns"/>
+</button>
+</div>
+</div>
+<!-- Right Column: Product Info (5 cols) - Sticky -->
+<div class="lg:col-span-5 relative">
+<div class="sticky top-24 flex flex-col gap-6">
+<!-- Header Info -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-primary font-semibold text-sm tracking-wide uppercase">Sony / Audio</span>
+<span class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">En Stock</span>
+</div>
+<h1 class="text-[#111418] dark:text-white text-3xl md:text-4xl font-bold leading-tight mb-3">
+                            Auriculares Inalámbricos Noise Cancelling Pro
+                        </h1>
+<div class="flex items-center gap-2 mb-4">
+<div class="flex text-yellow-400 text-sm">
+<span class="material-symbols-outlined fill-current text-[20px]">star</span>
+<span class="material-symbols-outlined fill-current text-[20px]">star</span>
+<span class="material-symbols-outlined fill-current text-[20px]">star</span>
+<span class="material-symbols-outlined fill-current text-[20px]">star</span>
+<span class="material-symbols-outlined fill-current text-[20px] text-gray-300">star</span>
+</div>
+<span class="text-sm text-[#617589] font-medium underline cursor-pointer hover:text-primary">4.5 (128 reviews)</span>
+</div>
+</div>
+<!-- Price Block -->
+<div class="flex items-end gap-3 pb-6 border-b border-dashed border-gray-200 dark:border-gray-700">
+<span class="text-4xl font-bold text-primary">$120.00</span>
+<div class="flex flex-col mb-1">
+<span class="text-sm text-gray-400 line-through font-medium">$150.00</span>
+<span class="text-xs text-red-500 font-bold">-20% OFF</span>
+</div>
+</div>
+<!-- Short Description -->
+<p class="text-[#617589] dark:text-gray-400 text-base leading-relaxed">
+                        Experimenta un sonido de alta fidelidad con cancelación activa de ruido líder en la industria. Hasta 30 horas de batería para que la música no pare.
+                    </p>
+<!-- Variants Selection -->
+<div class="space-y-4">
+<!-- Color -->
+<div>
+<span class="block text-sm font-semibold text-[#111418] dark:text-white mb-3">Color: <span class="font-normal text-gray-500">Negro Mate</span></span>
+<div class="flex gap-3">
+<button aria-label="Black" class="size-10 rounded-full bg-[#111418] ring-2 ring-offset-2 ring-primary ring-offset-white dark:ring-offset-[#101922]"></button>
+<button aria-label="White" class="size-10 rounded-full bg-[#e5e7eb] hover:ring-2 hover:ring-offset-2 ring-gray-300 transition-all"></button>
+<button aria-label="Blue" class="size-10 rounded-full bg-[#1d4ed8] hover:ring-2 hover:ring-offset-2 ring-blue-300 transition-all"></button>
+</div>
+</div>
+<!-- Size/Model -->
+<div>
+<div class="flex justify-between items-center mb-3">
+<span class="block text-sm font-semibold text-[#111418] dark:text-white">Modelo</span>
+<a class="text-xs text-primary font-medium hover:underline" href="#">Guía de especificaciones</a>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-lg border-2 border-primary bg-primary/5 text-primary font-bold text-sm">Pro (NC)</button>
+<button class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-400 text-[#617589] font-medium text-sm transition-colors">Standard</button>
+<button class="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-400 text-[#617589] font-medium text-sm transition-colors">Lite</button>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+<button class="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold h-12 rounded-lg transition-transform active:scale-95 shadow-sm">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path></svg>
+                            Consultar WhatsApp
+                        </button>
+<button class="flex items-center justify-center gap-2 bg-white dark:bg-[#2a3642] border border-gray-300 dark:border-gray-600 hover:border-primary text-[#111418] dark:text-white font-bold h-12 rounded-lg transition-colors">
+<span class="material-symbols-outlined">mail</span>
+                            Enviar Consulta
+                        </button>
+</div>
+<!-- Trust Indicators -->
+<div class="grid grid-cols-2 gap-4 pt-4 text-xs text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+<span>Envío gratis a todo el país</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+<span>Garantía de 1 año</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
+<span>Pagos seguros</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">headphones</span>
+<span>Soporte técnico 24/7</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Details, Specs & Care (Tabs/Accordion style for modern feel) -->
+<div class="max-w-4xl mx-auto mb-20">
+<div class="border-b border-gray-200 dark:border-gray-700 mb-8 flex gap-8">
+<button class="pb-4 border-b-2 border-primary text-primary font-bold text-lg">Descripción</button>
+<button class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-[#111418] dark:hover:text-white font-medium text-lg transition-colors">Especificaciones</button>
+<button class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-[#111418] dark:hover:text-white font-medium text-lg transition-colors">Cuidados</button>
+<button class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-[#111418] dark:hover:text-white font-medium text-lg transition-colors">Reseñas</button>
+</div>
+<div class="space-y-12">
+<!-- Description Content -->
+<section>
+<h3 class="text-2xl font-bold mb-4 text-[#111418] dark:text-white">Sonido que te envuelve</h3>
+<div class="prose prose-lg dark:prose-invert text-[#617589] dark:text-gray-400 max-w-none">
+<p class="mb-4">
+                            Descubre una nueva forma de escuchar con los Auriculares Noise Cancelling Pro. Diseñados para los amantes del audio, estos auriculares combinan una acústica de precisión con una comodidad excepcional para el uso diario.
+                        </p>
+<p class="mb-4">
+                            La tecnología de cancelación activa de ruido bloquea el bullicio de la ciudad o el zumbido de la oficina, permitiéndote concentrarte en lo que realmente importa: tu música. Con los controladores de 40mm, disfrutarás de bajos profundos y agudos cristalinos.
+                        </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+<div class="bg-gray-50 dark:bg-[#1a2632] p-6 rounded-xl">
+<span class="material-symbols-outlined text-primary text-[32px] mb-3">battery_charging_full</span>
+<h4 class="font-bold text-[#111418] dark:text-white mb-2">30 Horas de Batería</h4>
+<p class="text-sm">Disfruta de música ininterrumpida durante todo el día. Carga rápida de 10 min para 3 horas de uso.</p>
+</div>
+<div class="bg-gray-50 dark:bg-[#1a2632] p-6 rounded-xl">
+<span class="material-symbols-outlined text-primary text-[32px] mb-3">bluetooth_connected</span>
+<h4 class="font-bold text-[#111418] dark:text-white mb-2">Conexión Multipunto</h4>
+<p class="text-sm">Conecta dos dispositivos simultáneamente y cambia entre llamadas y música sin esfuerzo.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Specs Table -->
+<section class="bg-white dark:bg-[#1a2632] rounded-xl border border-gray-100 dark:border-gray-800 p-6 md:p-8">
+<h3 class="text-xl font-bold mb-6 text-[#111418] dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined">settings</span>
+                        Especificaciones Técnicas
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Peso</span>
+<span class="text-[#111418] dark:text-white font-semibold">254g</span>
+</div>
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Driver</span>
+<span class="text-[#111418] dark:text-white font-semibold">40mm, tipo cúpula</span>
+</div>
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Respuesta de frecuencia</span>
+<span class="text-[#111418] dark:text-white font-semibold">4 Hz - 40.000 Hz</span>
+</div>
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Bluetooth</span>
+<span class="text-[#111418] dark:text-white font-semibold">Versión 5.2</span>
+</div>
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Tiempo de carga</span>
+<span class="text-[#111418] dark:text-white font-semibold">Aprox. 3.5 horas</span>
+</div>
+<div class="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+<span class="text-gray-500 font-medium">Resistencia al agua</span>
+<span class="text-[#111418] dark:text-white font-semibold">IPX4</span>
+</div>
+</div>
+</section>
+<!-- Ratings Summary Block -->
+<section>
+<h3 class="text-xl font-bold mb-6 text-[#111418] dark:text-white">Opiniones de clientes</h3>
+<div class="bg-gray-50 dark:bg-[#1a2632] rounded-xl p-6 md:p-8">
+<div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+<!-- Reuse RatingSummary Logic -->
+<div class="flex flex-col gap-2 items-center md:items-start min-w-[150px]">
+<p class="text-[#111418] dark:text-white text-5xl font-black leading-tight tracking-[-0.033em]">4.5</p>
+<div class="flex gap-1 text-yellow-400">
+<span class="material-symbols-outlined fill-current text-[24px]">star</span>
+<span class="material-symbols-outlined fill-current text-[24px]">star</span>
+<span class="material-symbols-outlined fill-current text-[24px]">star</span>
+<span class="material-symbols-outlined fill-current text-[24px]">star</span>
+<span class="material-symbols-outlined fill-current text-[24px] text-gray-300">star_half</span>
+</div>
+<p class="text-[#111418] dark:text-white text-base font-normal leading-normal">128 reseñas</p>
+</div>
+<div class="w-full flex-1 max-w-md grid grid-cols-[20px_1fr_40px] items-center gap-y-3 gap-x-3">
+<!-- 5 Star -->
+<p class="text-sm font-medium">5</p>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%] rounded-full"></div>
+</div>
+<p class="text-xs text-gray-500 text-right">75%</p>
+<!-- 4 Star -->
+<p class="text-sm font-medium">4</p>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[15%] rounded-full"></div>
+</div>
+<p class="text-xs text-gray-500 text-right">15%</p>
+<!-- 3 Star -->
+<p class="text-sm font-medium">3</p>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[3%] rounded-full"></div>
+</div>
+<p class="text-xs text-gray-500 text-right">3%</p>
+<!-- 2 Star -->
+<p class="text-sm font-medium">2</p>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[2%] rounded-full"></div>
+</div>
+<p class="text-xs text-gray-500 text-right">2%</p>
+<!-- 1 Star -->
+<p class="text-sm font-medium">1</p>
+<div class="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[5%] rounded-full"></div>
+</div>
+<p class="text-xs text-gray-500 text-right">5%</p>
+</div>
+<div class="flex items-center justify-center md:justify-end flex-1">
+<button class="px-6 py-3 bg-white dark:bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg font-bold text-sm hover:border-primary transition-colors">Escribir una reseña</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Related Products Carousel -->
+<div class="mb-16">
+<div class="flex justify-between items-end mb-6 px-2">
+<h2 class="text-2xl font-bold text-[#111418] dark:text-white">También te podría interesar</h2>
+<a class="text-primary font-medium hover:underline text-sm flex items-center gap-1" href="#">
+                    Ver todo <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="flex overflow-x-auto gap-6 pb-6 no-scrollbar snap-x snap-mandatory">
+<!-- Card 1 -->
+<div class="min-w-[260px] md:min-w-[280px] snap-start bg-white dark:bg-[#1a2632] rounded-xl p-3 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow group cursor-pointer flex flex-col">
+<div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Black over-ear headphones on yellow background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuP8B-uWrRLYMHUvsGfA0nMm_W2c-hlgWRhQnxaWt5dLUIltzSyKm84LNzthnlfnxM_3bW6o5LHrzVk8SEC76wTDMyEggc_0GCBbVDIanQdr3lTsZ4jjUCY-xJdQdtN8YomfZ9_k0Vinad3Obn5wC79GaEf_Yo83a6FSCV8IgGkzB8ORrPIST_AZ5r1xWO07hul9oy5tZjQW1pKkpIWEEqh9xw8U_S_G9Hz5EvrQanktSSAQr8r2nNbq5rEseuN6hTJBWTI5b8FwSP"/>
+<div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded">OFERTA</div>
+</div>
+<div class="flex flex-col flex-1 px-1">
+<p class="text-xs text-gray-500 mb-1">Audio</p>
+<h3 class="font-bold text-[#111418] dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Headphones Bass Boosted Wireless</h3>
+<div class="mt-auto flex items-center justify-between pt-2">
+<div>
+<span class="font-bold text-lg">$89.00</span>
+<span class="text-xs text-gray-400 line-through ml-1">$110</span>
+</div>
+<button class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[260px] md:min-w-[280px] snap-start bg-white dark:bg-[#1a2632] rounded-xl p-3 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow group cursor-pointer flex flex-col">
+<div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="White wireless earbuds in charging case" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHLVPnp-JqHZbmm5tegmSYvAOJkEdHxFAx8bHB_244m7jsc_DSnhKxgIl8cbQYqkRT6hlhW5HHT-sz5lBGnU0smP9OaXksNA4f2S-vkjwn_aFOQaOGdcWDC9p9FJG0IkD_WknjLEi4UNdIfqB_Am18t92g7_NWVzmHnAZWz-lpG_1HLfrIUq7Q_qYMTK7_wXRftsQ2LSUI3OT6elTeM9ndq7QYLyKajsA0Zl2Db_P0hf_ZLWhbxdjAnueH5CU-O4_upa-0v7Q_j3cU"/>
+</div>
+<div class="flex flex-col flex-1 px-1">
+<p class="text-xs text-gray-500 mb-1">Audio</p>
+<h3 class="font-bold text-[#111418] dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">True Wireless Earbuds Series X</h3>
+<div class="mt-auto flex items-center justify-between pt-2">
+<span class="font-bold text-lg">$145.00</span>
+<button class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[260px] md:min-w-[280px] snap-start bg-white dark:bg-[#1a2632] rounded-xl p-3 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow group cursor-pointer flex flex-col">
+<div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Portable bluetooth speaker on a table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcLO-3o7K7FJ91G4IsWPYbPUoOnlXAON2MAkrBRmmol0Udp3V6ipoPfhzlPSDQ-bc_pbO4sP1PN7wnGnRL4fu3DBnaB_O6qPdPiQ-r2_rDdQLSoTUSlqEDxb5YS1n5KpOqa4XRmnuUPBFjuThRQNERAYDQfH6R7KciLb-baMnfqrBOy2gvBDnztdZ-NOOjW5yg-shKwGMh3MZoQMLYVLc3YNIO4c-yLFB2__HFD-JdNzVoW_CjrnJpak-lyHFkStY3QSuDPB-Ueyly"/>
+</div>
+<div class="flex flex-col flex-1 px-1">
+<p class="text-xs text-gray-500 mb-1">Parlantes</p>
+<h3 class="font-bold text-[#111418] dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Portable Waterproof Speaker</h3>
+<div class="mt-auto flex items-center justify-between pt-2">
+<span class="font-bold text-lg">$55.00</span>
+<button class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="min-w-[260px] md:min-w-[280px] snap-start bg-white dark:bg-[#1a2632] rounded-xl p-3 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-shadow group cursor-pointer flex flex-col">
+<div class="aspect-square rounded-lg overflow-hidden bg-gray-100 mb-4 relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional studio microphone" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdsVlqWRv41qNo456qFWBv32Q9EWxHy5ppVYndCFpDgnwDD9SP1UFmg8bt0laLEMWe20y54M4G-u555WLfUkXv77uVHurqCvvp5NifsnEbxggxpbWh08SawQ125aoAfdQPAvyUcGJoJKhTRSIgeeCXPLguPTK79C34lk383tgEuo2viwdaHpyDetI30JFgSNamTupH5o92LiLjBGizBt55p44l3LQFpoiVPYd1uRhA1sGh1-tIXWQE9ngOYavG-VbGfN_FNYyl_Xmb"/>
+<div class="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded">NUEVO</div>
+</div>
+<div class="flex flex-col flex-1 px-1">
+<p class="text-xs text-gray-500 mb-1">Studio</p>
+<h3 class="font-bold text-[#111418] dark:text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">Professional Studio Microphone USB-C</h3>
+<div class="mt-auto flex items-center justify-between pt-2">
+<span class="font-bold text-lg">$199.00</span>
+<button class="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-[#1a2632] border-t border-[#f0f2f4] dark:border-[#2a3642] pt-12 pb-6">
+<div class="max-w-[1440px] mx-auto px-4 md:px-10">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+<!-- Brand -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2 text-[#111418] dark:text-white">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">shopping_bag</span>
+</div>
+<h2 class="text-xl font-bold">Detodoya</h2>
+</div>
+<p class="text-sm text-[#617589] dark:text-gray-400">
+                        Tu tienda online de confianza para todo lo que necesitas. Calidad, rapidez y el mejor servicio.
+                    </p>
+<div class="flex gap-4 mt-2">
+<a class="text-gray-400 hover:text-primary" href="#"><span class="material-symbols-outlined">social_leaderboard</span></a>
+<a class="text-gray-400 hover:text-primary" href="#"><span class="material-symbols-outlined">photo_camera</span></a>
+<a class="text-gray-400 hover:text-primary" href="#"><span class="material-symbols-outlined">smart_display</span></a>
+</div>
+</div>
+<!-- Links 1 -->
+<div class="flex flex-col gap-3">
+<h3 class="font-bold text-[#111418] dark:text-white mb-1">Comprar</h3>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Novedades</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Más Vendidos</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Ofertas</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Colecciones</a>
+</div>
+<!-- Links 2 -->
+<div class="flex flex-col gap-3">
+<h3 class="font-bold text-[#111418] dark:text-white mb-1">Ayuda</h3>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Envíos y Devoluciones</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Preguntas Frecuentes</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Contacto</a>
+<a class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary" href="#">Términos y Condiciones</a>
+</div>
+<!-- Newsletter -->
+<div class="flex flex-col gap-3">
+<h3 class="font-bold text-[#111418] dark:text-white mb-1">Suscríbete</h3>
+<p class="text-sm text-[#617589] dark:text-gray-400">Recibe las últimas ofertas y novedades.</p>
+<div class="flex gap-2">
+<input class="w-full rounded-lg border-none bg-[#f0f2f4] dark:bg-[#2a3642] px-3 text-sm focus:ring-2 ring-primary" placeholder="Tu email" type="email"/>
+<button class="bg-primary text-white rounded-lg px-4 py-2 text-sm font-bold hover:bg-primary/90">Enviar</button>
+</div>
+</div>
+</div>
+<div class="border-t border-[#f0f2f4] dark:border-[#2a3642] pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-sm text-[#617589] dark:text-gray-400">© 2023 Detodoya.com. Todos los derechos reservados.</p>
+<div class="flex gap-4">
+<div class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded" data-alt="Payment method Visa placeholder"></div>
+<div class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded" data-alt="Payment method Mastercard placeholder"></div>
+<div class="h-6 w-10 bg-gray-200 dark:bg-gray-700 rounded" data-alt="Payment method PayPal placeholder"></div>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

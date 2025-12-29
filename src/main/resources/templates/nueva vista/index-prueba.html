@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detodoya.com - Catálogo Online</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-hover": "#0f6bc9",
+                        "background-light": "#ffffff",
+                        "background-off": "#f9fafb",
+                        "background-dark": "#101922",
+                        "text-main": "#111418",
+                        "text-secondary": "#637588",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }.no-scrollbar {
+            -ms-overflow-style: none;scrollbar-width: none;}
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-off text-text-main flex flex-col min-h-screen overflow-x-hidden">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16 sm:h-20">
+<div class="flex items-center gap-2">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-size: 24px;">shopping_bag</span>
+</div>
+<h1 class="text-xl sm:text-2xl font-bold tracking-tight text-text-main">Detodoya.com</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-text-main hover:text-primary transition-colors" href="#">Inicio</a>
+<a class="text-sm font-medium text-text-secondary hover:text-primary transition-colors" href="#">Catálogo</a>
+<a class="text-sm font-medium text-text-secondary hover:text-primary transition-colors" href="#">Categorías</a>
+<a class="text-sm font-medium text-text-secondary hover:text-primary transition-colors" href="#">Ofertas</a>
+</nav>
+<div class="flex items-center gap-3">
+<button aria-label="Search" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="hidden sm:flex gap-1">
+<button aria-label="Facebook" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#1877F2] transition-colors">
+<span class="material-symbols-outlined">public</span>
+</button>
+<button aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#E4405F] transition-colors">
+<span class="material-symbols-outlined">photo_camera</span>
+</button>
+</div>
+<div class="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-sm hover:shadow-md">
+<span class="material-symbols-outlined" style="font-size: 18px;">admin_panel_settings</span>
+<span class="hidden sm:inline">Admin</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<section class="relative bg-white">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+<div class="relative overflow-hidden rounded-2xl bg-gray-900 text-white min-h-[300px] flex items-center">
+<div class="absolute inset-0 z-0">
+<img alt="Abstract clean shopping background with gradients and floating shapes" class="w-full h-full object-cover opacity-60" data-alt="Abstract clean shopping background with gradients and floating shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0TiTNOaxjiufzCJV0xUZGqRbblwCs64aH9MoEjkXk_P7vSSiaJck9lYIsTh_bG-JFO90HHhG4qiQTJMllOeise-bTXXf0kUCNLbflS0jtbd1fyvYBm77s1sE2-DBL7TrClZwYbPt4IRtQsD9OJ36quDD70nR5PPG1Ayn0S63xec-PwbiOyx9IdPLSwUx8qkOzYRQXiyBrGVOtIEgYkUpRO15FzAYRDPDZTwuW6wY1TvVMAistqrBUiQMbWH7CjjuG0t2hrOfn4Q5l"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+</div>
+<div class="relative z-10 p-6 sm:p-10 lg:p-12 max-w-2xl">
+<span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-3 border border-white/10">
+                            Nuevo Catálogo 2024
+                        </span>
+<h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-4">
+                            Calidad y variedad <br/>
+<span class="text-primary-300 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">en un solo lugar</span>
+</h2>
+<p class="text-base sm:text-lg text-gray-200 mb-6 font-light max-w-lg leading-snug">
+                            Explora nuestra selección premium de productos. Desde tecnología de punta hasta decoración para el hogar.
+                        </p>
+<div class="flex flex-wrap gap-3">
+<button class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-500/25 flex items-center gap-2 text-sm sm:text-base">
+                                Ver Catálogo Completo
+                                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+</button>
+<button class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-sm sm:text-base">
+<span class="material-symbols-outlined" style="font-size: 18px;">search</span>
+                                Buscar Producto
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-6 bg-white border-b border-gray-100">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xl sm:text-2xl font-bold text-text-main tracking-tight">Explora por Categorías</h3>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex overflow-x-auto gap-4 pb-4 no-scrollbar snap-x">
+<a class="group relative min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start" href="#">
+<img alt="Modern smartphone and laptop on desk" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Modern smartphone and laptop on desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7OqTOAzlMSBpe43UfGkkhC6Tk8fzses8dAGyorPrvi5fX8N6C0wJHJmFW-PAKAh7yxR3bUvk2GWzxrMNa6Lw7aDrDzXRtX0b8KdNQZO0ttYTwNhNQNjXtQOvS4zwVGVLZUxhy095ceDrI7cmOoYDMoNsfyMj6CGXuTkJZS85EgcB-uplFdqr0QB0j3z3oeuQeoXS_arxVoPAIKxR3gOg4WpbuOLfWY7YCCFjpYo2wSxw5V1C4QifpCrq8bZHxxUsvdkD2eCNkLT-K"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors">Tecnología</p>
+<p class="text-gray-300 text-xs mt-1">120+ Productos</p>
+</div>
+</a>
+<a class="group relative min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start" href="#">
+<img alt="Modern living room interior with grey sofa" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Modern living room interior with grey sofa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxRy94MVdlr5I6lIguhvGYOg0m8A8Su3EBMg1XMC6YJuybEA2dwH42o67BOPp0DC-1Vovw6MNJb5XbSigt1lAG2dqA43kYe91B7D_GEZ13dkM8WYA3MtzYosZPVFYdS1pO9C_JQYQUPcKrCRrWiu4ReQh43t3qsFD4-iOSefwCiD_GBfdILER4kPGYxHjcA8n3O0bPb6eKdj0UleaKoTq1xYlWVUgd7DVHyq3SCInS4tO6BbbVuugVIum_x_T93HEwtL_kNB3CTO4p"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors">Hogar</p>
+<p class="text-gray-300 text-xs mt-1">Decoración y más</p>
+</div>
+</a>
+<a class="group relative min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start" href="#">
+<img alt="Woman holding shopping bags fashion" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Woman holding shopping bags fashion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcC6S1Cym5_FRQr6LD7iS_SZmkvnpkcBZhjWwZeddRhrSZEITEKQ3-9iSumnKLeQXJg5GVwXVV5I_EHpqPbXPKLtrY2Y96kL7slAC48FHRwhHBcHO63Ns316SUWZXHjRYUKYqoeyqoNq5tgP58Nu5WHHVHT01JRjlZRYRU7LM0SwdQJvecuHt7n2_ktnzvhsVgtl6W0HVbWbmUrGqYNJMJzBnpoV47GFrTrV7RRQqXn9AdBu7hCZ8WDGFKrdJzleTe6AKjSW0NojtS"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors">Moda</p>
+<p class="text-gray-300 text-xs mt-1">Tendencias 2024</p>
+</div>
+</a>
+<a class="group relative min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start" href="#">
+<img alt="Gym weights and sports equipment" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Gym weights and sports equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlk47bkAOZaJlFT1Itc9qnffwAHGnquvPshF2biS8aNrjmPnPSHQNoytvgbclr5kxpqvxJczPdDtQ221ZgpYz8wUCyEIb-NWNmQu3X4tGVNVtP96ZgqdLRParYBcFus50liuO6iD8MmukIew0qCy37I-n4oc9qM1eGlfE5ICBf2CakV4zJ0eT4mTK5LKUH-xgXZjQyb8LlbGJamR9yGt49DBMwY4RBXXOowRJqSW5VWFg0_yV0x203WeAOLz43dCxLKdh4gTkmKmcf"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors">Deportes</p>
+<p class="text-gray-300 text-xs mt-1">Equipamiento</p>
+</div>
+</a>
+<a class="group relative min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start" href="#">
+<img alt="Professional tools on wooden table" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Professional tools on wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmcSDi4yisOQ609S6gQdqt6VY8J2YMFJABuxs2O5ffjX22Ntog-_7rUXJ2xzepPtSyiuQrvLY8HmkBZqEOaP9Djrp9vuqPr-8WIuOEPVKRitX2UIs4SSBTHR8jIrYqyBSNsgCqgAoJFe6R-NU_hNAsLctPqj8Z1iOFujOlkLMx7C2ZXBrGIefdXLt0euqBVIhr76C6v1MBdm5X61b-JLpcn29s8i36mvFFeZCdpuD09fDCq3vl2E9FchJ8u3YXgz2grpMVrpNS4HHJ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors">Herramientas</p>
+<p class="text-gray-300 text-xs mt-1">Para el taller</p>
+</div>
+</a>
+</div>
+</div>
+</section>
+<section class="py-12 bg-background-off">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+<div>
+<h2 class="text-3xl font-black text-text-main tracking-tight mb-2">Productos Destacados</h2>
+<p class="text-text-secondary">Nuestra selección de los mejores artículos del mes.</p>
+</div>
+<a class="text-primary font-bold hover:text-primary-hover flex items-center gap-1 self-start sm:self-auto" href="#">
+                        Ver todo
+                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">-20% OFF</span>
+<img alt="Modern wireless headphones silver" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Modern wireless headphones silver" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdshv_0Kcc-vlrNOqVb4I5dyXXBuNIdI8TzEOoiYk714MPLVUeuMW8lje7vhIjWcWwbIGqXwjbT40nB-1875tfMQxQrAwX-YrDZOevFmIwuQfxWxqhwd-dkwllogscnQHdNdBz_FoQSDSwHNELdJzTHaG90HJ0-DbOzNxS9wR9L_47vOLz0rcWFZJzgCXjA3B1vHArm7CHvs-BVTLKjFuONpPiAktaMuG-k-pxcfUnDl9ZjHWNnpU_3-aqmZUJr3WlaziBiLDSAobe"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Audio</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Auriculares Premium Wireless Noise Cancelling</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-gray-400 line-through font-medium">$299.00</span>
+<span class="text-xl font-black text-primary">$239.00</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<span class="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">Nuevo</span>
+<img alt="Red sports sneaker on white background" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Red sports sneaker on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUNdNXpZd1XVmv1RrhAfWzeNkxviJHDHBPzbCEJqQVauwn-Wwulv5bu0B42s3nKLVhZjRxeuG7-qZEMDCOyryXuLeab01rG15RqjmS8voM09Nc5x8v4hAUP6K_S5YBh12DZq6Kfs5hvaojsSxDloD6Y9IVUR0Zj69T9o61KSyX4IRlYGBneVaC744EkSSfS0hOq90qZDkF42RwzTUIyHsyjLlX5Z_pImXdIOGezLk1Zp2GraEwXX9R2fBmIQWGmKNgG5r4j68k9Cwv"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Deportes</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Zapatillas Runner Pro X-200</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-primary">$120.00</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<img alt="Instant camera polaroid style" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Instant camera polaroid style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ_BA4fs3fXusT2AQBaQ0iB2kR0ghMSwzijmW0kRMc9RfRbeDrJpN-7fxKSFi9AgSG3KaR7pIe_viKz5I6GkmEkL-DSDMB3miCPKlmhBm_9AsN36cCgzisgkjaU5aSMPuB9c1apWGT9ZqgacFs7YYCJGtXbAwqN9ot0rpg1Jfgkk-3VtPj-py4mUPKCwB8B_TLqX_s23LmxK_rAhL6_x0SPMqVlqOuOdYLI-zReuWQcWWohftZbMhEmHr89FuPhi0OzFHt1FLQ_lWg"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Fotografía</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Cámara Instantánea Retro Vibe</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-primary">$89.99</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<span class="absolute top-3 left-3 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">Agotado</span>
+<img alt="White simple digital watch" class="w-full h-full object-contain p-6 grayscale opacity-60 group-hover:scale-105 transition-transform duration-500" data-alt="White simple digital watch" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4qz6q1PoKuKVWLU1n7G5WUyY9Kk9uHvh1inzYcTWllZ8NxBuO9JnizUzkoOzdlMh3-QMldi9SFSkw3zRY5terRINRN7oS_3cqOS0ni2rOJAiUjCFWckZxsicAFaFCw3ZRC9CLDVzn29QNbj3Lr7XRvLIbeu681ng8c5Fr-hnYNFSDUUfzxNWBlN7-ZTGJ9fi5Jz4VT7pwiQ8qDCxWnpqWpIcLwDCX7enjhu8E9RLt0z_YNpY-MFycUiD1vLEKuiRiVNazNqRtWkQ_"/>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Accesorios</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Smart Watch Series 5 - White Edition</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-gray-400">$199.00</span>
+</div>
+<button class="text-gray-300 cursor-not-allowed">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">-15%</span>
+<img alt="Mechanical wrist watch luxury" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Mechanical wrist watch luxury" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-qn_dUM0nyMKevIbE-Ti2B-0zqbxsO2qdpoPHNfFiDAgXGY28GE9z77zI6mlUtYzuSAz2F2o5DKpZ8Kh5xcbqnlNtDEBqioKZfJZ7tIwDtW2-1PA52snuhjaej0fLlmeqZ7DqtRFB8cgkdR9mdg5BVHEO7_Gkor2avak58GZE9CJbXbwLYlfu7a_r0ngWoVEsv1jgeQYNezeqje8optWp6Mkc11Ck5iMTvh9DuCGRJ_sFVOrZalZrG02nJ8QXIBJObO67XMlR0sBe"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Lujo</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Reloj Cronógrafo Executive</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs text-gray-400 line-through font-medium">$500.00</span>
+<span class="text-xl font-black text-primary">$425.00</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<img alt="Linen white shirt clothing" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Linen white shirt clothing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjF7zUTYfuSifhGCh2XLpsyGVZRKNTT0SBXDFPbGAbNkenASndTbIo2lHEXElxt74-7CXLpcKG3KH9hgt7zlGeVewtHanJHmehGoUuhWhXTRsJIF6M-E90-5etAvPcUVaTLXyOwR4n6YtsA-cMRyznW6tm_gJjGVrhQxOhrOVA5h1z5nXPY8KSC3kxrEI6evENl8_RjDb0v6tFXDyUrfbtD3aELOEJXT1VlScNZPgNyFj49Q46LDZvYo__fgL3jXnnJa1vWFDohCVd"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Moda</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Camisa de Lino Clásica</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-primary">$45.00</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<span class="absolute top-3 left-3 bg-purple-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">Destacado</span>
+<img alt="Modern sunglasses isolated" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Modern sunglasses isolated" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYf7Mwvr5BSMeSYdPcdyJYHwauBwqFMP2KLqLqnyV1ooVSb4v5lm5Y4W3lZH4vefK5jZd7eiiGte-6-L75fQBwZvc_Dom9m6s_ZKIU0l96RlgSgem1X_4FaNfOd6W4aJIIw-2tkOSw4hbGPfaVw-pXxkLEbJPm2rI9JnW_x6AD7XPXhCNFZ_nizgveKzy8gumxv5MsmgFCsTOChSdwMmLGOWCwgxdyEi3Uyq9bd7-UoV8fBcIWOxUbjmYIx3cyhtOfhgWpm0OvLfWd"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Accesorios</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Gafas de Sol Polarizadas UV400</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-primary">$65.00</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative aspect-square overflow-hidden bg-gray-50">
+<img alt="Face cream cosmetic jar" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500" data-alt="Face cream cosmetic jar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASD7axp2ZaHgQ--mx6t6E4OegeYNDaw1qQzsF4D2E5BdsKdMyI0qK49-exGBLrxWQ2dEJeN5M_jk13UXBFvImn5Rd2MS7olS7fDWx9-5Th4W272DJPpu49Ndl7bfiDcZyOMgIom5C-MkI4pgkbYCm_MprC_pA497AYmSXN8jtVaiMBP6qg0IfNSyZ4GoNWISPQtrs_ltaP9wo-6h2sY1hb6sQvvIJeL0vOqyNqf9t3NcqHn26Fcpr26r6wujkiLyVwTVwxTRWdB12J"/>
+<div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+<button class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </button>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow">
+<p class="text-xs font-medium text-gray-400 mb-1">Belleza</p>
+<h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight">Crema Hidratante Bio-Natural</h3>
+<div class="mt-auto pt-4 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xl font-black text-primary">$32.50</span>
+</div>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<button class="bg-white hover:bg-gray-50 text-text-main border border-gray-200 font-bold py-3 px-8 rounded-lg transition-all flex items-center gap-2 shadow-sm">
+                        Cargar más productos
+                        <span class="material-symbols-outlined" style="font-size: 20px;">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<section class="py-16 bg-primary text-white">
+<div class="max-w-4xl mx-auto px-4 text-center">
+<h2 class="text-3xl font-black mb-4">No te pierdas nuestras ofertas</h2>
+<p class="text-blue-100 mb-8 max-w-lg mx-auto">Suscríbete a nuestro boletín para recibir las últimas novedades y descuentos exclusivos directamente en tu correo.</p>
+<form class="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
+<input class="w-full px-5 py-3 rounded-lg text-text-main focus:ring-2 focus:ring-blue-300 border-none outline-none" placeholder="Tu correo electrónico" required="" type="email"/>
+<button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap" type="submit">
+                         Suscribirse
+                     </button>
+</form>
+</div>
+</section>
+</main>
+<footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<div class="size-6 bg-primary rounded-md flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
+</div>
+<span class="text-lg font-bold text-text-main">Detodoya.com</span>
+</div>
+<p class="text-text-secondary text-sm leading-relaxed">
+                        Tu destino confiable para encontrar productos de calidad al mejor precio. Exploramos el mundo para traerte lo mejor.
+                    </p>
+<div class="flex gap-4 mt-2">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">photo_camera</span></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-text-main mb-4">Enlaces Rápidos</h4>
+<ul class="space-y-3 text-sm text-text-secondary">
+<li><a class="hover:text-primary transition-colors" href="#">Inicio</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Catálogo Completo</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Ofertas del Mes</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Novedades</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-text-main mb-4">Ayuda &amp; Soporte</h4>
+<ul class="space-y-3 text-sm text-text-secondary">
+<li><a class="hover:text-primary transition-colors" href="#">Centro de Ayuda</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Términos y Condiciones</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Política de Privacidad</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contacto</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-text-main mb-4">Contáctanos</h4>
+<ul class="space-y-4 text-sm text-text-secondary">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">location_on</span>
+<span>Av. Principal 123, Ciudad de Negocios, Piso 4</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">call</span>
+<span>+1 (555) 123-4567</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">mail</span>
+<span>hola@detodoya.com</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+<p>© 2024 Detodoya.com. Todos los derechos reservados.</p>
+<div class="flex gap-6">
+<a class="hover:text-text-main transition-colors" href="#">Privacidad</a>
+<a class="hover:text-text-main transition-colors" href="#">Cookies</a>
+<a class="hover:text-text-main transition-colors" href="#">Legal</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
