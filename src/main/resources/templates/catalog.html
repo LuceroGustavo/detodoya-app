@@ -240,7 +240,7 @@
                 <div th:each="product : ${products}" 
                      class="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 flex flex-col h-full cursor-pointer"
                      th:onclick="'window.location.href=\'/product/' + ${product.pId} + '\''">
-                    <div class="relative overflow-hidden aspect-square bg-gray-50">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-gray-50">
                         <!-- Badge de estado -->
                         <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
                               th:text="${product.etiquetaPromocional}"
