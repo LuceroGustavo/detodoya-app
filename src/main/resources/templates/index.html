@@ -5,51 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>detodoya.com - Catálogo de Productos</title>
     
-    <!-- CSS de Lovely Denim -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/lovely-style.css?v=1000">
-    <link rel="stylesheet" href="/css/lovelydenim-replica.css">
-
-    <style>
-        /* Estilos base de Lovely Denim */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-hover": "#0f6bc9",
+                        "background-light": "#ffffff",
+                        "background-off": "#f9fafb",
+                        "background-dark": "#101922",
+                        "text-main": "#111418",
+                        "text-secondary": "#637588",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
         }
-        
+    </script>
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fff;
-            color: #000;
-            line-height: 1.6;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
         }
         
-        .bg-base {
-            background-color: #fff;
-        }
-        
-        
-        /* Título principal */
-        .lovely-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 400;
-            color: #000;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 40px 0 30px 0;
-            font-family: 'Inter', sans-serif;
-        }
-        
-        /* Sección de Historias - Solo móvil */
+        /* Historias - Solo móvil */
         .lovely-stories {
             display: none;
             max-width: 100%;
             margin: 0 auto 40px auto;
             padding: 0 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .lovely-stories {
+                display: block;
+            }
         }
         
         .lovely-story-video {
@@ -70,1000 +96,445 @@
             max-width: 400px;
         }
         
-        /* Carrusel de categorías - Implementación Swiper como Lovely Denim */
-        .lovely-categories {
-            width: 100%;
-            max-width: 1330px;
-            border-bottom: 1px solid #ededed;
-            padding: 0 10px 16px;
-            margin: 0 auto 16px;
-            position: relative;
-        }
-        
-        @media screen and (max-width: 1024px) {
-            .lovely-categories {
-                border-bottom: none;
-                margin-bottom: 0;
-            }
-        }
-        
-        .lovely-categories-container {
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .swiper {
-            width: 100%;
-            padding: 0;
-        }
-        
-        .swiper-wrapper {
-            align-items: stretch;
-        }
-        
+        /* Carrusel de categorías - Swiper */
         .swiper-slide {
             height: auto;
-            display: flex;
-            flex-direction: column;
         }
         
-        /* Flechas de navegación - Estilo Lovely Denim */
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.15);
+        /* Estilos de navegación movidos al header del carrusel */
+        
+        /* Favoritos */
+        .favorite-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .favorite-btn.favorite-active {
+            color: #ef4444;
+        }
+        
+        .favorite-btn.favorite-active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .favorite-btn.favorite-inactive {
+            color: #9ca3af;
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* WhatsApp Button Flotante */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25D366;
             border-radius: 50%;
-            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25);
-            border: none;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            color: #171717;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
             transition: all 0.3s ease;
-            z-index: 10;
-            overflow: hidden;
-            padding: 0;
-        }
-        
-        .carousel-nav:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 7px 7px rgba(0, 0, 0, 0.3);
-        }
-        
-        .carousel-nav:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        .carousel-nav.prev {
-            left: 8px;
-        }
-        
-        .carousel-nav.next {
-            right: 8px;
-        }
-        
-        /* Indicadores de posición - OCULTOS */
-        .carousel-indicators {
-            display: none !important;
-        }
-        
-        .carousel-indicator {
-            display: none !important;
-        }
-        
-        .lovely-category-item {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
             text-decoration: none;
-            padding: 0 10px;
-        }
-        
-        .lovely-category-item:hover {
-            transform: none;
-        }
-        
-        .lovely-category-image-container {
-            width: 100%;
-            height: 300px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        @media screen and (min-width: 1024px) {
-            .lovely-category-image-container {
-                width: auto;
-                height: 280px;
-            }
-        }
-        
-        .lovely-category-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.3s ease;
-            background-color: #f8f9fa;
-        }
-        
-        @media screen and (min-width: 1024px) {
-            .lovely-category-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                object-position: center;
-            }
-        }
-        
-        .lovely-category-item:hover .lovely-category-image {
-            transform: scale(1.05);
-        }
-        
-        /* Prevenir cualquier efecto no deseado en títulos de categorías */
-        .lovely-category-item .lovely-category-title,
-        .lovely-category-item:hover .lovely-category-title,
-        .lovely-category-item:focus .lovely-category-title,
-        .lovely-category-item:active .lovely-category-title {
-            text-shadow: none !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-            background: none !important;
-            color: #000 !important;
-            font-size: 16px !important;
-            font-weight: 600 !important;
-            margin: 10px 0 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            overflow: visible !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            text-overflow: initial !important;
-            transform: none !important;
-            position: static !important;
-            letter-spacing: 0.3px !important;
-        }
-        
-        .lovely-category-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: #000;
-            text-align: center;
-            text-transform: uppercase;
-            margin: 10px 0 0;
-            width: 100%;
-            position: static;
-            background: none;
-            padding: 0;
-            border-radius: 0;
-            transform: none;
-            left: auto;
-            bottom: auto;
-            text-shadow: none;
-            border: none;
-            outline: none;
-            overflow: visible;
-            white-space: normal;
-            word-wrap: break-word;
-            letter-spacing: 0.3px;
-        }
-        
-        /* Grid de productos - Réplica exacta */
-        .lovely-products {
-            max-width: 1330px;
-            margin: 0 auto;
-            padding: 0 20px;
-            margin-bottom: 80px;
-        }
-        
-        .lovely-products-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            width: 100%;
-        }
-        
-        .product-card {
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .product-image-container {
-            position: relative;
-            width: 100%;
-            height: 480px;
-            overflow: hidden;
-            background: #f8f9fa;
-            display: block;
-            padding: 0;
-            margin: 0;
-        }
-        
-        /* Asegurar que el div wrapper interno llene el contenedor en escritorio */
-        .product-image-container > div {
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        /* Etiqueta promocional */
-        .product-promo-label {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-            white-space: nowrap;
-            flex-shrink: 0;
+            font-size: 32px;
         }
         
-        .product-promo-label.sale {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-        
-        .product-promo-label.new {
-            background: linear-gradient(135deg, #2ed573, #1e90ff);
-        }
-        
-        .product-promo-label.hot {
-            background: linear-gradient(135deg, #ff9ff3, #f368e0);
-        }
-        
-        .product-promo-label.offer {
-            background: linear-gradient(135deg, #ffa726, #ff7043);
-        }
-        
-        .product-image {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            min-width: 100% !important;
-            min-height: 100% !important;
-            object-fit: cover !important;
-            object-position: center center !important;
-            transition: transform 0.3s ease;
-            display: block !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            background-color: #f8f9fa;
-        }
-        
-        /* Asegurar que las imágenes dentro del wrapper también llenen */
-        .product-image-container > div .product-image,
-        .product-image-container > div img,
-        .product-image-container > div video {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            min-width: 100% !important;
-            min-height: 100% !important;
-            object-fit: cover !important;
-            object-position: center center !important;
-            display: block !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-        }
-        
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-        
-        .product-info {
-            padding: 20px;
-        }
-        
-        .product-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #000;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        
-        .product-price-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 5px;
-        }
-        
-        .product-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #000;
-        }
-        
-        .product-price-original {
-            font-size: 14px;
-            color: #999;
-            text-decoration: line-through;
-            margin-right: 8px;
-        }
-        
-        .product-discount {
-            background: #ff4757;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        
-        /* Responsive */
-        /* Mobile Carousel Styles */
-        .lovely-categories-mobile {
-            display: none;
-        }
-        
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-            margin: 0 5px;
-        }
-        
-        .carousel-track {
-            display: flex;
-            transition: transform 0.3s ease;
-        }
-        
-        .carousel-slide {
-            min-width: calc(50% - 2px);
-            margin-right: 4px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .carousel-slide .lovely-category-image-container {
-            height: 250px;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .carousel-slide .lovely-category-image {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .carousel-slide:last-child {
-            margin-right: 0;
-        }
-        
-        .carousel-slide:hover .lovely-category-image {
-            transform: scale(1.05);
-        }
-        
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            gap: 8px;
-        }
-        
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #c1c1c1;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        .carousel-dot.active {
-            background-color: #171717;
-        }
-        
-        @media (max-width: 1024px) {
-            .lovely-category-item {
-                min-width: 200px;
-                flex-shrink: 0;
-            }
-            
-            .lovely-products-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-            
-            .product-image-container {
-                height: 420px;
-            }
-            
-            .lovely-title {
-                font-size: 36px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .lovely-stories {
-                display: block;
-            }
-            
-            .lovely-category-item {
-                min-width: 150px;
-                flex-shrink: 0;
-            }
-            
-            .carousel-nav {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-            
-            .carousel-nav.prev {
-                left: 5px;
-            }
-            
-            .carousel-nav.next {
-                right: 5px;
-            }
-            
-            .lovely-products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                padding: 0 20px;
-            }
-            
-            .product-image-container {
-                height: 300px;
-                overflow: hidden;
-                position: relative;
-                display: block;
-                padding: 0;
-                margin: 0;
-            }
-            
-            /* Asegurar que el div wrapper no interfiera */
-            .product-image-container > div {
-                width: 100% !important;
-                height: 100% !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            /* Forzar que las imágenes llenen completamente el contenedor en móvil */
-            .product-image-container .product-image,
-            .product-image-container img.product-image,
-            .product-image-container video.product-image,
-            .product-image-container > div .product-image,
-            .product-image-container > div img,
-            .product-image-container > div video {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: 100% !important;
-                max-height: 100% !important;
-                min-width: 100% !important;
-                min-height: 100% !important;
-                object-fit: cover !important;
-                object-position: center center !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-            }
-            
-            .lovely-title {
-                font-size: 24px;
-                margin: 30px 0 20px 0;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .lovely-categories-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .lovely-products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-                padding: 0 15px;
-            }
-            
-            .product-image-container {
-                height: 320px;
-                overflow: hidden;
-                position: relative;
-                display: block;
-                padding: 0;
-                margin: 0;
-            }
-            
-            /* Asegurar que el div wrapper no interfiera */
-            .product-image-container > div {
-                width: 100% !important;
-                height: 100% !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            /* Forzar que las imágenes llenen completamente el contenedor en móvil pequeño */
-            .product-image-container .product-image,
-            .product-image-container img.product-image,
-            .product-image-container video.product-image,
-            .product-image-container > div .product-image,
-            .product-image-container > div img,
-            .product-image-container > div video {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: 100% !important;
-                max-height: 100% !important;
-                min-width: 100% !important;
-                min-height: 100% !important;
-                object-fit: cover !important;
-                object-position: center center !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-            }
-            
-            .product-card {
-                margin-bottom: 15px;
-            }
-            
-            .product-name {
-                font-size: 14px;
-            }
-            
-            .product-price {
-                font-size: 14px;
-            }
-            
-            .lovely-title {
-                font-size: 20px;
-            }
-        }
-        
-        /* Responsive Footer */
-        @media (max-width: 768px) {
-            .footer {
-                padding: 25px 0 15px !important;
-                margin-top: 60px !important;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-                margin-bottom: 20px !important;
-            }
-            
-            .footer-section {
-                position: relative;
-                padding-bottom: 15px;
-            }
-            
-            .footer-section:not(:last-child)::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 1px;
-                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
-                margin-top: 15px;
-            }
-            
-            .footer-title {
-                margin-bottom: 12px !important;
-                font-size: 13px !important;
-            }
-            
-            .footer-section p {
-                margin-bottom: 12px !important;
-                font-size: 13px !important;
-            }
-            
-            .social-links {
-                margin-bottom: 0 !important;
-            }
-            
-            .footer-links li {
-                margin-bottom: 8px !important;
-            }
-            
-            .newsletter-form {
-                margin-top: 0 !important;
-            }
-            
-            .footer-bottom {
-                flex-direction: column !important;
-                gap: 8px !important;
-                text-align: center !important;
-                padding-top: 15px !important;
-            }
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
         }
     </style>
 </head>
-<body class="bg-base">
+<body class="bg-background-off text-text-main flex flex-col min-h-screen overflow-x-hidden">
+    
     <!-- Header -->
-    <header class="header-container">
-        <div class="header-content">
-            <div class="header-top">
-                <a href="/" class="logo">detodoya.com</a>
-                
-                <div class="header-nav">
-                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <!-- Overlay para el menú móvil -->
-                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
-                    
-                    <!-- Menú para PC (≥ 769px) -->
-                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link active">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/catalog" class="nav-link">Catálogo</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    <div class="dropdown-grid">
-                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
-                                        <a th:each="category : ${categories}" 
-                                           th:href="@{/catalog(category=${category.name})}" 
-                                           class="dropdown-item" 
-                                           th:text="${category.name}">Categoría</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <!-- Menú para Móvil (≤ 768px) -->
-                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Ver Todo</a>
-                        </li>
-                        <li class="nav-item" th:each="category : ${categories}">
-                            <a th:href="@{/catalog(category=${category.name})}" 
-                               class="nav-link" 
-                               th:text="${category.name}"
-                               onclick="closeMobileMenu()">Categoría</a>
-                        </li>
-                    </ul>
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">shopping_bag</span>
+                    </div>
+                    <a href="/" class="text-xl sm:text-2xl font-bold tracking-tight text-text-main hover:text-primary transition-colors">
+                        detodoya.com
+                    </a>
                 </div>
                 
-                <div class="header-actions">
-                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
-                    <div class="search-bar" id="searchBar">
-                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-sm font-medium text-text-main hover:text-primary transition-colors">Inicio</a>
+                    <a href="/catalog" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Catálogo</a>
+                    <div class="relative group">
+                        <a href="javascript:void(0)" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Categorías</a>
+                        <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="p-2">
+                                <a href="/catalog" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Ver Todo</a>
+                                <a th:each="category : ${categories}" 
+                                   th:href="@{/catalog(category=${category.name})}" 
+                                   th:text="${category.name}"
+                                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="header-icons">
-                        <!-- Search icon - only visible on mobile -->
-                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <a href="https://www.instagram.com/detodoya" class="header-icon" title="Instagram" target="_blank">
-                            <i class="bi bi-instagram"></i>
+                </nav>
+                
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button aria-label="Search" onclick="openSearchModal()" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                    <div class="hidden sm:flex gap-1">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#E4405F] transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
                         </a>
-                        <!-- Facebook comentado temporalmente
-                        <a href="https://www.facebook.com/detodoya" class="header-icon" title="Facebook" target="_blank">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        -->
-                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
-                            <i class="bi bi-whatsapp"></i>
-                        </a>
-                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
-                            <i class="bi bi-gear"></i>
+                        <a href="https://wa.me/5491159293920" target="_blank" aria-label="WhatsApp" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#25D366] transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
                         </a>
                     </div>
+                    <div class="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
+                    <!-- Carrito (sin funcionalidad) -->
+                    <button aria-label="Carrito" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors" title="Próximamente">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary rounded-full">0</span>
+                    </button>
+                    <a href="/admin/login" class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-sm hover:shadow-md" target="_blank">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">admin_panel_settings</span>
+                        <span class="hidden sm:inline">Admin</span>
+                    </a>
                 </div>
             </div>
         </div>
     </header>
-
-    <!-- Sección de Historias - Solo móvil -->
-    <section class="lovely-stories" th:if="${historiaPrincipal != null}">
-        <div class="lovely-story-container">
-            <video th:src="@{/uploads/{videoPath}(videoPath=${historiaPrincipal.videoPath})}" 
-                   class="lovely-story-video"
-                   autoplay 
-                   muted 
-                   loop 
-                   playsinline>
-                Tu navegador no soporta videos.
-            </video>
+    
+    <main class="flex-grow">
+        <!-- Sección de Historias - Solo móvil -->
+        <section class="lovely-stories" th:if="${historiaPrincipal != null}">
+            <div class="lovely-story-container">
+                <video th:src="@{/uploads/{videoPath}(videoPath=${historiaPrincipal.videoPath})}" 
+                       class="lovely-story-video"
+                       autoplay 
+                       muted 
+                       loop 
+                       playsinline>
+                    Tu navegador no soporta videos.
+                </video>
+            </div>
+        </section>
+        
+        <!-- Hero Section -->
+        <section class="relative bg-white">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+                <div class="relative overflow-hidden rounded-2xl bg-gray-900 text-white min-h-[300px] flex items-center">
+                    <div class="absolute inset-0 z-0">
+                        <img alt="Abstract clean shopping background with gradients and floating shapes" 
+                             class="w-full h-full object-cover opacity-60" 
+                             src="/img/hero-background.png"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="w-full h-full bg-gradient-to-r from-primary/20 to-purple-500/20" style="display: none;"></div>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+                    <div class="relative z-10 p-6 sm:p-10 lg:p-12 max-w-2xl">
+                        <span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-3 border border-white/10">
+                            Nuevo Catálogo 2025
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight mb-4">
+                            Calidad y variedad <br/>
+                            <span class="text-primary-300 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">en un solo lugar</span>
+                        </h2>
+                        <p class="text-base sm:text-lg text-gray-200 mb-6 font-light max-w-lg leading-snug">
+                            Explora nuestra selección premium de productos. Desde tecnología de punta hasta decoración para el hogar.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="/catalog" class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-blue-500/25 flex items-center gap-2 text-sm sm:text-base">
+                                Ver Catálogo Completo
+                                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+                            </a>
+                            <button onclick="openSearchModal()" class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 text-sm sm:text-base">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">search</span>
+                                Buscar Producto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Modal de Búsqueda -->
+        <div id="searchModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 p-6 relative">
+                <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <h3 class="text-2xl font-bold text-text-main mb-4">Buscar Productos</h3>
+                <form action="/catalog" method="get" class="flex gap-3">
+                    <div class="flex-1 relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <span class="material-symbols-outlined">search</span>
+                        </span>
+                        <input type="text" 
+                               name="search" 
+                               placeholder="Buscar productos..." 
+                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                               autofocus>
+                    </div>
+                    <button type="submit" class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined">search</span>
+                        Buscar
+                    </button>
+                </form>
+            </div>
         </div>
-    </section>
-
-    <!-- Título principal -->
-    <h1 class="lovely-title">CATEGORÍAS</h1>
-
-    <!-- Grid de categorías - Conectado con tu backend -->
-    <section class="lovely-categories" th:if="${carouselCategories != null and !carouselCategories.isEmpty()}">
-        <div class="lovely-categories-container">
-            <!-- Swiper -->
-            <div class="swiper" id="categoriesSwiper">
-                <div class="swiper-wrapper">
-                    <!-- Categorías dinámicas desde tu backend -->
-                    <div th:each="cat : ${carouselCategories}" 
-                         class="swiper-slide">
-                        <div class="lovely-category-item" 
-                             th:data-category-name="${cat.name}"
-                             onclick="goToCategory(this)">
-                            <div class="lovely-category-image-container">
-                                <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : 'https://via.placeholder.com/300x280/000000/ffffff?text=' + ${cat.name}" 
-                                     th:alt="${cat.name}" 
-                                     class="lovely-category-image">
+        
+        <!-- Carrusel de Categorías -->
+        <section class="py-6 bg-white border-b border-gray-100" th:if="${carouselCategories != null and !carouselCategories.isEmpty()}">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl sm:text-2xl font-bold text-text-main tracking-tight">Explora por Categorías</h3>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 disabled:opacity-50 transition-colors" id="prevBtn">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">chevron_left</span>
+                        </button>
+                        <button class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-600 transition-colors" id="nextBtn">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <!-- Swiper -->
+                    <div class="swiper" id="categoriesSwiper">
+                        <div class="swiper-wrapper">
+                            <div th:each="cat : ${carouselCategories}" class="swiper-slide">
+                                <a th:href="@{/catalog(category=${cat.name})}" 
+                                   class="group relative block min-w-[200px] h-[240px] rounded-xl overflow-hidden cursor-pointer snap-start">
+                                    <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : 'https://via.placeholder.com/200x240/000000/ffffff?text=' + ${cat.name}" 
+                                         th:alt="${cat.name}" 
+                                         class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                    <div class="absolute bottom-0 left-0 p-4 w-full">
+                                        <p class="text-white font-bold text-lg leading-tight group-hover:text-blue-300 transition-colors" th:text="${cat.name}"></p>
+                                        <p class="text-gray-300 text-xs mt-1" 
+                                           th:if="${cat.productCount != null and cat.productCount > 0}"
+                                           th:text="${cat.productCount} + '+ Productos'"></p>
+                                        <p class="text-gray-300 text-xs mt-1" 
+                                           th:if="${cat.productCount == null or cat.productCount == 0}">Explorar</p>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="lovely-category-title" th:text="${cat.name}"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Flechas de navegación -->
-            <button class="carousel-nav prev" id="prevBtn">‹</button>
-            <button class="carousel-nav next" id="nextBtn">›</button>
-        </div>
-    </section>
-
-    <!-- Grid de productos - Conectado con tu backend -->
-    <section class="lovely-products" th:if="${products != null and !products.isEmpty()}">
-        <div class="lovely-products-grid">
-            <!-- Productos dinámicos desde tu backend -->
-            <div th:each="product : ${products}" 
-                 class="product-card"
-                 th:data-product-id="${product.pId}"
-                 onclick="goToProduct(this)">
-                <div class="product-image-container">
-                    <!-- Calcular si es video usando th:with -->
-                    <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
-                                   isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
-                        <!-- Mostrar video si es video -->
-                        <video th:if="${isVideo}" 
-                             th:src="${product.getImagenPrincipalUrl()}" 
-                             th:title="${product.name}" 
-                             class="product-image"
-                             muted loop autoplay
-                             style="width: 100%; height: 100%; object-fit: cover;"></video>
-                        <!-- Mostrar imagen si no es video -->
-                        <img th:if="${!isVideo and imagenPrincipal != null}" 
-                             th:src="${product.getImagenPrincipalUrl()}" 
-                             th:alt="${product.name}" 
-                             class="product-image">
+        </section>
+        
+        <!-- Productos Destacados -->
+        <section class="py-12 bg-background-off" th:if="${products != null and !products.isEmpty()}">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-text-main tracking-tight mb-2">Productos Destacados</h2>
+                        <p class="text-text-secondary">Nuestra selección de los mejores artículos del mes.</p>
                     </div>
-                    <img th:if="${product.images == null or product.images.empty}" 
-                         src="https://via.placeholder.com/350x350/f8f9fa/666666?text=Detodoya" 
-                         th:alt="${product.name}" 
-                         class="product-image">
+                    <a href="/catalog" class="text-primary font-bold hover:text-primary-hover flex items-center gap-1 self-start sm:self-auto">
+                        Ver todo
+                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+                    </a>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name" th:text="${product.name}"></h3>
-                    <div class="product-price-container">
-                        <div class="product-price">
-                            <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
-                                  class="product-price-original" 
-                                  th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
-                            <span th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"></span>
-                            <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
-                                  class="product-discount" 
-                                  th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '%'"></span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Producto -->
+                    <div th:each="product : ${products}" 
+                         class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+                         th:data-product-id="${product.pId}">
+                        <div class="relative aspect-square overflow-hidden bg-gray-50 cursor-pointer"
+                             th:onclick="'window.location.href=\'/product/' + ${product.pId} + '\''">
+                            <!-- Badge de estado -->
+                            <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                  class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide"
+                                  th:text="${product.etiquetaPromocional}"></span>
+                            <span th:if="${product.esNuevo}" 
+                                  class="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full z-10 uppercase tracking-wide">Nuevo</span>
+                            
+                            <!-- Botón Favorito -->
+                            <button class="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full favorite-btn favorite-inactive transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200"
+                                    th:data-product-id="${product.pId}"
+                                    onclick="event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(${product.pId}, this);">
+                                <span class="material-symbols-outlined favorite-icon">favorite</span>
+                            </button>
+                            
+                            <!-- Imagen o Video del Producto -->
+                            <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                           isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                                <video th:if="${isVideo}" 
+                                       th:src="${product.getImagenPrincipalUrl()}" 
+                                       th:title="${product.name}" 
+                                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                       muted loop autoplay></video>
+                                <img th:if="${!isVideo and imagenPrincipal != null}" 
+                                     th:src="${product.getImagenPrincipalUrl()}" 
+                                     th:alt="${product.name}" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <img th:if="${product.images == null or product.images.empty}" 
+                                 src="https://via.placeholder.com/350x350/f8f9fa/666666?text=detodoya.com" 
+                                 th:alt="${product.name}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            
+                            <!-- Botón Ver Detalles (hover) -->
+                            <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                <a th:href="@{/product/{id}(id=${product.pId})}" 
+                                   class="w-full bg-primary/90 hover:bg-primary backdrop-blur text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">visibility</span> Ver Detalles
+                                </a>
+                            </div>
                         </div>
-                        <!-- Etiqueta promocional -->
-                        <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
-                             class="product-promo-label"
-                             th:text="${product.etiquetaPromocional}">
+                        <div class="p-5 flex flex-col flex-grow">
+                            <p class="text-xs font-medium text-gray-400 mb-1" 
+                               th:if="${product.categories != null and !product.categories.empty}"
+                               th:text="${product.categories[0].name}"></p>
+                            <h3 class="font-bold text-text-main text-lg mb-2 line-clamp-2 leading-tight cursor-pointer"
+                                th:onclick="'window.location.href=\'/product/' + ${product.pId} + '\''"
+                                th:text="${product.name}"></h3>
+                            <div class="mt-auto pt-4 flex items-center justify-between">
+                                <div class="flex flex-col">
+                                    <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
+                                          class="text-xs text-gray-400 line-through font-medium"
+                                          th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
+                                    <span class="text-xl font-black text-primary"
+                                          th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"></span>
+                                </div>
+                                <!-- Botón Favorito (siempre visible en móvil) -->
+                                <button class="md:hidden favorite-btn favorite-inactive p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                        th:data-product-id="${product.pId}"
+                                        onclick="event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(${product.pId}, this);">
+                                    <span class="material-symbols-outlined favorite-icon">favorite</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- WhatsApp Button -->
-    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
-       class="whatsapp-button" target="_blank">
-        <i class="bi bi-whatsapp"></i>
-    </a>
-
+        </section>
+        
+        <!-- Newsletter Section -->
+        <section class="py-16 bg-primary text-white">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h2 class="text-3xl font-black mb-4">No te pierdas nuestras ofertas</h2>
+                <p class="text-blue-100 mb-8 max-w-lg mx-auto">Suscríbete a nuestro boletín para recibir las últimas novedades y descuentos exclusivos directamente en tu correo.</p>
+                <form class="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
+                    <input class="w-full px-5 py-3 rounded-lg text-text-main focus:ring-2 focus:ring-blue-300 border-none outline-none" 
+                           placeholder="Tu correo electrónico" 
+                           type="email" 
+                           disabled 
+                           title="Próximamente">
+                    <button class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg transition-colors whitespace-nowrap" 
+                            type="submit" 
+                            disabled
+                            title="Próximamente">
+                        Suscribirse
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+    
     <!-- Footer -->
-    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
-        <div class="container">
-            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
-                <!-- Brand Section -->
-                <div class="footer-section">
-                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">detodoya.com</h3>
-                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
-                        Catálogo profesional de productos. Showcase completo para complementar tus ventas en marketplace.
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 bg-primary rounded-md flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
+                        </div>
+                        <span class="text-lg font-bold text-text-main">detodoya.com</span>
+                    </div>
+                    <p class="text-text-secondary text-sm leading-relaxed">
+                        Tu destino confiable para encontrar productos de calidad al mejor precio. Exploramos el mundo para traerte lo mejor.
                     </p>
-                    <div class="social-links" style="display: flex; gap: 15px;">
-                        <a href="https://www.instagram.com/detodoya" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-instagram"></i>
+                    <div class="flex gap-4 mt-2">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
                         </a>
-                        <!-- Facebook - Comentado temporalmente
-                        <a href="https://www.facebook.com/detodoya" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        -->
-                        <a href="https://wa.me/5491159293920" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-whatsapp"></i>
+                        <a href="https://wa.me/5491159293920" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Navigation Links -->
-                <div class="footer-section">
-                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
-                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 10px;">
-                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
-                        </li>
+                <!-- Links 1 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/" class="hover:text-primary transition-colors">Inicio</a></li>
+                        <li><a href="/catalog" class="hover:text-primary transition-colors">Catálogo Completo</a></li>
+                        <li><a href="/about" class="hover:text-primary transition-colors">Sobre Nosotros</a></li>
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links 2 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Ayuda & Soporte</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Términos y Condiciones</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidad</a></li>
                     </ul>
                 </div>
                 
                 <!-- Contact Info -->
-                <div class="footer-section">
-                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
-                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Contáctanos</h4>
+                    <ul class="space-y-4 text-sm text-text-secondary">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">location_on</span>
+                            <span>Buenos Aires, Argentina</span>
                         </li>
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 5929-3920</span>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">call</span>
+                            <span>+54 9 11 5929-3920</span>
                         </li>
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@detodoya.com</span>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">mail</span>
+                            <span>info@detodoya.com</span>
                         </li>
                     </ul>
                 </div>
-                
             </div>
             
-            <!-- Footer Bottom -->
-            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                    © 2025 detodoya.com. Todos los derechos reservados.
-                </p>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                        Desarrollado por
-                    </p>
-                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
-                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                        Lucerogustavo Si
-                    </p>
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+                <p>© 2025 detodoya.com. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-2">
+                    <p>Desarrollado por</p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" class="h-8 w-auto">
+                    <p>Lucerogustavo Si</p>
                 </div>
             </div>
         </div>
     </footer>
-
+    
+    <!-- WhatsApp Button Flotante -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" 
+       target="_blank"
+       aria-label="Contactar por WhatsApp">
+        <span class="material-symbols-outlined">chat</span>
+    </a>
+    
     <!-- Scripts -->
     <!-- Swiper JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Favorites JS -->
+    <script src="/js/favorites.js"></script>
+    
     <script>
-        // Función para toggle del menú móvil
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('navMenuMobile');
-            const overlay = document.getElementById('navOverlay');
-            
-            mobileMenu.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
-        
-        // Función para cerrar el menú móvil
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('navMenuMobile');
-            const overlay = document.getElementById('navOverlay');
-            
-            mobileMenu.classList.remove('active');
-            overlay.classList.remove('active');
-        }
-        
-        // Función para ir a la categoría
-        function goToCategory(element) {
-            const categoryName = element.getAttribute('data-category-name');
-            console.log('🔄 [CARRUSEL] Clic en categoría:', categoryName);
-            
-            // Efecto visual de clic
-            element.style.transform = 'scale(0.95)';
-            element.style.opacity = '0.8';
-            
-            setTimeout(() => {
-                element.style.transform = 'scale(1)';
-                element.style.opacity = '1';
-            }, 150);
-            
-            const url = '/catalog?category=' + encodeURIComponent(categoryName);
-            console.log('🔄 [CARRUSEL] Redirigiendo a:', url);
-            
-            // Pequeño delay para mostrar el efecto visual
-            setTimeout(() => {
-                window.location.href = url;
-            }, 200);
-        }
-        
-        
         // Variables del carrusel Swiper
         let categoriesSwiper = null;
         
@@ -1075,180 +546,111 @@
             
             // Calcular slides por vista según el tamaño de pantalla
             let slidesPerView = 4;
-            let spaceBetween = 8;
+            let spaceBetween = 16;
             
             if (window.innerWidth <= 768) {
                 slidesPerView = 2;
-                spaceBetween = 8;
+                spaceBetween = 12;
             } else if (window.innerWidth <= 1024) {
                 slidesPerView = 3;
-                spaceBetween = 8;
+                spaceBetween = 16;
             }
             
             console.log(`🚀 Inicializando Swiper: ${slidesPerView} slides por vista`);
             
             categoriesSwiper = new Swiper('#categoriesSwiper', {
                 slidesPerView: slidesPerView,
-                spaceBetween: spaceBetween,
-                loop: true,
+                spaceBetween: 16,
+                loop: false,
                 autoplay: false,
                 navigation: {
                     nextEl: '#nextBtn',
                     prevEl: '#prevBtn',
                 },
-                // Paginación removida - sin puntitos
                 breakpoints: {
                     320: {
                         slidesPerView: 2,
-                        spaceBetween: 8
+                        spaceBetween: 12
+                    },
+                    640: {
+                        slidesPerView: 3,
+                        spaceBetween: 16
                     },
                     768: {
-                        slidesPerView: 3,
-                        spaceBetween: 8
+                        slidesPerView: 4,
+                        spaceBetween: 16
                     },
                     1024: {
-                        slidesPerView: 4,
-                        spaceBetween: 8
+                        slidesPerView: 5,
+                        spaceBetween: 16
                     }
                 },
                 on: {
                     init: function () {
                         console.log('✅ Swiper inicializado correctamente');
-                    },
-                    slideChange: function () {
-                        console.log('🔄 Slide cambiado:', this.activeIndex);
                     }
                 }
             });
         }
+        
+        // Función para ir a la categoría (ya no necesaria, ahora es un enlace directo)
+        
+        // Funciones para Modal de Búsqueda
+        function openSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                // Focus en el input
+                setTimeout(() => {
+                    const input = modal.querySelector('input[name="search"]');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+        
+        function closeSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('searchModal');
+            if (modal && !modal.querySelector('.bg-white').contains(e.target) && !e.target.closest('button[onclick="openSearchModal()"]')) {
+                closeSearchModal();
+            }
+        });
+        
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearchModal();
+            }
+        });
         
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            initCarousel();
-        });
-        
-        // Redimensionar ventana
-        window.addEventListener('resize', function() {
-            initCarousel();
-        });
-        
-        // Función para ir al detalle del producto
-        function goToProduct(element) {
-            const productId = element.getAttribute('data-product-id');
-            console.log('🔄 [PRODUCTO] Clic en producto:', productId);
-            
-            // Efecto visual de clic
-            element.style.transform = 'scale(0.95)';
-            element.style.opacity = '0.8';
-            
-            setTimeout(() => {
-                element.style.transform = 'scale(1)';
-                element.style.opacity = '1';
-            }, 150);
-            
-            const url = '/product/' + productId;
-            console.log('🔄 [PRODUCTO] Redirigiendo a:', url);
-            
-            // Pequeño delay para mostrar el efecto visual
-            setTimeout(() => {
-                window.location.href = url;
-            }, 200);
-        }
-        
-        // Efectos hover para productos
-        document.addEventListener('DOMContentLoaded', function() {
-            const productItems = document.querySelectorAll('.product-card');
-            
-            productItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px)';
-                    this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
-                });
-            });
-            
-            // Inicializar carrusel móvil
-            initMobileCarousel();
-        });
-        
-        // Función para inicializar el carrusel móvil
-        function initMobileCarousel() {
-            const carousel = document.getElementById('categoryCarousel');
-            const dotsContainer = document.getElementById('categoryDots');
-            
-            if (!carousel || !dotsContainer) return;
-            
-            const slides = carousel.querySelectorAll('.carousel-slide');
-            const totalSlides = slides.length;
-            const slidesPerView = 2;
-            const totalPages = Math.ceil(totalSlides / slidesPerView);
-            let currentPage = 0;
-            
-            // Crear dots
-            for (let i = 0; i < totalPages; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'carousel-dot';
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToPage(i));
-                dotsContainer.appendChild(dot);
+            // Inicializar carrusel
+            const swiperContainer = document.getElementById('categoriesSwiper');
+            if (swiperContainer) {
+                initCarousel();
             }
             
-            // Función para ir a una página específica
-            function goToPage(page) {
-                currentPage = page;
-                const translateX = -page * 100;
-                carousel.style.transform = `translateX(${translateX}%)`;
-                
-                // Actualizar dots
-                const dots = dotsContainer.querySelectorAll('.carousel-dot');
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === page);
-                });
-            }
-            
-            // Touch/swipe support
-            let startX = 0;
-            let isDragging = false;
-            
-            carousel.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                isDragging = true;
-            });
-            
-            carousel.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-            });
-            
-            carousel.addEventListener('touchend', (e) => {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                const endX = e.changedTouches[0].clientX;
-                const diffX = startX - endX;
-                
-                if (Math.abs(diffX) > 50) { // Minimum swipe distance
-                    if (diffX > 0 && currentPage < totalPages - 1) {
-                        goToPage(currentPage + 1);
-                    } else if (diffX < 0 && currentPage > 0) {
-                        goToPage(currentPage - 1);
+            // Re-inicializar en resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    if (swiperContainer) {
+                        initCarousel();
                     }
-                }
+                }, 250);
             });
-            
-            // Auto-advance (opcional)
-            setInterval(() => {
-                if (currentPage < totalPages - 1) {
-                    goToPage(currentPage + 1);
-                } else {
-                    goToPage(0); // Loop back to start
-                }
-            }, 5000); // Change slide every 5 seconds
-        }
+        });
     </script>
 </body>
 </html>

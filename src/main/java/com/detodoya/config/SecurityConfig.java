@@ -19,6 +19,8 @@ public class SecurityConfig {
                 // Rutas públicas - no requieren autenticación
                 .requestMatchers("/", "/catalog", "/product/**", "/contact", "/about", "/uploads/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
+                // API de favoritos - pública (usa sesión)
+                .requestMatchers("/api/favorites/**").permitAll()
                 // Rutas de administración - requieren autenticación
                 .requestMatchers("/admin/**").authenticated()
                 .anyRequest().permitAll() // Cambiar a permitAll para evitar redirecciones
