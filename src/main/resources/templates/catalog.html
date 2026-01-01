@@ -1,1323 +1,498 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es-AR">
 <head>
-    <title>Catálogo de Productos - Detodoya</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/lovely-style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Catálogo de Productos - detodoya.com</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-hover": "#0f6bc9",
+                        "background-light": "#ffffff",
+                        "background-off": "#f9fafb",
+                        "background-dark": "#101922",
+                        "text-main": "#111418",
+                        "text-secondary": "#637588",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        
+        /* Favoritos */
+        .favorite-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .favorite-btn.favorite-active {
+            color: #ef4444;
+        }
+        
+        .favorite-btn.favorite-active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .favorite-btn.favorite-inactive {
+            color: #9ca3af;
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* WhatsApp Button Flotante */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 32px;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-background-off text-text-main flex flex-col min-h-screen overflow-x-hidden">
+    
     <!-- Header -->
-    <header class="header-container">
-        <div class="header-content">
-            <div class="header-top">
-                <a href="/" class="logo">Detodoya</a>
-                
-                <div class="header-nav">
-                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <!-- Overlay para el menú móvil -->
-                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
-                    
-                    <!-- Menú para PC (≥ 769px) -->
-                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/catalog" class="nav-link active">Catálogo</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    <div class="dropdown-grid">
-                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
-                                        <a th:each="category : ${categories}" 
-                                           th:href="@{/catalog(category=${category.name})}" 
-                                           class="dropdown-item" 
-                                           th:text="${category.name}">Categoría</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <!-- Menú para Móvil (≤ 768px) -->
-                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
-                        <li class="nav-item">
-                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Ver Todo</a>
-                        </li>
-                        <li class="nav-item" th:each="category : ${categories}">
-                            <a th:href="@{/catalog(category=${category.name})}" 
-                               class="nav-link" 
-                               th:text="${category.name}"
-                               onclick="closeMobileMenu()">Categoría</a>
-                        </li>
-                    </ul>
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">shopping_bag</span>
+                    </div>
+                    <a href="/" class="text-xl sm:text-2xl font-bold tracking-tight text-text-main hover:text-primary transition-colors">
+                        detodoya.com
+                    </a>
                 </div>
                 
-                <div class="header-actions">
-                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
-                    <div class="search-bar" id="searchBar">
-                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-sm font-medium text-text-main hover:text-primary transition-colors">Inicio</a>
+                    <a href="/catalog" class="text-sm font-medium text-primary transition-colors">Catálogo</a>
+                    <div class="relative group">
+                        <a href="javascript:void(0)" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Categorías</a>
+                        <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="p-2">
+                                <a href="/catalog" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Ver Todo</a>
+                                <a th:each="category : ${categories}" 
+                                   th:href="@{/catalog(category=${category.name})}" 
+                                   th:text="${category.name}"
+                                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="header-icons">
-                        <!-- Search icon - only visible on mobile -->
-                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <a href="https://www.instagram.com/detodoya" class="header-icon" title="Instagram" target="_blank">
-                            <i class="bi bi-instagram"></i>
+                </nav>
+                
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button aria-label="Search" onclick="openSearchModal()" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                    <div class="hidden sm:flex gap-1">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#E4405F] transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
                         </a>
-                        <a href="https://www.facebook.com/detodoya" class="header-icon" title="Facebook" target="_blank">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="https://wa.me/5491159293920" class="header-icon" title="WhatsApp" target="_blank">
-                            <i class="bi bi-whatsapp"></i>
-                        </a>
-                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
-                            <i class="bi bi-gear"></i>
+                        <a href="https://wa.me/5491159293920" target="_blank" aria-label="WhatsApp" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#25D366] transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
                         </a>
                     </div>
+                    <div class="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
+                    <!-- Carrito (sin funcionalidad) -->
+                    <button aria-label="Carrito" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors" title="Próximamente">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary rounded-full">0</span>
+                    </button>
+                    <a href="/admin/login" class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-sm hover:shadow-md" target="_blank">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">admin_panel_settings</span>
+                        <span class="hidden sm:inline">Admin</span>
+                    </a>
                 </div>
             </div>
         </div>
     </header>
-
-    <!-- Título del Catálogo -->
-    <section class="catalog-title-section">
-        <h1 class="catalog-title">Catálogo</h1>
-    </section>
-
-    <!-- Filtros Modernos -->
-    <section class="filters-section">
-        <div class="filters desktop-filters">
-            <div class="filter-group">
-                <span style="font-weight: 600; margin-right: 10px;">Filtros:</span>
-                <a href="/catalog" 
-                   class="filter-btn" 
-                   th:classappend="${selectedCategory == null} ? 'active' : ''"
-                   style="text-decoration: none; color: inherit;">Todos</a>
-                <a th:each="category : ${categories}" 
-                   th:href="@{/catalog(category=${category.name})}" 
-                   class="filter-btn" 
-                   th:classappend="${selectedCategory != null and selectedCategory.equals(category.name)} ? 'active' : ''"
-                   th:data-category="${category.name}"
-                   th:text="${category.name}"
-                   style="text-decoration: none; color: inherit;">Categoría</a>
-                
-                <div class="search-container" style="margin-left: auto;">
-                    <form method="GET" action="/catalog" id="searchForm">
-                        <div class="search-input" style="position: relative; display: flex; align-items: center; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; min-width: 250px;">
-                            <input type="text" 
-                                   id="searchInput" 
-                                   name="search" 
-                                   placeholder="Buscar productos..." 
-                                   th:value="${search != null ? search : ''}"
-                                   style="border: none; outline: none; flex: 1; font-size: 14px; background: transparent;">
-                            <i class="bi bi-search" style="color: #666; font-size: 16px; margin-left: 8px;"></i>
-                        </div>
-                    </form>
+    
+    <main class="flex-grow">
+        <!-- Page Header & Title -->
+        <header class="bg-white pt-8 pb-6 border-b border-gray-200">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Breadcrumb -->
+                <nav aria-label="Breadcrumb" class="flex mb-4">
+                    <ol class="flex items-center space-x-2 text-sm text-gray-500">
+                        <li><a class="hover:text-primary transition-colors" href="/">Inicio</a></li>
+                        <li><span class="material-symbols-outlined text-base mx-1">chevron_right</span></li>
+                        <li aria-current="page" class="font-medium text-text-main">
+                            <span th:if="${selectedCategory != null}" th:text="${selectedCategory}">Categoría</span>
+                            <span th:if="${selectedCategory == null}">Todos los Productos</span>
+                        </li>
+                    </ol>
+                </nav>
+                <div class="md:flex md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-text-main">Explora Nuestro Catálogo</h1>
+                        <p class="mt-2 text-text-secondary max-w-2xl">Encuentra tecnología, hogar y estilo de vida con la mejor calidad del mercado.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Products Section -->
-    <section class="products-section">
-        <div class="products-grid">
-                <div th:each="product : ${products}" 
-                     class="product-card"
-                     th:data-product-id="${product.pId}"
-                     onclick="goToProduct(this)">
-                    <div class="product-image-container">
-                            <!-- Calcular si es video usando th:with -->
-                            <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
-                                           isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
-                                <!-- Mostrar video si es video -->
-                                <video th:if="${isVideo}" 
-                                     th:src="${product.getImagenPrincipalUrl()}" 
-                                     th:title="${product.name}" 
-                                     class="product-image"
-                                     muted loop autoplay
-                                     style="width: 100%; height: 100%; object-fit: cover;"></video>
-                                <!-- Mostrar imagen si no es video -->
-                                <img th:if="${!isVideo and imagenPrincipal != null}" 
-                                     th:src="${product.getImagenPrincipalUrl()}" 
-                                     th:alt="${product.name}" 
-                                     class="product-image">
+        </header>
+        
+        <!-- Filter & Search Toolbar -->
+        <div class="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 py-4 shadow-sm">
+            <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                    <!-- Filters Group -->
+                    <div class="flex flex-wrap gap-3 w-full lg:w-auto items-center">
+                        <!-- Search Input -->
+                        <form method="GET" action="/catalog" class="relative w-full sm:w-64">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="material-symbols-outlined text-gray-400">search</span>
                             </div>
-                            <img th:if="${product.images == null or product.images.empty}" 
-                                 src="https://via.placeholder.com/350x350/f8f9fa/666666?text=Detodoya" 
-                                 th:alt="${product.name}" 
-                                 class="product-image">
+                            <input type="text" 
+                                   name="search" 
+                                   th:value="${search != null ? search : ''}"
+                                   placeholder="Buscar productos..." 
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white text-text-main placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition-shadow shadow-sm"
+                                   onkeypress="if(event.key === 'Enter') this.form.submit();">
+                            <input th:if="${selectedCategory != null}" type="hidden" name="category" th:value="${selectedCategory}">
+                        </form>
+                        
+                        <!-- Category Filter Buttons -->
+                        <div class="flex flex-wrap gap-2">
+                            <a href="/catalog" 
+                               th:classappend="${selectedCategory == null} ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300 hover:border-primary'"
+                               class="px-4 py-2 rounded-lg border text-sm font-medium transition-colors">
+                                Todos
+                            </a>
+                            <a th:each="category : ${categories}" 
+                               th:href="@{/catalog(category=${category.name})}"
+                               th:classappend="${selectedCategory != null and selectedCategory.equals(category.name)} ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300 hover:border-primary'"
+                               th:text="${category.name}"
+                               class="px-4 py-2 rounded-lg border text-sm font-medium transition-colors">
+                                Categoría
+                            </a>
                         </div>
-                        <div class="product-info">
-                            <h3 class="product-name" th:text="${product.name}">Nombre del Producto</h3>
-                            <div class="product-price-container">
-                                <div class="product-price">
-                                    <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
-                                          class="product-price-original" th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}">$0</span>
-                                    <span th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}">$0</span>
-                                    <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
-                                          class="product-discount" th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '%'">-0%</span>
-                                </div>
-                                <!-- Etiqueta promocional -->
-                                <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
-                                     class="product-promo-label"
-                                     th:text="${product.etiquetaPromocional}">
-                                </div>
-                            </div>
-                            <div class="product-colors" th:if="${product.coloresDisponibles != null and !#strings.isEmpty(product.coloresDisponibles)}">
-                                <div th:each="color : ${#strings.arraySplit(product.coloresDisponibles, ',')}" 
-                                     class="color-dot" 
-                                     th:style="'background-color: ' + ${color.trim()}" 
-                                     th:title="${color.trim()}"></div>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <!-- Results Count -->
+                    <div class="text-sm text-text-secondary">
+                        <span th:text="${#lists.size(products)}">0</span> producto(s) encontrado(s)
+                    </div>
                 </div>
+            </div>
         </div>
         
-        <!-- Mensaje si no hay productos -->
-        <div th:if="${#lists.isEmpty(products)}" class="text-center py-5">
-            <div class="empty-state">
-            <i class="bi bi-box-seam" style="font-size: 5rem; color: #667eea; margin-bottom: 2rem;"></i>
-                <h3>No hay productos disponibles</h3>
-                <p class="text-muted">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
-                <a href="/" class="btn btn-Detodoya mt-3">
-                    <i class="bi bi-arrow-left me-2"></i>Volver al Inicio
-                </a>
+        <!-- Main Content Area -->
+        <main class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Product Grid -->
+            <div th:if="${products != null and !products.isEmpty()}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+                <!-- Product Card -->
+                <div th:each="product : ${products}" 
+                     class="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 flex flex-col h-full cursor-pointer"
+                     th:onclick="'window.location.href=\'/product/' + ${product.pId} + '\''">
+                    <div class="relative overflow-hidden aspect-square bg-gray-50">
+                        <!-- Badge de estado -->
+                        <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                              th:text="${product.etiquetaPromocional}"
+                              class="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm uppercase"></span>
+                        <span th:if="${product.esNuevo and (product.etiquetaPromocional == null or product.etiquetaPromocional.isEmpty())}" 
+                              class="absolute top-3 left-3 z-10 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">NUEVO</span>
+                        
+                        <!-- Botón Favorito -->
+                        <button class="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full favorite-btn favorite-inactive transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200"
+                                th:data-product-id="${product.pId}"
+                                th:onclick="'event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(' + ${product.pId} + ', this);'">
+                            <span class="material-symbols-outlined favorite-icon">favorite</span>
+                        </button>
+                        
+                        <!-- Imagen o Video del Producto -->
+                        <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                       isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                            <!-- Mostrar video si es video -->
+                            <video th:if="${isVideo}" 
+                                 th:src="${product.getImagenPrincipalUrl()}" 
+                                 th:title="${product.name}" 
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                 muted loop autoplay></video>
+                            <!-- Mostrar imagen si no es video -->
+                            <img th:if="${!isVideo and imagenPrincipal != null}" 
+                                 th:src="${product.getImagenPrincipalUrl()}" 
+                                 th:alt="${product.name}" 
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <img th:if="${product.images == null or product.images.empty}" 
+                             src="https://via.placeholder.com/400x400/f8f9fa/666666?text=Detodoya" 
+                             th:alt="${product.name}" 
+                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    
+                    <div class="p-5 flex flex-col flex-grow">
+                        <!-- Categoría y Rating (placeholder) -->
+                        <div class="flex items-center mb-2">
+                            <span th:if="${product.categories != null and !product.categories.isEmpty()}" 
+                                  th:text="${product.categories[0].name}"
+                                  class="text-xs font-semibold text-primary uppercase tracking-wider"></span>
+                            <div class="flex items-center ml-auto">
+                                <span class="material-symbols-outlined text-yellow-400 text-sm">star</span>
+                                <span class="text-xs text-gray-500 ml-1">-</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Nombre del Producto -->
+                        <h3 class="text-lg font-bold text-text-main mb-1 group-hover:text-primary transition-colors line-clamp-2" 
+                            th:text="${product.name}">Nombre del Producto</h3>
+                        
+                        <!-- Descripción -->
+                        <p th:if="${product.descripcion != null and !product.descripcion.isEmpty()}" 
+                           th:text="${#strings.abbreviate(product.descripcion, 100)}"
+                           class="text-sm text-text-secondary mb-4 line-clamp-2"></p>
+                        
+                        <!-- Precio y Botón Carrito -->
+                        <div class="mt-auto pt-4 flex items-center justify-between border-t border-gray-100">
+                            <div class="flex flex-col">
+                                <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
+                                      class="text-xs text-gray-400 line-through font-medium mb-1"
+                                      th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
+                                <span class="text-xl font-bold text-text-main"
+                                      th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"></span>
+                            </div>
+                            <!-- Botón Carrito (sin funcionalidad) -->
+                            <button class="p-2 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-colors flex-shrink-0"
+                                    onclick="event.stopPropagation();"
+                                    title="Próximamente">
+                                <span class="material-symbols-outlined">add_shopping_cart</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Colores Disponibles -->
+                        <div th:if="${product.coloresDisponibles != null and !#strings.isEmpty(product.coloresDisponibles)}" 
+                             class="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                            <div th:each="color : ${#strings.arraySplit(product.coloresDisponibles, ',')}" 
+                                 class="w-5 h-5 rounded-full border border-gray-200" 
+                                 th:style="'background-color: ' + ${color.trim()}" 
+                                 th:title="${color.trim()}"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <!-- Mensaje si no hay productos -->
+            <div th:if="${products == null or products.isEmpty()}" class="text-center py-16">
+                <div class="max-w-md mx-auto">
+                    <span class="material-symbols-outlined text-6xl text-gray-400 mb-4">inventory_2</span>
+                    <h3 class="text-2xl font-bold text-text-main mb-2">No hay productos disponibles</h3>
+                    <p class="text-text-secondary mb-6">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
+                    <a href="/" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </main>
+    </main>
+    
+    <!-- Modal de Búsqueda -->
+    <div id="searchModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 p-6 relative">
+            <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h3 class="text-2xl font-bold text-text-main mb-4">Buscar Productos</h3>
+            <form action="/catalog" method="get" class="flex gap-3">
+                <div class="flex-1 relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                        <span class="material-symbols-outlined">search</span>
+                    </span>
+                    <input type="text" 
+                           name="search" 
+                           placeholder="Buscar productos..." 
+                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                           autofocus>
+                    <input th:if="${selectedCategory != null}" type="hidden" name="category" th:value="${selectedCategory}">
+                </div>
+                <button type="submit" class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined">search</span>
+                    Buscar
+                </button>
+            </form>
         </div>
-    </section>
-
-
-    <!-- WhatsApp Button -->
-    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
-       class="whatsapp-button" target="_blank">
-        <i class="bi bi-whatsapp"></i>
-    </a>
-
+    </div>
+    
     <!-- Footer -->
-    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
-        <div class="container">
-            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
-                <!-- Brand Section -->
-                <div class="footer-section">
-                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
-                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
-                        Indumentaria con estilo y personalidad. Cada prenda está diseñada para que te sientas único y cómodo.
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 bg-primary rounded-md flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
+                        </div>
+                        <span class="text-lg font-bold text-text-main">detodoya.com</span>
+                    </div>
+                    <p class="text-text-secondary text-sm leading-relaxed">
+                        Tu destino confiable para encontrar productos de calidad al mejor precio. Exploramos el mundo para traerte lo mejor.
                     </p>
-                    <div class="social-links" style="display: flex; gap: 15px;">
-                        <a href="https://www.instagram.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-instagram"></i>
+                    <div class="flex gap-4 mt-2">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
                         </a>
-                        <a href="https://www.facebook.com/detodoya" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-facebook"></i>
-                        </a>
-                        <a href="https://wa.me/5491159293920" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-whatsapp"></i>
-                        </a>
-                        <a href="mailto:info@Detodoyadenim.com" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
-                            <i class="bi bi-envelope"></i>
+                        <a href="https://wa.me/5491159293920" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Navigation Links -->
-                <div class="footer-section">
-                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
-                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 10px;">
-                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
-                        </li>
-                        <li style="margin-bottom: 10px;">
-                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
-                        </li>
+                <!-- Links 1 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/" class="hover:text-primary transition-colors">Inicio</a></li>
+                        <li><a href="/catalog" class="hover:text-primary transition-colors">Catálogo Completo</a></li>
+                        <li><a href="/about" class="hover:text-primary transition-colors">Sobre Nosotros</a></li>
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links 2 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Ayuda & Soporte</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Términos y Condiciones</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidad</a></li>
                     </ul>
                 </div>
                 
                 <!-- Contact Info -->
-                <div class="footer-section">
-                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
-                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Contáctanos</h4>
+                    <ul class="space-y-4 text-sm text-text-secondary">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">location_on</span>
+                            <span>Buenos Aires, Argentina</span>
                         </li>
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">+54 9 11 1234-5678</span>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">call</span>
+                            <span>+54 9 11 5929-3920</span>
                         </li>
-                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
-                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">info@Detodoyadenim.com</span>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">mail</span>
+                            <span>info@detodoya.com</span>
                         </li>
                     </ul>
                 </div>
-                
             </div>
             
-            <!-- Footer Bottom -->
-            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                    © 2025 Detodoya. Todos los derechos reservados.
-                </p>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                        Desarrollado por
-                    </p>
-                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
-                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
-                        Lucerogustavo Si
-                    </p>
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+                <p>© 2025 detodoya.com. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-2">
+                    <p>Desarrollado por</p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" class="h-8 w-auto">
+                    <p>Lucerogustavo Si</p>
                 </div>
             </div>
         </div>
     </footer>
-
-    <style>
-        /* Responsive Footer */
-        @media (max-width: 768px) {
-            .footer {
-                padding: 25px 0 15px !important;
-                margin-top: 60px !important;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-                margin-bottom: 20px !important;
-            }
-            
-            .footer-section {
-                position: relative;
-                padding-bottom: 15px;
-            }
-            
-            .footer-section:not(:last-child)::after {
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 1px;
-                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
-                margin-top: 15px;
-            }
-            
-            .footer-title {
-                margin-bottom: 12px !important;
-                font-size: 13px !important;
-            }
-            
-            .footer-section p {
-                margin-bottom: 12px !important;
-                font-size: 13px !important;
-            }
-            
-            .social-links {
-                margin-bottom: 0 !important;
-            }
-            
-            .footer-links li {
-                margin-bottom: 8px !important;
-            }
-            
-            .newsletter-form {
-                margin-top: 0 !important;
-            }
-            
-            .footer-bottom {
-                flex-direction: column !important;
-                gap: 8px !important;
-                text-align: center !important;
-                padding-top: 15px !important;
-            }
-        }
-    </style>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/whatsapp.js"></script>
+    
+    <!-- WhatsApp Button Flotante -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" 
+       target="_blank"
+       aria-label="Contactar por WhatsApp">
+        <span class="material-symbols-outlined">chat</span>
+    </a>
+    
+    <!-- Scripts -->
+    <!-- Favorites JS -->
+    <script src="/js/favorites.js"></script>
+    
     <script>
-        // Búsqueda de productos
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const searchForm = document.getElementById('searchForm');
-            let searchTimeout;
-            
-            // Búsqueda automática al escribir (con delay)
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    searchForm.submit();
-                }, 500); // Esperar 500ms después de que el usuario deje de escribir
-            });
-            
-            // Búsqueda al presionar Enter
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    clearTimeout(searchTimeout);
-                    searchForm.submit();
-                }
-            });
-        });
-    </script>
-    <script>
-        // Dropdown functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdowns = document.querySelectorAll('.dropdown');
-            
-            dropdowns.forEach(dropdown => {
-                const toggle = dropdown.querySelector('.dropdown-toggle');
-                
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Close other dropdowns
-                    dropdowns.forEach(otherDropdown => {
-                        if (otherDropdown !== dropdown) {
-                            otherDropdown.classList.remove('active');
-                        }
-                    });
-                    
-                    // Toggle current dropdown
-                    dropdown.classList.toggle('active');
-                });
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.dropdown')) {
-                    dropdowns.forEach(dropdown => {
-                        dropdown.classList.remove('active');
-                    });
-                }
-            });
-        });
-    </script>
-    <script>
-        // Efecto de scroll en navbar
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar-Detodoya');
-            if (window.scrollY > 50) {
-                navbar.style.background = 'rgba(102, 126, 234, 0.95)';
-                navbar.style.backdropFilter = 'blur(10px)';
-            } else {
-                navbar.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                navbar.style.backdropFilter = 'none';
+        // Funciones para Modal de Búsqueda
+        function openSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                // Focus en el input
+                setTimeout(() => {
+                    const input = modal.querySelector('input[name="search"]');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+        
+        function closeSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('searchModal');
+            if (modal && !modal.querySelector('.bg-white').contains(e.target) && !e.target.closest('button[onclick="openSearchModal()"]')) {
+                closeSearchModal();
             }
         });
-
-        // Filtros de productos modernos
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                const category = this.getAttribute('data-category');
-                filterProducts(category);
-            });
-        });
-
-        // Búsqueda de productos moderna
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            searchProducts(searchTerm);
-        });
-
-        // Ordenamiento de productos
-        document.getElementById('sortSelect').addEventListener('change', function() {
-            const sortBy = this.value;
-            sortProducts(sortBy);
-        });
-
-        // Funciones de filtrado, búsqueda y ordenamiento
-        function filterProducts(category) {
-            const products = document.querySelectorAll('.product-card');
-            products.forEach(product => {
-                const productCategory = product.getAttribute('data-category');
-                if (category === 'all' || productCategory === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        function searchProducts(searchTerm) {
-            const products = document.querySelectorAll('.product-card');
-            products.forEach(product => {
-                const title = product.querySelector('.product-title').textContent.toLowerCase();
-                const brand = product.querySelector('.product-brand').textContent.toLowerCase();
-                const isVisible = product.style.display !== 'none';
-                
-                if (isVisible && (title.includes(searchTerm) || brand.includes(searchTerm))) {
-                    product.style.display = 'block';
-                } else if (isVisible) {
-                    product.style.display = 'none';
-                }
-            });
-        }
-
-        function sortProducts(sortBy) {
-            const container = document.querySelector('.products-grid');
-            const products = Array.from(container.querySelectorAll('.product-card'));
-            
-            products.sort((a, b) => {
-                switch(sortBy) {
-                    case 'price-asc':
-                        return parseFloat(a.querySelector('.current-price').textContent.replace('$', '').replace(',', '')) - 
-                               parseFloat(b.querySelector('.current-price').textContent.replace('$', '').replace(',', ''));
-                    case 'price-desc':
-                        return parseFloat(b.querySelector('.current-price').textContent.replace('$', '').replace(',', '')) - 
-                               parseFloat(a.querySelector('.current-price').textContent.replace('$', '').replace(',', ''));
-                    case 'name':
-                        return a.querySelector('.product-title').textContent.localeCompare(b.querySelector('.product-title').textContent);
-                    case 'newest':
-                        // Ordenar por badges (nuevos primero)
-                        const aIsNew = a.querySelector('.product-badge.new') !== null;
-                        const bIsNew = b.querySelector('.product-badge.new') !== null;
-                        return bIsNew - aIsNew;
-                    default:
-                        return 0;
-                }
-            });
-            
-            products.forEach(product => container.appendChild(product));
-        }
-
-        // Funciones de interacción con productos
-        function toggleFavorite(productId) {
-            const btn = event.target.closest('.action-btn');
-            const icon = btn.querySelector('i');
-            
-            if (icon.classList.contains('far')) {
-                icon.classList.remove('far');
-                icon.classList.add('fas');
-                btn.style.background = '#ff4757';
-                btn.style.color = 'white';
-                // Aquí podrías agregar lógica para guardar en favoritos
-            } else {
-                icon.classList.remove('fas');
-                icon.classList.add('far');
-                btn.style.background = 'white';
-                btn.style.color = '#333';
-                // Aquí podrías agregar lógica para quitar de favoritos
-            }
-        }
-
-        function quickView(productId) {
-            // Aquí podrías implementar un modal de vista rápida
-            window.location.href = '/product/' + productId;
-        }
-
-        // Colores interactivos
-        document.querySelectorAll('.color-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const parent = this.closest('.product-card');
-                parent.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Animación de entrada para las cards
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.product-card').forEach(card => {
-            observer.observe(card);
-        });
-
-        // Hover en tarjetas
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
-    </script>
-
-    <style>
-        /* Reset y estilos base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fff;
-            color: #000;
-            line-height: 1.6;
-            width: 100%;
-            overflow-x: hidden;
-        }
-        
-        /* Estilos del catálogo moderno */
-        .catalog-title-section {
-            max-width: 1330px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .catalog-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 400;
-            color: #000;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 40px 0 30px 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .filters-section {
-            max-width: 1330px;
-            margin: 0 auto;
-            padding: 0 20px;
-            margin-bottom: 30px;
-        }
-
-        .filters {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            /* El contenido interno de los filtros está a 40px de los bordes (20px section + 20px filters) */
-        }
-
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            border: 1px solid #e0e0e0;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-input {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input i {
-            position: absolute;
-            left: 12px;
-            color: #666;
-            z-index: 2;
-        }
-
-        .search-input input {
-            padding: 8px 12px 8px 35px;
-            border: 1px solid #e0e0e0;
-            border-radius: 20px;
-            width: 250px;
-            font-size: 14px;
-        }
-
-        .search-input input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-        }
-
-        .sort-select {
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-        }
-
-        .products-section {
-            max-width: 1330px !important;
-            margin: 0 auto;
-            padding: 0 20px !important;
-            margin-bottom: 80px;
-            width: 100%;
-            box-sizing: border-box;
-            /* Asegurar que el contenedor ocupe todo el ancho disponible */
-            min-width: 0;
-            /* Sobrescribir estilos de lovely-style.css */
-            background-color: transparent !important;
-        }
-
-        .products-grid {
-            display: grid !important;
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 8px !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            max-width: none !important;
-            box-sizing: border-box;
-            /* Asegurar que el grid use el 100% del ancho disponible */
-            min-width: 0;
-            /* Sobrescribir estilos de lovely-style.css que tienen max-width: 1200px y gap: 15px */
-        }
-        
-        /* Asegurar que las tarjetas ocupen todo el ancho de su celda del grid */
-        .products-grid .product-card {
-            min-width: 0;
-            width: 100%;
-            /* Asegurar que el contenido no desborde */
-            overflow: hidden;
-        }
-
-        @media (max-width: 1024px) {
-            .products-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 8px !important;
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearchModal();
             }
-            
-            .product-image-container {
-                height: 420px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .products-section {
-                padding: 0 20px !important;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-            
-            .product-image-container {
-                height: 300px;
-                overflow: hidden;
-                position: relative;
-                display: block;
-                padding: 0;
-                margin: 0;
-            }
-            
-            /* Asegurar que el div wrapper no interfiera */
-            .product-image-container > div {
-                width: 100% !important;
-                height: 100% !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            /* Forzar que las imágenes llenen completamente el contenedor en móvil */
-            .product-image-container .product-image,
-            .product-image-container img.product-image,
-            .product-image-container video.product-image,
-            .product-image-container > div .product-image,
-            .product-image-container > div img,
-            .product-image-container > div video {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: 100% !important;
-                max-height: 100% !important;
-                min-width: 100% !important;
-                min-height: 100% !important;
-                object-fit: cover !important;
-                object-position: center center !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-            }
-        }
-
-        .product-card {
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .product-image-container {
-            position: relative;
-            width: 100%;
-            height: 480px;
-            overflow: hidden;
-            background: #f8f9fa;
-            flex-shrink: 0;
-            display: block;
-            padding: 0;
-            margin: 0;
-        }
-        
-        /* Asegurar que el div wrapper interno llene el contenedor en escritorio */
-        .product-image-container > div {
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        /* Etiqueta promocional */
-        .product-promo-label {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        
-        .product-promo-label.sale {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-        
-        .product-promo-label.new {
-            background: linear-gradient(135deg, #2ed573, #1e90ff);
-        }
-        
-        .product-promo-label.hot {
-            background: linear-gradient(135deg, #ff9ff3, #f368e0);
-        }
-        
-        .product-promo-label.offer {
-            background: linear-gradient(135deg, #ffa726, #ff7043);
-        }
-
-        .product-image {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            min-width: 100% !important;
-            min-height: 100% !important;
-            object-fit: cover !important;
-            object-position: center center !important;
-            transition: transform 0.3s ease;
-            display: block !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            background-color: #f8f9fa;
-        }
-        
-        /* Asegurar que las imágenes dentro del wrapper también llenen */
-        .product-image-container > div .product-image,
-        .product-image-container > div img,
-        .product-image-container > div video {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            min-width: 100% !important;
-            min-height: 100% !important;
-            object-fit: cover !important;
-            object-position: center center !important;
-            display: block !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-        }
-
-        .product-image-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f8f9fa;
-            color: #ccc;
-            font-size: 3rem;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: #ff4757;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .product-badge.new {
-            background: #2ed573;
-        }
-
-        .product-badge.sale {
-            background: #ff4757;
-        }
-
-        .product-badge.trending {
-            background: #ffa502;
-        }
-
-        .product-actions {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .product-card:hover .product-actions {
-            opacity: 1;
-        }
-
-        .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            transition: all 0.2s ease;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .action-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        .product-info {
-            padding: 20px;
-        }
-
-        .product-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #000;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .product-price-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 5px;
-        }
-
-        .product-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: #000;
-        }
-
-        .product-price-original {
-            font-size: 14px;
-            color: #999;
-            text-decoration: line-through;
-            margin-right: 8px;
-        }
-
-        .product-discount {
-            background: #ff4757;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        .product-colors {
-            display: flex;
-            gap: 6px;
-        }
-
-        .color-option {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid #e0e0e0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .color-option:hover,
-        .color-option.active {
-            border-color: #667eea;
-            transform: scale(1.1);
-        }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 6px;
-        }
-
-        .stars {
-            color: #ffa502;
-            font-size: 12px;
-        }
-
-        .rating-text {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .product-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: auto;
-        }
-
-        .tag {
-            background: #f1f2f6;
-            color: #666;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 500;
-        }
-
-        .tag.trending {
-            background: #ffa502;
-            color: white;
-        }
-
-        .tag.new {
-            background: #2ed573;
-            color: white;
-        }
-
-        .tag.sale {
-            background: #ff4757;
-            color: white;
-        }
-
-        .empty-state {
-            padding: 3rem 0;
-        }
-
-        /* Responsive - Eliminado, ya está manejado arriba */
-
-        @media (max-width: 768px) {
-            .catalog-title {
-                font-size: 24px;
-                margin: 30px 0 20px 0;
-            }
-            
-            .filters-section {
-                padding: 0 20px;
-            }
-
-            .search-input input {
-                width: 200px;
-            }
-            
-            /* Ocultar filtros en móvil */
-            .desktop-filters {
-                display: none !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .catalog-title {
-                font-size: 20px;
-            }
-            
-            .filters-section {
-                padding: 0 15px;
-            }
-            
-            .products-section {
-                padding: 0 15px !important;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 6px !important;
-            }
-            
-            .product-image-container {
-                height: 320px;
-                overflow: hidden;
-                position: relative;
-                display: block;
-                padding: 0;
-                margin: 0;
-            }
-            
-            /* Asegurar que el div wrapper no interfiera */
-            .product-image-container > div {
-                width: 100% !important;
-                height: 100% !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            /* Forzar que las imágenes llenen completamente el contenedor en móvil pequeño */
-            .product-image-container .product-image,
-            .product-image-container img.product-image,
-            .product-image-container video.product-image,
-            .product-image-container > div .product-image,
-            .product-image-container > div img,
-            .product-image-container > div video {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: 100% !important;
-                max-height: 100% !important;
-                min-width: 100% !important;
-                min-height: 100% !important;
-                object-fit: cover !important;
-                object-position: center center !important;
-                display: block !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-            }
-
-            .filter-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-input input {
-                width: 100%;
-            }
-        }
-    </style>
-
-    <script>
-        // Versión ultra-simplificada del menú móvil
-        let isMobileMenuOpen = false;
-        
-        function toggleMobileMenu() {
-            const navMenu = document.getElementById('navMenuMobile');
-            const overlay = document.getElementById('navOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            
-            if (!navMenu || !overlay || !toggle) return;
-            
-            // Prevenir múltiples ejecuciones simultáneas
-            if (toggle.disabled) return;
-            toggle.disabled = true;
-            
-            if (isMobileMenuOpen) {
-                // Cerrar menú
-                navMenu.classList.remove('active');
-                overlay.classList.remove('active');
-                toggle.innerHTML = '<i class="bi bi-list"></i>';
-                isMobileMenuOpen = false;
-            } else {
-                // Abrir menú
-                navMenu.classList.add('active');
-                overlay.classList.add('active');
-                toggle.innerHTML = '<i class="bi bi-x"></i>';
-                isMobileMenuOpen = true;
-            }
-            
-            // Rehabilitar después de un breve delay
-            setTimeout(() => {
-                toggle.disabled = false;
-            }, 50);
-        }
-
-        // Cerrar menú móvil
-        function closeMobileMenu() {
-            const navMenu = document.getElementById('navMenuMobile');
-            const overlay = document.getElementById('navOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            
-            if (navMenu && overlay && toggle) {
-                navMenu.classList.remove('active');
-                overlay.classList.remove('active');
-                toggle.innerHTML = '<i class="bi bi-list"></i>';
-                isMobileMenuOpen = false;
-            }
-        }
-
-        function toggleSearch() {
-            const searchBar = document.getElementById('searchBar');
-            const searchToggle = document.getElementById('searchToggle');
-            
-            if (searchBar.classList.contains('active')) {
-                searchBar.classList.remove('active');
-                searchToggle.innerHTML = '<i class="bi bi-search"></i>';
-            } else {
-                searchBar.classList.add('active');
-                searchToggle.innerHTML = '<i class="bi bi-x"></i>';
-                // Focus on search input when opened
-                searchBar.querySelector('.search-input').focus();
-            }
-        }
-
-        // Función para ir al detalle del producto
-        function goToProduct(element) {
-            const productId = element.getAttribute('data-product-id');
-            console.log('🔄 [PRODUCTO] Clic en producto:', productId);
-            
-            // Efecto visual de clic
-            element.style.transform = 'scale(0.95)';
-            element.style.opacity = '0.8';
-            
-            setTimeout(() => {
-                element.style.transform = 'scale(1)';
-                element.style.opacity = '1';
-            }, 150);
-            
-            const url = '/product/' + productId;
-            console.log('🔄 [PRODUCTO] Redirigiendo a:', url);
-            
-            // Pequeño delay para mostrar el efecto visual
-            setTimeout(() => {
-                window.location.href = url;
-            }, 200);
-        }
-
-        // Initialize event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchToggle = document.getElementById('searchToggle');
-            if (searchToggle) {
-                searchToggle.addEventListener('click', toggleSearch);
-            }
-
-            // Dropdown functionality - Solo en PC
-            const dropdownToggle = document.querySelector('.dropdown-toggle');
-            if (dropdownToggle) {
-                dropdownToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const dropdown = this.closest('.dropdown');
-                    
-                    // Solo funcionar en PC (≥ 769px)
-                    if (window.innerWidth >= 769) {
-                        dropdown.classList.toggle('active');
-                    }
-                });
-            }
-
-            // Cerrar menú móvil al hacer clic en enlaces
-            document.querySelectorAll('.nav-menu-mobile .nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    closeMobileMenu();
-                });
-            });
-
-            // Cerrar menú móvil al hacer clic en el overlay
-            const overlay = document.getElementById('navOverlay');
-            if (overlay) {
-                overlay.addEventListener('click', closeMobileMenu);
-            }
-
-            // Manejar resize de ventana
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 768) {
-                    closeMobileMenu();
-                }
-            });
         });
     </script>
 </body>

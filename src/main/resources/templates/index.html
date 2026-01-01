@@ -362,7 +362,7 @@
                             <!-- Botón Favorito -->
                             <button class="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full favorite-btn favorite-inactive transition-colors opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 duration-200"
                                     th:data-product-id="${product.pId}"
-                                    onclick="event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(${product.pId}, this);">
+                                    th:onclick="'event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(' + ${product.pId} + ', this);'">
                                 <span class="material-symbols-outlined favorite-icon">favorite</span>
                             </button>
                             
@@ -410,7 +410,7 @@
                                 <!-- Botón Favorito (siempre visible en móvil) -->
                                 <button class="md:hidden favorite-btn favorite-inactive p-2 rounded-full hover:bg-gray-100 transition-colors"
                                         th:data-product-id="${product.pId}"
-                                        onclick="event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(${product.pId}, this);">
+                                        th:onclick="'event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(' + ${product.pId} + ', this);'">
                                     <span class="material-symbols-outlined favorite-icon">favorite</span>
                                 </button>
                             </div>
