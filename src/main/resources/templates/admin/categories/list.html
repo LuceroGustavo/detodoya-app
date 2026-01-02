@@ -275,7 +275,7 @@
                 // Usar fetch para hacer la actualización en segundo plano
                 const formData = new FormData();
                 
-                const response = await fetch('/admin/categories/update-product-counts', {
+                const response = await fetch(window.location.origin + '/admin/categories/update-product-counts', {
                     method: 'POST',
                     body: formData,
                     credentials: 'same-origin'

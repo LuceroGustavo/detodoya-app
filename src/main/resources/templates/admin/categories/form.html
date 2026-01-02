@@ -437,7 +437,7 @@
                                 const formData = new FormData(this);
                                 formData.delete('imageFile'); // Remover el archivo del FormData inicial
                                 
-                                const createResponse = await fetch('/admin/categories/create-json', {
+                                const createResponse = await fetch(window.location.origin + '/admin/categories/create-json', {
                                     method: 'POST',
                                     body: formData
                                 });
@@ -463,7 +463,7 @@
                                         
                                         // Buscar la categoría existente por nombre
                                         const categoryName = document.getElementById('name').value;
-                                        const searchResponse = await fetch(`/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
+                                        const searchResponse = await fetch(`${window.location.origin}/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
                                         const searchResult = await searchResponse.json();
                                         
                                         if (searchResult && searchResult.length > 0) {
@@ -814,7 +814,7 @@
             try {
                 console.log('🔄 [JS] Actualizando estado del carrusel para categoría:', categoryId, 'showInCarousel:', showInCarousel);
                 
-                const response = await fetch(`/admin/categories/${categoryId}/update-carousel-status`, {
+                const response = await fetch(`${window.location.origin}/admin/categories/${categoryId}/update-carousel-status`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -857,9 +857,10 @@
             formData.append('file', file);
             
             try {
-                const response = await fetch(`/admin/categories/${categoryId}/upload-image`, {
+                const response = await fetch(`${window.location.origin}/admin/categories/${categoryId}/upload-image`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    credentials: 'same-origin'
                 });
                 
                 console.log('📡 Respuesta del servidor:', response.status);
@@ -979,7 +980,7 @@
         // Función para establecer el siguiente orden del carrusel
         async function setNextCarouselOrder() {
             try {
-                const response = await fetch('/admin/categories/next-carousel-order');
+                const response = await fetch(window.location.origin + '/admin/categories/next-carousel-order');
                 const result = await response.json();
                 
                 if (result.success) {
