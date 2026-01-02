@@ -337,7 +337,7 @@
         async function handleUpdateCounters() {
             const confirmed = await DetodoyaMessages.confirm('¿Actualizar contadores de productos de todas las categorías?');
             if (confirmed) {
-                window.location.href = '/admin/categories/update-product-counts';
+                window.location.href = window.location.origin + '/admin/categories/update-product-counts';
             }
         }
 

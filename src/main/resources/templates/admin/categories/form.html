@@ -402,6 +402,186 @@
             } else {
                 console.log('❌ Checkbox del carrusel no encontrado');
             }
+            
+            // Manejar envío del formulario
+            const form = document.querySelector('form');
+            if (!form) {
+                console.error('❌ Formulario no encontrado');
+            } else {
+                console.log('✅ Formulario encontrado, registrando listener de submit');
+                form.addEventListener('submit', async function(e) {
+                    console.log('🔄 Formulario enviado, verificando imagen...');
+                    const imageFile = document.getElementById('imageFile');
+                    const categoryId = document.querySelector('input[name="category.id"]')?.value;
+                    const isNewCategory = !categoryId || categoryId === '';
+                    
+                    console.log('📋 Estado:', {
+                        imageFile: imageFile ? 'existe' : 'no existe',
+                        filesLength: imageFile ? imageFile.files.length : 0,
+                        categoryId: categoryId,
+                        isNewCategory: isNewCategory
+                    });
+                    
+                    // Si hay una imagen nueva, interceptar el envío
+                    if (imageFile && imageFile.files.length > 0) {
+                        console.log('✅ Imagen detectada, interceptando envío...');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        try {
+                            if (isNewCategory) {
+                                // Para categorías nuevas: crear primero la categoría, luego subir imagen
+                                showAlert('Creando categoría...', 'info');
+                                
+                                // Crear la categoría primero (sin imagen)
+                                const formData = new FormData(this);
+                                formData.delete('imageFile'); // Remover el archivo del FormData inicial
+                                
+                                const createResponse = await fetch('/admin/categories/create-json', {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                
+                                const createResult = await createResponse.json();
+                                
+                                if (createResult.success) {
+                                    const newCategoryId = createResult.categoryId;
+                                    showAlert('Categoría creada. Subiendo imagen...', 'info');
+                                    
+                                    // Ahora subir la imagen con el ID de la categoría creada
+                                    await uploadImage(newCategoryId, imageFile.files[0]);
+                                    
+                                    // Redirigir a la lista de categorías
+                                    showAlert('Categoría creada e imagen subida correctamente', 'success');
+                                    setTimeout(() => {
+                                        window.location.href = '/admin/categories';
+                                    }, 2000);
+                                } else {
+                                    // Si la categoría ya existe, buscar su ID y subir la imagen
+                                    if (createResult.message.includes('Ya existe una categoría')) {
+                                        showAlert('Categoría ya existe. Buscando categoría...', 'info');
+                                        
+                                        // Buscar la categoría existente por nombre
+                                        const categoryName = document.getElementById('name').value;
+                                        const searchResponse = await fetch(`/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
+                                        const searchResult = await searchResponse.json();
+                                        
+                                        if (searchResult && searchResult.length > 0) {
+                                            const existingCategory = searchResult[0];
+                                            showAlert('Categoría encontrada. Subiendo imagen...', 'info');
+                                            
+                                            // Subir imagen a la categoría existente
+                                            await uploadImage(existingCategory.id, imageFile.files[0]);
+                                            
+                                            // Redirigir a la lista de categorías
+                                            showAlert('Imagen subida correctamente a la categoría existente', 'success');
+                                            setTimeout(() => {
+                                                window.location.href = '/admin/categories';
+                                            }, 2000);
+                                        } else {
+                                            showAlert('Error: No se pudo encontrar la categoría existente', 'danger');
+                                        }
+                                    } else {
+                                        showAlert('Error al crear la categoría: ' + createResult.message, 'danger');
+                                    }
+                                }
+                            } else {
+                                // Para categorías existentes: actualizar primero, luego subir imagen
+                                console.log('🔄 Actualizando categoría existente ID:', categoryId);
+                                showAlert('Actualizando categoría...', 'info');
+                                
+                                // Enviar el formulario primero (sin la imagen)
+                                const formData = new FormData(this);
+                                formData.delete('imageFile'); // Remover el archivo del FormData
+                                
+                                try {
+                                    console.log('📤 Enviando actualización de categoría a:', this.action);
+                                    const updateResponse = await fetch(this.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        redirect: 'follow', // Seguir redirects automáticamente
+                                        credentials: 'same-origin' // Incluir cookies para autenticación
+                                    });
+                                    
+                                    console.log('📡 Respuesta de actualización:', updateResponse.status, updateResponse.statusText);
+                                    console.log('📡 URL final:', updateResponse.url);
+                                    console.log('📡 Redirected:', updateResponse.redirected);
+                                    console.log('📡 OK:', updateResponse.ok);
+                                    
+                                    // El servidor devuelve un redirect (302) cuando la actualización es exitosa
+                                    // Con redirect: 'follow', el fetch sigue el redirect automáticamente
+                                    // Si llegamos aquí sin error, la actualización fue exitosa
+                                    const responseStatus = updateResponse.status;
+                                    const isSuccess = updateResponse.ok || 
+                                                    updateResponse.redirected || 
+                                                    responseStatus === 302 || 
+                                                    responseStatus === 303 || 
+                                                    responseStatus === 307 || 
+                                                    responseStatus === 308 ||
+                                                    (responseStatus >= 200 && responseStatus < 400);
+                                    
+                                    if (isSuccess) {
+                                        console.log('✅ Actualización exitosa, verificando imagen para subir...');
+                                        console.log('📁 imageFile.files[0]:', imageFile.files[0] ? imageFile.files[0].name : 'no hay archivo');
+                                        
+                                        showAlert('✅ Categoría actualizada correctamente. Subiendo imagen...', 'success');
+                                        
+                                        // Ahora subir la imagen si existe
+                                        if (imageFile.files[0]) {
+                                            console.log('🔄 Iniciando subida de imagen...');
+                                            try {
+                                                await uploadImage(categoryId, imageFile.files[0]);
+                                                console.log('✅ Imagen subida correctamente');
+                                                showAlert('✅ Categoría e imagen actualizadas correctamente', 'success');
+                                                setTimeout(() => {
+                                                    window.location.href = '/admin/categories';
+                                                }, 1500);
+                                            } catch (uploadError) {
+                                                console.error('❌ Error al subir imagen:', uploadError);
+                                                console.error('❌ Stack:', uploadError.stack);
+                                                showAlert('⚠️ Categoría actualizada, pero error al subir imagen: ' + uploadError.message, 'warning');
+                                                setTimeout(() => {
+                                                    window.location.href = '/admin/categories';
+                                                }, 2000);
+                                            }
+                                        } else {
+                                            // No hay imagen para subir, solo redirigir
+                                            console.log('⚠️ No hay imagen para subir, redirigiendo...');
+                                            showAlert('✅ Categoría actualizada correctamente', 'success');
+                                            setTimeout(() => {
+                                                window.location.href = '/admin/categories';
+                                            }, 1500);
+                                        }
+                                    } else {
+                                        // Error real
+                                        let errorMessage = 'Error al actualizar la categoría (HTTP ' + responseStatus + ')';
+                                        try {
+                                            const errorText = await updateResponse.text();
+                                            console.error('❌ Error del servidor:', errorText);
+                                            if (errorText && errorText.length < 500) {
+                                                errorMessage += ': ' + errorText;
+                                            }
+                                        } catch (e) {
+                                            console.error('Error al leer respuesta:', e);
+                                        }
+                                        showAlert(errorMessage, 'danger');
+                                    }
+                                } catch (fetchError) {
+                                    console.error('❌ Error en fetch:', fetchError);
+                                    console.error('❌ Stack:', fetchError.stack);
+                                    showAlert('Error de conexión al actualizar la categoría: ' + fetchError.message, 'danger');
+                                }
+                            }
+                        } catch (error) {
+                            console.error('❌ Error general:', error);
+                            console.error('❌ Stack:', error.stack);
+                            showAlert('Error al procesar: ' + error.message, 'danger');
+                        }
+                    } else {
+                        console.log('ℹ️ No hay imagen nueva, enviando formulario normalmente');
+                    }
+                });
+            }
         });
 
         // Función simple para manejar selección de archivo (basada en product-images.html)
@@ -795,183 +975,6 @@
             }
         }
 
-        // Manejar envío del formulario
-        document.querySelector('form').addEventListener('submit', async function(e) {
-            console.log('🔄 Formulario enviado, verificando imagen...');
-            const imageFile = document.getElementById('imageFile');
-            const categoryId = document.querySelector('input[name="category.id"]')?.value;
-            const isNewCategory = !categoryId || categoryId === '';
-            
-            console.log('📋 Estado:', {
-                imageFile: imageFile ? 'existe' : 'no existe',
-                filesLength: imageFile ? imageFile.files.length : 0,
-                categoryId: categoryId,
-                isNewCategory: isNewCategory
-            });
-            
-            // Si hay una imagen nueva, interceptar el envío
-            if (imageFile && imageFile.files.length > 0) {
-                console.log('✅ Imagen detectada, interceptando envío...');
-                e.preventDefault();
-                e.stopPropagation();
-                
-                try {
-                    if (isNewCategory) {
-                        // Para categorías nuevas: crear primero la categoría, luego subir imagen
-                        showAlert('Creando categoría...', 'info');
-                        
-                        // Crear la categoría primero (sin imagen)
-                        const formData = new FormData(this);
-                        formData.delete('imageFile'); // Remover el archivo del FormData inicial
-                        
-                        const createResponse = await fetch('/admin/categories/create-json', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        const createResult = await createResponse.json();
-                        
-                        if (createResult.success) {
-                            const newCategoryId = createResult.categoryId;
-                            showAlert('Categoría creada. Subiendo imagen...', 'info');
-                            
-                            // Ahora subir la imagen con el ID de la categoría creada
-                            await uploadImage(newCategoryId, imageFile.files[0]);
-                            
-                            // Redirigir a la lista de categorías
-                            showAlert('Categoría creada e imagen subida correctamente', 'success');
-                            setTimeout(() => {
-                                window.location.href = '/admin/categories';
-                            }, 2000);
-                        } else {
-                            // Si la categoría ya existe, buscar su ID y subir la imagen
-                            if (createResult.message.includes('Ya existe una categoría')) {
-                                showAlert('Categoría ya existe. Buscando categoría...', 'info');
-                                
-                                // Buscar la categoría existente por nombre
-                                const categoryName = document.getElementById('name').value;
-                                const searchResponse = await fetch(`/admin/categories/api/search?search=${encodeURIComponent(categoryName)}`);
-                                const searchResult = await searchResponse.json();
-                                
-                                if (searchResult && searchResult.length > 0) {
-                                    const existingCategory = searchResult[0];
-                                    showAlert('Categoría encontrada. Subiendo imagen...', 'info');
-                                    
-                                    // Subir imagen a la categoría existente
-                                    await uploadImage(existingCategory.id, imageFile.files[0]);
-                                    
-                                    // Redirigir a la lista de categorías
-                                    showAlert('Imagen subida correctamente a la categoría existente', 'success');
-                                    setTimeout(() => {
-                                        window.location.href = '/admin/categories';
-                                    }, 2000);
-                                } else {
-                                    showAlert('Error: No se pudo encontrar la categoría existente', 'danger');
-                                }
-                            } else {
-                                showAlert('Error al crear la categoría: ' + createResult.message, 'danger');
-                            }
-                        }
-                    } else {
-                        // Para categorías existentes: actualizar primero, luego subir imagen
-                        console.log('🔄 Actualizando categoría existente ID:', categoryId);
-                        showAlert('Actualizando categoría...', 'info');
-                        
-                        // Enviar el formulario primero (sin la imagen)
-                        const formData = new FormData(this);
-                        formData.delete('imageFile'); // Remover el archivo del FormData
-                        
-                        try {
-                            console.log('📤 Enviando actualización de categoría a:', this.action);
-                            const updateResponse = await fetch(this.action, {
-                                method: 'POST',
-                                body: formData,
-                                redirect: 'follow', // Seguir redirects automáticamente
-                                credentials: 'same-origin' // Incluir cookies para autenticación
-                            });
-                            
-                            console.log('📡 Respuesta de actualización:', updateResponse.status, updateResponse.statusText);
-                            console.log('📡 URL final:', updateResponse.url);
-                            console.log('📡 Redirected:', updateResponse.redirected);
-                            console.log('📡 OK:', updateResponse.ok);
-                            
-                            // El servidor devuelve un redirect (302) cuando la actualización es exitosa
-                            // Con redirect: 'follow', el fetch sigue el redirect automáticamente
-                            // Si llegamos aquí sin error, la actualización fue exitosa
-                            const responseStatus = updateResponse.status;
-                            const isSuccess = updateResponse.ok || 
-                                            updateResponse.redirected || 
-                                            responseStatus === 302 || 
-                                            responseStatus === 303 || 
-                                            responseStatus === 307 || 
-                                            responseStatus === 308 ||
-                                            (responseStatus >= 200 && responseStatus < 400);
-                            
-                            if (isSuccess) {
-                                console.log('✅ Actualización exitosa, verificando imagen para subir...');
-                                console.log('📁 imageFile.files[0]:', imageFile.files[0] ? imageFile.files[0].name : 'no hay archivo');
-                                
-                                showAlert('✅ Categoría actualizada correctamente. Subiendo imagen...', 'success');
-                                
-                                // Ahora subir la imagen si existe
-                                if (imageFile.files[0]) {
-                                    console.log('🔄 Iniciando subida de imagen...');
-                                    try {
-                                        await uploadImage(categoryId, imageFile.files[0]);
-                                        console.log('✅ Imagen subida correctamente');
-                                        showAlert('✅ Categoría e imagen actualizadas correctamente', 'success');
-                                        setTimeout(() => {
-                                            window.location.href = '/admin/categories';
-                                        }, 1500);
-                                    } catch (uploadError) {
-                                        console.error('❌ Error al subir imagen:', uploadError);
-                                        console.error('❌ Stack:', uploadError.stack);
-                                        showAlert('⚠️ Categoría actualizada, pero error al subir imagen: ' + uploadError.message, 'warning');
-                                        setTimeout(() => {
-                                            window.location.href = '/admin/categories';
-                                        }, 2000);
-                                    }
-                                } else {
-                                    // No hay imagen para subir, solo redirigir
-                                    console.log('⚠️ No hay imagen para subir, redirigiendo...');
-                                    showAlert('✅ Categoría actualizada correctamente', 'success');
-                                    setTimeout(() => {
-                                        window.location.href = '/admin/categories';
-                                    }, 1500);
-                                }
-                            } else {
-                                // Error real
-                                let errorMessage = 'Error al actualizar la categoría (HTTP ' + responseStatus + ')';
-                                try {
-                                    const errorText = await updateResponse.text();
-                                    console.error('❌ Error del servidor:', errorText);
-                                    if (errorText && errorText.length < 500) {
-                                        errorMessage += ': ' + errorText;
-                                    }
-                                } catch (e) {
-                                    console.error('Error al leer respuesta:', e);
-                                }
-                                showAlert(errorMessage, 'danger');
-                            }
-                        } catch (fetchError) {
-                            console.error('❌ Error en fetch:', fetchError);
-                            console.error('❌ Stack:', fetchError.stack);
-                            showAlert('Error de conexión al actualizar la categoría: ' + fetchError.message, 'danger');
-                        }
-                    }
-                } catch (error) {
-                    console.error('❌ Error general:', error);
-                    console.error('❌ Stack:', error.stack);
-                    showAlert('Error al procesar: ' + error.message, 'danger');
-                }
-            } else {
-                console.log('ℹ️ No hay imagen nueva, enviando formulario normalmente');
-            }
-                } catch (error) {
-                    showAlert('Error al procesar: ' + error.message, 'danger');
-                }
-            }
-        });
 
         // Función para establecer el siguiente orden del carrusel
         async function setNextCarouselOrder() {
