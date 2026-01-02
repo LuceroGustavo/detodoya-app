@@ -299,7 +299,7 @@
             
             const confirmed = await DetodoyaMessages.confirm(`¿Estás seguro de que quieres ${action} esta categoría en el carrusel del inicio?`);
             if (confirmed) {
-                fetch(`/admin/categories/${categoryId}/toggle-carrusel`, {
+                fetch(`${window.location.origin}/admin/categories/${categoryId}/toggle-carrusel`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -350,7 +350,7 @@
                     buttonElement.style.opacity = '0.6';
                     
                     try {
-                        const response = await fetch(`/admin/categories/delete/${categoryId}`, {
+                        const response = await fetch(`${window.location.origin}/admin/categories/delete/${categoryId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
