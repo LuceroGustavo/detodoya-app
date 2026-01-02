@@ -1,0 +1,56 @@
+# Comandos de Verificación Manual - Ejecutar en el Servidor
+# Copiar y pegar estos comandos uno por uno en el servidor
+
+# ===========================================
+# 1. VERIFICAR APLICACIÓN SPRING BOOT
+# ===========================================
+ps aux | grep detodoya
+ss -tlnp | grep 8080
+curl -I http://localhost:8080
+
+# ===========================================
+# 2. VERIFICAR NGINX
+# ===========================================
+systemctl status nginx
+nginx -t
+ss -tlnp | grep -E ':(80|443)'
+ls -la /etc/nginx/sites-available/
+ls -la /etc/nginx/sites-enabled/
+
+# ===========================================
+# 3. VERIFICAR CERTIFICADO SSL
+# ===========================================
+ls -la /etc/letsencrypt/live/
+ls -la /etc/letsencrypt/live/detodoya.com.ar/
+openssl x509 -in /etc/letsencrypt/live/detodoya.com.ar/fullchain.pem -noout -dates
+
+# ===========================================
+# 4. VERIFICAR REDIRECCIÓN HTTP → HTTPS
+# ===========================================
+curl -I http://detodoya.com.ar
+curl -I https://detodoya.com.ar
+
+# ===========================================
+# 5. VERIFICAR DNS
+# ===========================================
+dig +short detodoya.com.ar
+dig +short www.detodoya.com.ar
+
+# ===========================================
+# 6. VERIFICAR FIREWALL
+# ===========================================
+ufw status verbose
+
+# ===========================================
+# 7. VERIFICAR LOGS
+# ===========================================
+tail -n 50 /var/log/nginx/error.log
+tail -n 50 /var/log/nginx/access.log
+
+# ===========================================
+# 8. VERIFICAR RECURSOS
+# ===========================================
+free -h
+df -h
+uptime
+

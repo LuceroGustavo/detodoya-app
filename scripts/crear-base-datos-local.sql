@@ -15,3 +15,5 @@ SHOW DATABASES LIKE 'detodoya';
 SELECT 'Base de datos detodoya creada exitosamente' AS Mensaje;
 
 
+
+
