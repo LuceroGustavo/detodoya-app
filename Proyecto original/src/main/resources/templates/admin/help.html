@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Oriola - Manual de Usuario</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 0.2rem 0;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .help-content {
+            max-width: 900px;
+        }
+        .help-section {
+            margin-bottom: 3rem;
+        }
+        .help-section h2 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        .help-section h3 {
+            color: #764ba2;
+            margin-top: 2rem;
+        }
+        .help-section h4 {
+            color: #495057;
+            margin-top: 1.5rem;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        .search-box {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .visual-schema {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .schema-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        .schema-item::before {
+            content: "📍";
+            margin-right: 0.5rem;
+        }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #0dcaf0;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">Manual de Usuario</h4>
+                        <small class="text-white-50">Oriola Admin</small>
+                    </div>
+                    
+                    <!-- Buscador -->
+                    <div class="search-box mb-4">
+                        <input type="text" class="form-control" placeholder="Buscar en el manual..." id="searchInput">
+                    </div>
+                    
+                    <!-- Navegación -->
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="#inicio">🏠 Inicio</a>
+                        <a class="nav-link" href="#panel-admin">📊 Panel de Administrador</a>
+                        <a class="nav-link" href="#productos">📦 Gestión de Productos</a>
+                        <a class="nav-link" href="#imagenes">🖼️ Gestión de Imágenes</a>
+                        <a class="nav-link" href="#categorias">🏷️ Gestión de Categorías</a>
+                        <a class="nav-link" href="#colores">🎨 Gestión de Colores</a>
+                        <a class="nav-link" href="#historias">🎬 Gestión de Historias</a>
+                        <a class="nav-link" href="#consultas">📧 Gestión de Consultas</a>
+                        <a class="nav-link" href="#productos-visitados">📈 Productos Más Visitados</a>
+                        <a class="nav-link" href="#cambio-password">🔐 Cambio de Contraseña</a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Contenido Principal -->
+            <div class="col-md-9 col-lg-10 p-4">
+                <div class="help-content">
+                    
+                    <!-- Sección Inicio -->
+                    <div id="inicio" class="help-section">
+                        <h2>Bienvenido al Manual de Oriola</h2>
+                        <p class="lead">Este manual te guiará paso a paso para administrar tu sitio web de Oriola Indumentaria.</p>
+                        
+                        <div class="info-box">
+                            <h5><i class="bi bi-info-circle me-2"></i>Información Importante</h5>
+                            <p>Este manual está diseñado para ser interactivo. Puedes usar el buscador en la barra lateral para encontrar información específica rápidamente.</p>
+                        </div>
+                        
+                        <h3>¿Qué puedes hacer con este panel?</h3>
+                        <ul>
+                            <li><strong>Gestionar productos:</strong> Agregar, editar y eliminar productos de tu catálogo</li>
+                            <li><strong>Subir imágenes:</strong> Cargar y optimizar automáticamente las fotos de tus productos</li>
+                            <li><strong>Gestionar categorías:</strong> Organizar tus productos por categorías con imágenes para el carrusel</li>
+                            <li><strong>Gestionar colores:</strong> Crear colores sólidos o con imágenes de patrones</li>
+                            <li><strong>Gestionar historias:</strong> Crear historias promocionales tipo Instagram (solo móviles)</li>
+                            <li><strong>Responder consultas:</strong> Gestionar las consultas de tus clientes</li>
+                            <li><strong>Ver estadísticas:</strong> Analizar el rendimiento de tu sitio y productos más visitados</li>
+                            <li><strong>Cambiar contraseña:</strong> Actualizar tu contraseña de administrador</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Sección Panel de Administrador -->
+                    <div id="panel-admin" class="help-section">
+                        <h2>📊 Panel de Administrador</h2>
+                        <p>El Panel de Administrador es la primera pantalla que ves al ingresar al sistema. Te muestra un resumen completo de tu tienda.</p>
+                        
+                        <h3>Datos que Muestra el Panel</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-box-seam text-primary me-2"></i>Total Productos</h5>
+                                        <p class="mb-0">Muestra el número total de productos en tu catálogo (activos e inactivos).</p>
+                                        <small class="text-muted">Haz clic para ir a la lista de productos.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-star text-warning me-2"></i>Productos Destacados</h5>
+                                        <p class="mb-0">Cantidad de productos marcados como destacados y activos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-check-circle text-success me-2"></i>Productos Publicados</h5>
+                                        <p class="mb-0">Productos que están activos y visibles en tu sitio web.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-envelope text-info me-2"></i>Consultas Recibidas</h5>
+                                        <p class="mb-0">Total de consultas que han recibido desde el formulario de contacto.</p>
+                                        <small class="text-muted">Haz clic para ver las consultas.</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-eye-fill text-primary me-2"></i>Visitas Este Mes</h5>
+                                        <p class="mb-0">Total de visitas a productos durante el mes actual.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3>Acciones Rápidas</h3>
+                        <p>En la parte inferior del panel encontrarás botones de acceso rápido a las funciones más utilizadas:</p>
+                        <ul>
+                            <li><strong>Nuevo Producto:</strong> Crear un producto nuevo</li>
+                            <li><strong>Categorías:</strong> Gestionar categorías</li>
+                            <li><strong>Gestionar Colores:</strong> Administrar colores</li>
+                            <li><strong>Gestión de Historias:</strong> Crear historias promocionales</li>
+                            <li><strong>Ver Consultas:</strong> Revisar consultas de clientes</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Sección Productos -->
+                    <div id="productos" class="help-section">
+                        <h2>📦 Gestión de Productos</h2>
+                        <p>Aquí aprenderás a administrar tu catálogo de productos de manera eficiente.</p>
+                        
+                        <h3>Agregar un Nuevo Producto</h3>
+                        <p>El proceso de creación de productos se realiza en <strong>dos pasos</strong>:</p>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Importante</h6>
+                            <p><strong>Paso 1:</strong> Primero debes completar todos los datos del producto y guardarlo.</p>
+                            <p><strong>Paso 2:</strong> Después de guardar, podrás subir las imágenes del producto.</p>
+                        </div>
+                        
+                        <h4>Paso 1: Completar Datos del Producto</h4>
+                        <ol>
+                            <li>Ve a <strong>Productos</strong> en el menú lateral</li>
+                            <li>Haz clic en <strong>"Nuevo Producto"</strong></li>
+                            <li>Completa los campos obligatorios:
+                                <ul>
+                                    <li><strong>Nombre:</strong> Nombre descriptivo del producto (ej: "Jean Clásico Hombre")</li>
+                                    <li><strong>Precio:</strong> Precio en pesos argentinos (ej: 15000)</li>
+                                    <li><strong>Cantidad:</strong> Stock disponible</li>
+                                </ul>
+                            </li>
+                            <li>Completa los campos opcionales:
+                                <ul>
+                                    <li><strong>Categorías:</strong> Selecciona una o más categorías (Remeras, Pantalones, etc.)</li>
+                                    <li><strong>Colores:</strong> Selecciona los colores disponibles del producto</li>
+                                    <li><strong>Talles:</strong> Selecciona los talles disponibles (XS, S, M, L, XL, etc.)</li>
+                                    <li><strong>Género:</strong> Hombre, Mujer, Unisex, Niño, Niña</li>
+                                    <li><strong>Temporada:</strong> Verano, Invierno, Primavera, Otoño, Todo el año</li>
+                                    <li><strong>Descripción:</strong> Descripción detallada del producto</li>
+                                    <li><strong>Material:</strong> Tipo de material (Algodón, Poliéster, etc.)</li>
+                                </ul>
+                            </li>
+                            <li>Haz clic en <strong>"Guardar Producto"</strong></li>
+                        </ol>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Usa nombres descriptivos para tus productos. Esto ayudará a tus clientes a encontrarlos más fácilmente en el catálogo.</p>
+                        </div>
+                        
+                        <h4>Paso 2: Subir Imágenes del Producto</h4>
+                        <p>Después de guardar el producto, serás redirigido a la página de gestión de imágenes:</p>
+                        <ol>
+                            <li>Haz clic en el botón <strong>"Gestionar Imágenes"</strong> o ve a la sección de imágenes del producto</li>
+                            <li>Arrastra y suelta las imágenes o haz clic en <strong>"Seleccionar Archivos"</strong></li>
+                            <li>Puedes subir hasta <strong>5 imágenes</strong> por producto</li>
+                            <li>La primera imagen será automáticamente la imagen principal</li>
+                            <li>Puedes cambiar la imagen principal haciendo clic en <strong>"Marcar como Principal"</strong></li>
+                        </ol>
+                        
+                        <h3>Esquema Visual del Detalle del Producto</h3>
+                        <p>Así se verá tu producto en la página de detalle del sitio web:</p>
+                        
+                        <div class="visual-schema">
+                            <h5>Estructura de la Página de Detalle del Producto</h5>
+                            <div class="schema-item">
+                                <strong>Imagen Principal:</strong> La primera imagen que subiste (o la que marcaste como principal)
+                            </div>
+                            <div class="schema-item">
+                                <strong>Galería de Imágenes:</strong> Miniaturas de todas las imágenes (hasta 5)
+                            </div>
+                            <div class="schema-item">
+                                <strong>Nombre del Producto:</strong> El nombre que ingresaste
+                            </div>
+                            <div class="schema-item">
+                                <strong>Precio:</strong> Precio en pesos argentinos
+                            </div>
+                            <div class="schema-item">
+                                <strong>Descripción:</strong> La descripción detallada del producto
+                            </div>
+                            <div class="schema-item">
+                                <strong>Colores Disponibles:</strong> Círculos de colores (sólidos o con imágenes de patrones)
+                            </div>
+                            <div class="schema-item">
+                                <strong>Talles Disponibles:</strong> Lista de talles seleccionables
+                            </div>
+                            <div class="schema-item">
+                                <strong>Género:</strong> Hombre, Mujer, Unisex, etc.
+                            </div>
+                            <div class="schema-item">
+                                <strong>Temporada:</strong> Verano, Invierno, etc.
+                            </div>
+                            <div class="schema-item">
+                                <strong>Material:</strong> Tipo de material del producto
+                            </div>
+                            <div class="schema-item">
+                                <strong>Etiquetas Promocionales:</strong> Si marcaste "Producto Nuevo" o "Destacado", aparecerán aquí
+                            </div>
+                            <div class="schema-item">
+                                <strong>Botón WhatsApp:</strong> Para que los clientes te contacten directamente
+                            </div>
+                        </div>
+                        
+                        <h3>Editar un Producto Existente</h3>
+                        <ol>
+                            <li>En la lista de productos, haz clic en <strong>"Editar"</strong></li>
+                            <li>Modifica los campos que necesites</li>
+                            <li>Guarda los cambios</li>
+                            <li>Si necesitas cambiar las imágenes, ve a <strong>"Gestionar Imágenes"</strong></li>
+                        </ol>
+                        
+                        <h3>Lista de Productos</h3>
+                        <p>En la lista de productos puedes ver todos tus productos y realizar las siguientes acciones:</p>
+                        
+                        <h4>Activar/Desactivar un Producto</h4>
+                        <ol>
+                            <li>En la columna <strong>"Estado"</strong>, encontrarás un switch (interruptor)</li>
+                            <li>Si está <strong>activado (verde)</strong>: El producto está publicado y visible en el sitio</li>
+                            <li>Si está <strong>desactivado (gris)</strong>: El producto está oculto del catálogo</li>
+                            <li>Haz clic en el switch para cambiar el estado</li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Nota</h6>
+                            <p>Los productos desactivados no aparecen en el catálogo público, pero permanecen en tu base de datos.</p>
+                        </div>
+                        
+                        <h4>Activar Vista del Producto en el Inicio</h4>
+                        <ol>
+                            <li>En la columna <strong>"Vista Inicio"</strong>, encontrarás un switch</li>
+                            <li>Si está <strong>activado</strong>: El producto aparecerá en la página de inicio como "Novedad"</li>
+                            <li>Si está <strong>desactivado</strong>: El producto no aparecerá en la página de inicio</li>
+                            <li>Haz clic en el switch para cambiar el estado</li>
+                        </ol>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Usa la función "Vista Inicio" para destacar tus productos más importantes o las novedades. Solo los productos activos y marcados como "Vista Inicio" aparecerán en la página principal.</p>
+                        </div>
+                        
+                        <h3>Eliminar un Producto</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Eliminar"</strong> junto al producto</li>
+                            <li>Confirma la eliminación en el diálogo</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Advertencia</h6>
+                            <p>La eliminación de productos es permanente. Se eliminarán también todas las imágenes asociadas. Asegúrate de que realmente quieres eliminar el producto antes de confirmar.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Imágenes -->
+                    <div id="imagenes" class="help-section">
+                        <h2>🖼️ Gestión de Imágenes</h2>
+                        <p>El sistema procesa automáticamente las imágenes para optimizar la carga de tu sitio.</p>
+                        
+                        <h3>Especificaciones Técnicas</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="code-block">
+                                    <h6><i class="bi bi-image text-success me-2"></i>Imágenes</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>Dimensiones óptimas:</strong> 1000px × 1500px</li>
+                                        <li><strong>Dimensiones mínimas:</strong> 800px × 1200px</li>
+                                        <li><strong>Relación:</strong> 2:3 (vertical/portrait)</li>
+                                        <li><strong>Tamaño archivo:</strong> 500KB - 800KB máximo</li>
+                                        <li><strong>Formato:</strong> WebP (preferido) o JPG</li>
+                                        <li><strong>Fondo:</strong> Blanco/neutro recomendado</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="code-block">
+                                    <h6><i class="bi bi-camera-video text-primary me-2"></i>Videos</h6>
+                                    <ul class="mb-0">
+                                        <li><strong>Formato:</strong> MP4 (preferido), WebM, MOV</li>
+                                        <li><strong>Tamaño:</strong> Máximo 3MB</li>
+                                        <li><strong>Resolución:</strong> 1080x1920 (vertical, 9:16)</li>
+                                        <li><strong>Duración:</strong> Hasta 15 segundos</li>
+                                        <li><strong>Relación:</strong> Vertical/portrait</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3>Límites de Imágenes por Producto</h3>
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Información Importante</h6>
+                            <p>Cada producto puede tener <strong>máximo 5 imágenes o videos</strong>. El sistema validará automáticamente este límite antes de permitir la subida.</p>
+                        </div>
+                        
+                        <h3>Proceso de Subida</h3>
+                        <ol>
+                            <li>Después de crear el producto, ve a <strong>"Gestionar Imágenes"</strong></li>
+                            <li>Arrastra y suelta las imágenes o haz clic en <strong>"Seleccionar Archivos"</strong></li>
+                            <li>El sistema valida el tamaño y cantidad de imágenes</li>
+                            <li>Las imágenes se convierten automáticamente a WebP</li>
+                            <li>Se generan thumbnails para vista previa</li>
+                            <li>Las imágenes se optimizan para carga rápida</li>
+                        </ol>
+                        
+                        <h3>Gestionar Imágenes Existentes</h3>
+                        <ul>
+                            <li><strong>Cambiar imagen principal:</strong> Haz clic en <strong>"Marcar como Principal"</strong> en cualquier imagen</li>
+                            <li><strong>Eliminar imagen:</strong> Haz clic en el botón <strong>"Eliminar"</strong> (X) en la esquina de la imagen</li>
+                            <li><strong>Reordenar:</strong> Las imágenes se muestran en el orden en que las subiste</li>
+                        </ul>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Recomendaciones</h6>
+                            <ul>
+                                <li><strong>Imagen principal:</strong> 1 (la que se muestra en el catálogo)</li>
+                                <li><strong>Imágenes adicionales:</strong> 2-4 (diferentes ángulos, detalles)</li>
+                                <li><strong>Total recomendado:</strong> 3-5 imágenes por producto</li>
+                                <li><strong>Tamaño óptimo:</strong> 1-2MB por imagen para mejor rendimiento</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Categorías -->
+                    <div id="categorias" class="help-section">
+                        <h2>🏷️ Gestión de Categorías</h2>
+                        <p>Las categorías te permiten organizar tus productos y mostrarlas en el carrusel de la página de inicio.</p>
+                        
+                        <h3>Crear una Nueva Categoría</h3>
+                        <ol>
+                            <li>Ve a <strong>Categorías</strong> en el menú lateral</li>
+                            <li>Haz clic en <strong>"Nueva Categoría"</strong></li>
+                            <li>Completa los campos:
+                                <ul>
+                                    <li><strong>Nombre:</strong> Nombre de la categoría (ej: "Remeras", "Pantalones")</li>
+                                    <li><strong>Descripción:</strong> Descripción opcional de la categoría</li>
+                                    <li><strong>Imagen:</strong> Sube una imagen para la categoría (obligatorio para el carrusel)</li>
+                                </ul>
+                            </li>
+                            <li>Haz clic en <strong>"Guardar"</strong></li>
+                        </ol>
+                        
+                        <h3>Asociar Imagen a una Categoría</h3>
+                        <p>Para que una categoría aparezca en el carrusel de la página de inicio, <strong>debe tener una imagen asociada</strong>:</p>
+                        <ol>
+                            <li>Edita la categoría</li>
+                            <li>En la sección <strong>"Imagen de Categoría"</strong>, sube una imagen</li>
+                            <li>La imagen debe ser cuadrada o rectangular (recomendado: 800x800px o 1200x800px)</li>
+                            <li>Guarda los cambios</li>
+                        </ol>
+                        
+                        <h3>Activar/Desactivar Categoría en el Carrusel</h3>
+                        <ol>
+                            <li>En la lista de categorías, encuentra la columna <strong>"Carrusel"</strong></li>
+                            <li>Verás un switch (interruptor) para cada categoría</li>
+                            <li>Si la categoría <strong>tiene imagen</strong>, el switch estará habilitado</li>
+                            <li>Si la categoría <strong>no tiene imagen</strong>, el switch estará deshabilitado</li>
+                            <li>Haz clic en el switch para activar/desactivar la categoría en el carrusel</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Importante</h6>
+                            <p>Una categoría <strong>debe tener una imagen asociada</strong> para poder aparecer en el carrusel. Si intentas activar el carrusel sin imagen, verás un mensaje de error.</p>
+                        </div>
+                        
+                        <h3>Activar/Desactivar Categoría</h3>
+                        <p>Puedes activar o desactivar una categoría completamente:</p>
+                        <ol>
+                            <li>En la lista de categorías, encuentra la columna <strong>"Estado"</strong></li>
+                            <li>Verás "Activa" (verde) o "Inactiva" (gris)</li>
+                            <li>Edita la categoría y marca/desmarca el checkbox <strong>"Categoría Activa"</strong></li>
+                            <li>Guarda los cambios</li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Nota</h6>
+                            <p>Las categorías inactivas no aparecerán en los dropdowns del sitio, pero los productos asociados seguirán existiendo.</p>
+                        </div>
+                        
+                        <h3>Editar una Categoría</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Editar"</strong> junto a la categoría</li>
+                            <li>Modifica los campos que necesites</li>
+                            <li>Puedes cambiar la imagen si lo deseas</li>
+                            <li>Guarda los cambios</li>
+                        </ol>
+                        
+                        <h3>Eliminar una Categoría</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Eliminar"</strong> junto a la categoría</li>
+                            <li>Confirma la eliminación</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Advertencia</h6>
+                            <p>No puedes eliminar una categoría que tenga productos asociados. Primero debes eliminar o cambiar la categoría de todos los productos.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Colores -->
+                    <div id="colores" class="help-section">
+                        <h2>🎨 Gestión de Colores</h2>
+                        <p>El sistema te permite crear colores de dos formas: <strong>colores sólidos</strong> (con código hexadecimal) o <strong>colores con imágenes de patrones</strong> (como Animal Print, Nevado, Estampado).</p>
+                        
+                        <h3>Crear un Color Sólido</h3>
+                        <p>Un color sólido es un color tradicional con un código hexadecimal (ej: #FF0000 para rojo).</p>
+                        <ol>
+                            <li>Ve a <strong>Colores</strong> en el menú lateral</li>
+                            <li>Haz clic en <strong>"Nuevo Color"</strong></li>
+                            <li>Completa los campos:
+                                <ul>
+                                    <li><strong>Nombre:</strong> Nombre del color (ej: "Rojo", "Azul", "Verde")</li>
+                                    <li><strong>Código de Color:</strong> Selecciona un color usando el selector de color o ingresa un código hexadecimal (ej: #FF0000)</li>
+                                </ul>
+                            </li>
+                            <li>Verás una vista previa del color en el círculo</li>
+                            <li>Haz clic en <strong>"Guardar"</strong></li>
+                        </ol>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Puedes usar el selector de color visual o escribir directamente el código hexadecimal. El sistema sincroniza ambos automáticamente.</p>
+                        </div>
+                        
+                        <h3>Crear un Color con Imagen de Patrón</h3>
+                        <p>Algunos productos no tienen un color sólido, sino un patrón (como "Animal Print", "Nevado", "Estampado"). Para estos casos, puedes subir una imagen del patrón.</p>
+                        <ol>
+                            <li>Ve a <strong>Colores</strong> en el menú lateral</li>
+                            <li>Haz clic en <strong>"Nuevo Color"</strong></li>
+                            <li>Completa los campos:
+                                <ul>
+                                    <li><strong>Nombre:</strong> Nombre del patrón (ej: "Animal Print", "Nevado", "Estampado")</li>
+                                    <li><strong>Código de Color:</strong> Puedes dejarlo vacío o poner un color base (opcional)</li>
+                                    <li><strong>Imagen de Patrón:</strong> Sube una imagen que represente el patrón</li>
+                                </ul>
+                            </li>
+                            <li>Verás una vista previa del patrón en el círculo</li>
+                            <li>Haz clic en <strong>"Guardar"</strong></li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Especificaciones de Imagen de Patrón</h6>
+                            <ul>
+                                <li><strong>Tamaño máximo:</strong> 3MB</li>
+                                <li><strong>Formatos:</strong> JPG, PNG, GIF, WebP, BMP</li>
+                                <li><strong>Dimensiones:</strong> Se redimensiona automáticamente a máximo 800x800px</li>
+                                <li><strong>Recomendado:</strong> Imagen cuadrada o rectangular que muestre claramente el patrón</li>
+                            </ul>
+                        </div>
+                        
+                        <h3>Diferencia entre Color Sólido e Imagen de Patrón</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-palette text-primary me-2"></i>Color Sólido</h5>
+                                        <ul>
+                                            <li>Requiere código hexadecimal</li>
+                                            <li>Se muestra como un círculo de color uniforme</li>
+                                            <li>Ejemplos: Rojo, Azul, Verde, Negro</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5><i class="bi bi-image text-success me-2"></i>Imagen de Patrón</h5>
+                                        <ul>
+                                            <li>Requiere imagen subida</li>
+                                            <li>Se muestra como un círculo con la imagen del patrón</li>
+                                            <li>Ejemplos: Animal Print, Nevado, Estampado</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3>Colores Predeterminados</h3>
+                        <p>El sistema tiene colores predeterminados que se crean automáticamente. Estos colores:</p>
+                        <ul>
+                            <li>No se pueden editar</li>
+                            <li>No se pueden eliminar</li>
+                            <li>Aparecen marcados como "Sí" en la columna "Predeterminado"</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Nota</h6>
+                            <p>Los colores predeterminados son colores básicos del sistema. Puedes crear tus propios colores personalizados sin restricciones.</p>
+                        </div>
+                        
+                        <h3>Editar un Color</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Editar"</strong> junto al color</li>
+                            <li>Modifica los campos que necesites</li>
+                            <li>Si es un color con patrón, puedes cambiar la imagen o eliminarla</li>
+                            <li>Guarda los cambios</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Importante</h6>
+                            <p>No puedes editar colores predeterminados. Si intentas hacerlo, verás un mensaje de error.</p>
+                        </div>
+                        
+                        <h3>Eliminar un Color</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Eliminar"</strong> junto al color</li>
+                            <li>Confirma la eliminación</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Advertencia</h6>
+                            <p>No puedes eliminar:
+                                <ul>
+                                    <li>Colores predeterminados</li>
+                                    <li>Colores que tengan productos asociados</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Historias -->
+                    <div id="historias" class="help-section">
+                        <h2>🎬 Gestión de Historias</h2>
+                        <p>Las historias son videos promocionales tipo Instagram que aparecen en la página de inicio, <strong>solo en dispositivos móviles</strong>.</p>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Importante</h6>
+                            <p><strong>Solo una historia puede estar activa a la vez.</strong> Cuando actives una nueva historia, la anterior se desactivará automáticamente.</p>
+                        </div>
+                        
+                        <h3>Características de las Historias</h3>
+                        <ul>
+                            <li><strong>Solo visible en móviles:</strong> Las historias no se muestran en computadoras de escritorio</li>
+                            <li><strong>Una historia activa:</strong> Solo puedes tener una historia visible a la vez</li>
+                            <li><strong>Formato vertical:</strong> Los videos deben ser verticales (9:16)</li>
+                            <li><strong>Duración corta:</strong> Máximo 15 segundos</li>
+                        </ul>
+                        
+                        <h3>Crear una Nueva Historia</h3>
+                        <ol>
+                            <li>Ve a <strong>Historias</strong> en el menú lateral</li>
+                            <li>Haz clic en <strong>"Nueva Historia"</strong></li>
+                            <li>Completa los campos:
+                                <ul>
+                                    <li><strong>Título:</strong> Título de la historia (ej: "Nueva Colección Verano")</li>
+                                    <li><strong>Descripción:</strong> Descripción opcional</li>
+                                    <li><strong>Video:</strong> Sube un video vertical (máximo 15MB, 15 segundos)</li>
+                                </ul>
+                            </li>
+                            <li>Haz clic en <strong>"Guardar"</strong></li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Especificaciones del Video</h6>
+                            <ul>
+                                <li><strong>Formatos:</strong> MP4, WebM, MOV, AVI</li>
+                                <li><strong>Tamaño máximo:</strong> 15MB</li>
+                                <li><strong>Duración máxima:</strong> 15 segundos</li>
+                                <li><strong>Resolución recomendada:</strong> 1080x1920 (vertical, 9:16)</li>
+                                <li><strong>Aspecto:</strong> Vertical/portrait</li>
+                            </ul>
+                        </div>
+                        
+                        <h3>Activar/Desactivar una Historia</h3>
+                        <ol>
+                            <li>En la lista de historias, encuentra la columna <strong>"Estado"</strong></li>
+                            <li>Verás un switch (interruptor) para cada historia</li>
+                            <li>Haz clic en el switch para activar/desactivar</li>
+                            <li>Si activas una historia y ya hay otra activa, la anterior se desactivará automáticamente</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Importante</h6>
+                            <p>Cuando actives una nueva historia, la historia anteriormente activa se desactivará automáticamente. Solo puede haber una historia visible en el sitio a la vez.</p>
+                        </div>
+                        
+                        <h3>Editar una Historia</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Editar"</strong> junto a la historia</li>
+                            <li>Modifica el título o descripción</li>
+                            <li>Puedes cambiar el video si lo deseas</li>
+                            <li>Guarda los cambios</li>
+                        </ol>
+                        
+                        <h3>Eliminar una Historia</h3>
+                        <ol>
+                            <li>Haz clic en <strong>"Eliminar"</strong> junto a la historia</li>
+                            <li>Confirma la eliminación</li>
+                        </ol>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Usa las historias para promocionar ofertas especiales, nuevas colecciones o eventos importantes. Recuerda que solo se ven en móviles, así que optimiza el contenido para pantallas pequeñas.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Consultas -->
+                    <div id="consultas" class="help-section">
+                        <h2>📧 Gestión de Consultas</h2>
+                        <p>El panel de consultas te permite gestionar todas las consultas que recibes desde el formulario de contacto de tu sitio web.</p>
+                        
+                        <h3>Panel de Consultas</h3>
+                        <p>Al ingresar a <strong>Consultas</strong>, verás una lista con todas las consultas recibidas. El panel muestra:</p>
+                        <ul>
+                            <li><strong>Nombre del cliente:</strong> Nombre de quien envió la consulta</li>
+                            <li><strong>Email:</strong> Correo electrónico del cliente</li>
+                            <li><strong>Teléfono:</strong> Número de teléfono (si fue proporcionado)</li>
+                            <li><strong>Mensaje:</strong> El mensaje de la consulta</li>
+                            <li><strong>Fecha:</strong> Fecha y hora en que se recibió</li>
+                            <li><strong>Estado:</strong> Si está leída o no leída</li>
+                            <li><strong>Respondida:</strong> Si ya fue respondida</li>
+                        </ul>
+                        
+                        <h3>Filtros y Búsqueda</h3>
+                        <p>Puedes usar los siguientes filtros para encontrar consultas específicas:</p>
+                        <ul>
+                            <li><strong>Búsqueda por texto:</strong> Busca en nombre, email o mensaje</li>
+                            <li><strong>Filtro por estado:</strong> Leídas, No leídas</li>
+                            <li><strong>Filtro por respuesta:</strong> Respondidas, No respondidas</li>
+                            <li><strong>Ordenamiento:</strong> Por fecha (más recientes primero o más antiguas primero)</li>
+                        </ul>
+                        
+                        <h3>Ver Detalle de una Consulta</h3>
+                        <ol>
+                            <li>Haz clic en una consulta de la lista</li>
+                            <li>Verás todos los detalles de la consulta</li>
+                            <li>La consulta se marcará automáticamente como "leída"</li>
+                        </ol>
+                        
+                        <h3>Responder una Consulta</h3>
+                        <ol>
+                            <li>Ve al detalle de la consulta</li>
+                            <li>En la sección <strong>"Responder Consulta"</strong>, escribe tu respuesta</li>
+                            <li>Haz clic en <strong>"Enviar Respuesta"</strong></li>
+                            <li>La respuesta se enviará por email al cliente</li>
+                            <li>La consulta se marcará automáticamente como "respondida"</li>
+                        </ol>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Nota</h6>
+                            <p>Puedes enviar múltiples respuestas a la misma consulta. Todas las respuestas se guardan en el historial.</p>
+                        </div>
+                        
+                        <h3>Contactar por WhatsApp</h3>
+                        <p>En el detalle de la consulta, encontrarás un botón <strong>"Contactar por WhatsApp"</strong>:</p>
+                        <ol>
+                            <li>Haz clic en el botón</li>
+                            <li>Se abrirá WhatsApp (o WhatsApp Web) con el número del cliente</li>
+                            <li>Puedes iniciar una conversación directamente</li>
+                        </ol>
+                        
+                        <h3>Eliminar una Consulta</h3>
+                        <ol>
+                            <li>En el detalle de la consulta, haz clic en <strong>"Eliminar Consulta"</strong></li>
+                            <li>Confirma la eliminación</li>
+                        </ol>
+                        
+                        <div class="warning-box">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Advertencia</h6>
+                            <p>Al eliminar una consulta, se eliminarán también todas las respuestas asociadas. Esta acción no se puede deshacer.</p>
+                        </div>
+                        
+                        <h3>Marcar como Leída/No Leída</h3>
+                        <p>Puedes marcar manualmente una consulta como leída o no leída:</p>
+                        <ol>
+                            <li>En el detalle de la consulta, haz clic en <strong>"Marcar como Leída"</strong> o <strong>"Marcar como No Leída"</strong></li>
+                            <li>El estado se actualizará inmediatamente</li>
+                        </ol>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Mantén tus consultas organizadas respondiendo rápidamente y marcándolas como leídas. Esto te ayudará a no perder ninguna consulta importante.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Productos Más Visitados -->
+                    <div id="productos-visitados" class="help-section">
+                        <h2>📈 Productos Más Visitados</h2>
+                        <p>El panel de administrador incluye una sección de <strong>"Productos Más Visitados"</strong> que te muestra estadísticas de qué productos son los más populares.</p>
+                        
+                        <h3>Acceder a las Estadísticas</h3>
+                        <p>En el <strong>Panel de Administrador</strong>, desplázate hacia abajo hasta la sección <strong>"Productos Más Visitados"</strong>.</p>
+                        
+                        <h3>Filtros Disponibles</h3>
+                        <p>Puedes ver las estadísticas de diferentes períodos:</p>
+                        <ul>
+                            <li><strong>Este Mes:</strong> Productos más visitados del mes actual</li>
+                            <li><strong>Esta Semana:</strong> Productos más visitados de la semana actual</li>
+                            <li><strong>Personalizado:</strong> Selecciona un rango de fechas específico</li>
+                        </ul>
+                        
+                        <h3>Información Mostrada</h3>
+                        <p>Para cada producto, verás:</p>
+                        <ul>
+                            <li><strong>Imagen del producto:</strong> Miniatura del producto</li>
+                            <li><strong>Nombre:</strong> Nombre del producto</li>
+                            <li><strong>Número de visitas:</strong> Cantidad de veces que se visitó el producto</li>
+                            <li><strong>Precio:</strong> Precio del producto</li>
+                            <li><strong>Categorías:</strong> Categorías a las que pertenece</li>
+                            <li><strong>Estado:</strong> Si está activo o inactivo</li>
+                            <li><strong>Acción:</strong> Botón para ver el producto en el sitio</li>
+                        </ul>
+                        
+                        <h3>Gráfica de Barras</h3>
+                        <p>La sección incluye una gráfica de barras que muestra visualmente los 5 productos más visitados del período seleccionado.</p>
+                        
+                        <h3>Total de Visitas</h3>
+                        <p>En la parte superior del panel, verás el <strong>"Total de Visitas Este Mes"</strong>, que muestra la suma de todas las visitas a productos durante el mes actual.</p>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo</h6>
+                            <p>Usa estas estadísticas para identificar qué productos son más populares y enfocar tus esfuerzos de marketing en ellos. También puedes identificar productos que necesitan más promoción.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección Cambio de Contraseña -->
+                    <div id="cambio-password" class="help-section">
+                        <h2>🔐 Cambio de Contraseña del Admin</h2>
+                        <p>Puedes cambiar tu contraseña de administrador en cualquier momento desde el panel.</p>
+                        
+                        <h3>Cambiar tu Contraseña</h3>
+                        <ol>
+                            <li>Ve a <strong>Cambiar Contraseña</strong> en el menú lateral</li>
+                            <li>Completa el formulario:
+                                <ul>
+                                    <li><strong>Contraseña Actual:</strong> Ingresa tu contraseña actual</li>
+                                    <li><strong>Nueva Contraseña:</strong> Ingresa tu nueva contraseña</li>
+                                    <li><strong>Confirmar Nueva Contraseña:</strong> Vuelve a ingresar la nueva contraseña</li>
+                                </ul>
+                            </li>
+                            <li>Haz clic en <strong>"Cambiar Contraseña"</strong></li>
+                        </ol>
+                        
+                        <h3>Requisitos de la Contraseña</h3>
+                        <p>Tu nueva contraseña debe cumplir los siguientes requisitos:</p>
+                        <ul>
+                            <li><strong>Mínimo 6 caracteres</strong></li>
+                            <li><strong>Debe cumplir al menos 2 de estos 3 criterios:</strong>
+                                <ul>
+                                    <li>Letras (mayúsculas o minúsculas)</li>
+                                    <li>Números</li>
+                                    <li>Símbolos especiales (!, @, #, $, %, etc.)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <h6><i class="bi bi-info-circle me-2"></i>Validación en Tiempo Real</h6>
+                            <p>El sistema valida la fortaleza de tu contraseña mientras la escribes. Verás un indicador visual que muestra si tu contraseña es:</p>
+                            <ul>
+                                <li><strong>Muy débil</strong> (rojo)</li>
+                                <li><strong>Débil</strong> (naranja)</li>
+                                <li><strong>Regular</strong> (amarillo)</li>
+                                <li><strong>Buena</strong> (verde claro)</li>
+                                <li><strong>Fuerte</strong> (verde oscuro)</li>
+                            </ul>
+                        </div>
+                        
+                        <h3>Confirmación de Contraseña</h3>
+                        <p>El sistema verifica que ambas contraseñas (nueva y confirmación) coincidan. Verás un mensaje de error si no coinciden.</p>
+                        
+                        <div class="tip-box">
+                            <h6><i class="bi bi-lightbulb me-2"></i>Consejo de Seguridad</h6>
+                            <p>Usa una contraseña segura y única. No compartas tu contraseña con nadie. Si sospechas que tu cuenta ha sido comprometida, cambia la contraseña inmediatamente.</p>
+                        </div>
+                        
+                        <div class="success-box">
+                            <h6><i class="bi bi-check-circle me-2"></i>Éxito</h6>
+                            <p>Si el cambio de contraseña es exitoso, verás un mensaje de confirmación y serás redirigido. Podrás usar tu nueva contraseña la próxima vez que inicies sesión.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Funcionalidad de búsqueda
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const sections = document.querySelectorAll('.help-section');
+            
+            sections.forEach(section => {
+                const content = section.textContent.toLowerCase();
+                if (content.includes(searchTerm)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+        
+        // Navegación suave
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                    // Actualizar clase activa
+                    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Resaltar sección activa al hacer scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.help-section');
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

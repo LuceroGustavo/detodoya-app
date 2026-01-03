@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Oriola</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/oriola-messages.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-tshirt me-2"></i>Oriola
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="fas fa-tachometer-alt me-1"></i>Panel de Admin
+                </a>
+                <a class="nav-link" href="/admin/users/change-password">
+                    <i class="fas fa-key me-1"></i>Cambiar Contraseña
+                </a>
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2><i class="fas fa-users me-2"></i>Gestión de Usuarios</h2>
+                    <div class="badge bg-info fs-6">
+                        <i class="fas fa-user-shield me-1"></i>SUPER_ADMIN
+                    </div>
+                </div>
+                <p class="text-muted">Gestiona usuarios del sistema y resetea contraseñas</p>
+            </div>
+        </div>
+
+        <!-- Mensajes - Se muestran con el sistema Oriola Messages -->
+
+        <!-- Lista de usuarios -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Usuarios del Sistema</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Nombre Completo</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Último Login</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td>
+                                    <strong th:text="${user.username}"></strong>
+                                    <span th:if="${user.username == currentUser.username}" class="badge bg-primary ms-2">Tú</span>
+                                </td>
+                                <td th:text="${user.fullName}"></td>
+                                <td th:text="${user.email}"></td>
+                                <td>
+                                    <span th:if="${user.role == T(com.orioladenim.entity.User$Role).SUPER_ADMIN}" class="badge bg-danger">
+                                        <i class="fas fa-user-shield me-1"></i>SUPER_ADMIN
+                                    </span>
+                                    <span th:if="${user.role == T(com.orioladenim.entity.User$Role).ADMIN}" class="badge bg-warning">
+                                        <i class="fas fa-user-cog me-1"></i>ADMIN
+                                    </span>
+                                    <span th:if="${user.role == T(com.orioladenim.entity.User$Role).USER}" class="badge bg-info">
+                                        <i class="fas fa-user me-1"></i>USER
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${user.isActive}" class="badge bg-success">
+                                        <i class="fas fa-check me-1"></i>Activo
+                                    </span>
+                                    <span th:if="${!user.isActive}" class="badge bg-secondary">
+                                        <i class="fas fa-times me-1"></i>Inactivo
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${user.lastLogin != null}" th:text="${#temporals.format(user.lastLogin, 'dd/MM/yyyy HH:mm')}"></span>
+                                    <span th:if="${user.lastLogin == null}" class="text-muted">Nunca</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <!-- Reset Password Modal -->
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" 
+                                                th:data-bs-target="'#resetModal' + ${user.id}">
+                                            <i class="fas fa-key me-1"></i>Reset
+                                        </button>
+                                        
+                                        <!-- Toggle Status -->
+                                        <form th:action="@{/admin/users/toggle-status/{id}(id=${user.id})}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm" 
+                                                    th:class="${user.isActive} ? 'btn-secondary' : 'btn-success'"
+                                                    th:text="${user.isActive} ? 'Desactivar' : 'Activar'">
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales de Reset Password -->
+    <div th:each="user : ${users}" th:id="'resetModal' + ${user.id}" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key me-2"></i>Resetear Contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/users/reset-password/{id}(id=${user.id})}" method="post">
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Advertencia:</strong> Esta acción cambiará la contraseña del usuario 
+                            <strong th:text="${user.username}"></strong>.
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" 
+                                   minlength="6" required>
+                            <div class="form-text">Mínimo 6 caracteres</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-key me-1"></i>Resetear Contraseña
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/oriola-messages.js}"></script>
+    <script>
+        // Mostrar mensajes flash con el sistema Oriola
+        document.addEventListener('DOMContentLoaded', function() {
+            /*[[${success}]]*/ var successMessage = null;
+            /*[[${error}]]*/ var errorMessage = null;
+            
+            if (successMessage) {
+                oriolaMessages.showSuccess(successMessage);
+            }
+            if (errorMessage) {
+                oriolaMessages.showError(errorMessage);
+            }
+        });
+    </script>
+</body>
+</html>

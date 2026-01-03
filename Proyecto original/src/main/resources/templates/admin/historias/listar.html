@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Historias - Oriola Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/oriola-messages.css}">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+        }
+        .historia-card {
+            transition: transform 0.2s, border-color 0.3s;
+        }
+        .historia-card:hover {
+            transform: translateY(-2px);
+        }
+        .historia-card.activa {
+            border: 2px solid #28a745 !important;
+        }
+        .historia-card:not(.activa) {
+            border: 1px solid #dee2e6;
+        }
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .video-thumbnail:hover {
+            opacity: 0.8;
+        }
+        .estado-badge {
+            font-size: 0.8rem;
+        }
+        .card .position-relative {
+            overflow: hidden;
+        }
+        .card .position-absolute.top-0 {
+            z-index: 2;
+        }
+        .card-body {
+            position: relative;
+            z-index: 1;
+        }
+        .badge.bg-dark {
+            font-size: 0.8rem;
+        }
+        .video-player-modal video {
+            width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/admin/dashboard">
+                <i class="bi bi-camera-video me-2"></i>Oriola - Historias
+            </a>
+            <div class="navbar-nav ms-auto d-flex align-items-center">
+                <span class="navbar-text text-light me-3">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${#authentication?.name}">Usuario</span>
+                </span>
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al Panel de Admin
+                </a>
+                <a class="nav-link" href="/admin/logout">
+                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Administración</span>
+                    </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>Panel de Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products">
+                                <i class="bi bi-box-seam me-2"></i>Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categories">
+                                <i class="bi bi-tags me-2"></i>Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/colors">
+                                <i class="bi bi-palette me-2"></i>Colores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/historias">
+                                <i class="bi bi-camera-video me-2"></i>Historias
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/contacts">
+                                <i class="bi bi-envelope me-2"></i>Consultas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">
+                        <i class="bi bi-camera-video text-primary"></i>
+                        Gestión de Historias
+                    </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <a href="/admin/historias/nueva" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Nueva Historia
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="row mb-4" th:if="${estadisticas}">
+                    <div class="col-md-4">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Activas</h5>
+                                        <h3 th:text="${estadisticas.activas}">0</h3>
+                                    </div>
+                                    <i class="bi bi-check-circle fs-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-secondary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Inactivas</h5>
+                                        <h3 th:text="${estadisticas.inactivas}">0</h3>
+                                    </div>
+                                    <i class="bi bi-x-circle fs-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Total</h5>
+                                        <h3 th:text="${estadisticas.total}">0</h3>
+                                    </div>
+                                    <i class="bi bi-collection fs-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Búsqueda -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <form th:action="@{/admin/historias/buscar}" method="get">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" placeholder="Buscar historias..." th:value="${busqueda}">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Mensajes - Se muestran con el sistema Oriola Messages -->
+
+                <!-- Lista de historias -->
+                <div class="row" th:if="${historias != null and !historias.empty}">
+                    <div class="col-md-6 col-lg-4 mb-4" th:each="historia : ${historias}">
+                        <div th:class="'card historia-card h-100' + (${historia.activa} ? ' activa' : '')">
+                            <div class="position-relative">
+                                <img th:src="${historia.thumbnailUrl}" 
+                                     alt=""
+                                     class="video-thumbnail"
+                                     th:data-video-url="${historia.videoUrl}"
+                                     th:data-video-titulo="${historia.titulo}"
+                                     onclick="abrirReproductor(this)"
+                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\'%3E%3Crect fill=\'%23f8f9fa\' width=\'400\' height=\'200\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dominant-baseline=\'middle\' fill=\'%23dee2e6\' font-family=\'Arial\' font-size=\'16\'%3EVideo%3C/text%3E%3C/svg%3E';">
+                                <div class="position-absolute top-0 end-0 p-2 d-flex gap-2">
+                                    <span class="badge bg-dark align-self-start">
+                                        <i class="bi bi-clock"></i>
+                                        <span th:text="${historia.duracionFormateada}">0:00</span>
+                                    </span>
+                                    <span th:class="'badge estado-badge ' + (${historia.activa} ? 'bg-success' : 'bg-secondary')"
+                                          th:text="${historia.activa ? 'Activa' : 'Inactiva'}">
+                                        Estado
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${historia.titulo}">Título</h5>
+                                <p class="card-text text-muted small" th:if="${historia.descripcion != null and !historia.descripcion.isEmpty()}" th:text="${historia.descripcion}">Descripción</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i>
+                                        <span th:text="${#temporals.format(historia.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-file-earmark"></i>
+                                        <span th:text="${historia.pesoFormateado}">Tamaño</span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <div class="btn-group w-100" role="group">
+                                    <button type="button" 
+                                            class="btn btn-outline-primary btn-sm"
+                                            th:data-video-url="${historia.videoUrl}"
+                                            th:data-video-titulo="${historia.titulo}"
+                                            onclick="abrirReproductor(this)">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </button>
+                                    <a th:href="@{/admin/historias/editar/{id}(id=${historia.id})}" 
+                                       class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <button type="button"
+                                            th:class="'btn btn-sm ' + (${historia.activa} ? 'btn-outline-warning' : 'btn-outline-success')"
+                                            th:data-historia-id="${historia.id}"
+                                            th:data-historia-activa="${historia.activa}"
+                                            onclick="handleToggleHistoria(this.getAttribute('data-historia-id'), this.getAttribute('data-historia-activa') === 'true', this)"
+                                            th:text="${historia.activa ? 'Desactivar' : 'Activar'}">
+                                        <i th:class="${historia.activa} ? 'bi bi-pause' : 'bi bi-play'"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            th:data-historia-id="${historia.id}"
+                                            onclick="handleDeleteHistoria(this.getAttribute('data-historia-id'), this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensaje cuando no hay historias -->
+                <div th:if="${historias == null or historias.empty}" class="text-center py-5">
+                    <i class="bi bi-camera-video fs-1 text-muted"></i>
+                    <h3 class="text-muted mt-3">No hay historias</h3>
+                    <p class="text-muted">Comienza creando tu primera historia promocional</p>
+                    <a href="/admin/historias/nueva" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Crear Primera Historia
+                    </a>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para reproductor de video -->
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalLabel">Reproducir Historia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body video-player-modal">
+                    <video id="videoPlayer" controls style="width: 100%;">
+                        Tu navegador no soporta la reproducción de video.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/oriola-messages.js}"></script>
+    <script>
+        // Mostrar mensajes flash con el sistema Oriola
+        document.addEventListener('DOMContentLoaded', function() {
+            /*[[${success}]]*/ var successMessage = null;
+            /*[[${error}]]*/ var errorMessage = null;
+            
+            if (successMessage) {
+                oriolaMessages.showSuccess(successMessage);
+            }
+            if (errorMessage) {
+                oriolaMessages.showError(errorMessage);
+            }
+        });
+
+        function abrirReproductor(button) {
+            const videoUrl = button.getAttribute('data-video-url');
+            const videoTitulo = button.getAttribute('data-video-titulo');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const modalTitle = document.getElementById('videoModalLabel');
+            
+            // Configurar video
+            videoPlayer.src = videoUrl;
+            modalTitle.textContent = videoTitulo || 'Reproducir Historia';
+            
+            // Abrir modal
+            const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+            modal.show();
+            
+            // Reproducir automáticamente al abrir
+            videoPlayer.play();
+            
+            // Limpiar al cerrar el modal
+            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function() {
+                videoPlayer.pause();
+                videoPlayer.currentTime = 0;
+            }, { once: true });
+        }
+
+        async function handleToggleHistoria(historiaId, isActiva, buttonElement) {
+            try {
+                let message = '';
+                if (!isActiva) {
+                    message = '¿Está seguro de activar esta historia? Las demás historias activas serán desactivadas automáticamente.';
+                } else {
+                    message = '¿Está seguro de desactivar esta historia?';
+                }
+                
+                const confirmed = await oriolaMessages.confirm(message);
+                if (confirmed) {
+                    // Deshabilitar el botón mientras se procesa
+                    buttonElement.disabled = true;
+                    buttonElement.style.opacity = '0.6';
+                    
+                    try {
+                        const response = await fetch(`/admin/historias/${historiaId}/toggle`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            oriolaMessages.showSuccess(data.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            oriolaMessages.showError(data.message || 'Error al cambiar el estado de la historia.');
+                            buttonElement.disabled = false;
+                            buttonElement.style.opacity = '1';
+                        }
+                    } catch (fetchError) {
+                        oriolaMessages.showError('Error al cambiar el estado de la historia: ' + fetchError.message);
+                        buttonElement.disabled = false;
+                        buttonElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                oriolaMessages.showError('Error al procesar la acción: ' + error.message);
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+            }
+        }
+
+        async function handleDeleteHistoria(historiaId, buttonElement) {
+            try {
+                const confirmed = await oriolaMessages.confirm('¿Está seguro de que desea eliminar esta historia? Esta acción no se puede deshacer.');
+                if (confirmed) {
+                    // Deshabilitar el botón mientras se procesa
+                    buttonElement.disabled = true;
+                    buttonElement.style.opacity = '0.6';
+                    
+                    try {
+                        const response = await fetch(`/admin/historias/${historiaId}/eliminar`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            oriolaMessages.showSuccess(data.message);
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            oriolaMessages.showError(data.message || 'No se pudo eliminar la historia.');
+                            buttonElement.disabled = false;
+                            buttonElement.style.opacity = '1';
+                        }
+                    } catch (fetchError) {
+                        oriolaMessages.showError('Error al eliminar la historia: ' + fetchError.message);
+                        buttonElement.disabled = false;
+                        buttonElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                oriolaMessages.showError('Error al procesar la eliminación: ' + error.message);
+                buttonElement.disabled = false;
+                buttonElement.style.opacity = '1';
+            }
+        }
+    </script>
+</body>
+</html>

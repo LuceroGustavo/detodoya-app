@@ -1,0 +1,33 @@
+[33mcommit 353b4d4b506640364ec2c0775759f5295d49bed3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: LuceroGustavo <129872263+LuceroGustavo@users.noreply.github.com>
+Date:   Mon Oct 20 16:11:27 2025 -0300
+
+    commit 83 -  optimizar diseño categorías con proporción cuadrada estilo Lovely Denim
+
+[1mdiff --git a/documentacion/estructura-frontend-index.md b/documentacion/estructura-frontend-index.md[m
+[1mindex 2f706a1..4bf5c19 100644[m
+[1m--- a/documentacion/estructura-frontend-index.md[m
+[1m+++ b/documentacion/estructura-frontend-index.md[m
+[36m@@ -245,6 +245,22 @@[m [mfunction goToProduct(element) {[m
+ [m
+ ---[m
+ [m
+[32m+[m[32m## 🚀 **TAREAS PENDIENTES**[m
+[32m+[m
+[32m+[m[32m### **Implementación en Catálogo**[m
+[32m+[m[32m- **Objetivo:** Aplicar el mismo diseño de tarjetas del index en la página de catálogo[m
+[32m+[m[32m- **Archivo objetivo:** `src/main/resources/templates/catalog.html`[m
+[32m+[m[32m- **Elementos a replicar:**[m
+[32m+[m[32m  - Grid de 4 columnas con espaciado de 8px[m
+[32m+[m[32m  - Imágenes de productos con altura de 480px[m
+[32m+[m[32m  - `object-fit: cover` para mejor visualización[m
+[32m+[m[32m  - Efectos hover consistentes[m
+[32m+[m[32m  - Responsive design para móviles[m
+[32m+[m[32m- **Prioridad:** Alta[m
+[32m+[m[32m- **Fecha estimada:** Próxima iteración[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+ ## 📊 **MÉTRICAS DE RENDIMIENTO**[m
+ [m
+ ### **Optimizaciones Implementadas**[m

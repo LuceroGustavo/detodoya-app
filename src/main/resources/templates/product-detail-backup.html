@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name} + ' - detodoya.com'">Producto - detodoya.com</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "primary-hover": "#0f6bc9",
+                        "background-light": "#ffffff",
+                        "background-off": "#f9fafb",
+                        "background-dark": "#101922",
+                        "text-main": "#111418",
+                        "text-secondary": "#637588",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Favoritos */
+        .favorite-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .favorite-btn.favorite-active {
+            color: #ef4444;
+        }
+        
+        .favorite-btn.favorite-active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .favorite-btn.favorite-inactive {
+            color: #9ca3af;
+        }
+        
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* WhatsApp Button Flotante */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 32px;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+        }
+        
+        /* Galería */
+        .thumbnail-btn {
+            width: 96px !important;
+            height: 96px !important;
+            min-width: 96px !important;
+            min-height: 96px !important;
+            max-width: 96px !important;
+            max-height: 96px !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .thumbnail-btn img,
+        .thumbnail-btn video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        
+        .thumbnail-active {
+            border-color: #137fec !important;
+            border-width: 2px !important;
+        }
+        
+        .tab-active {
+            border-bottom-color: #137fec;
+            color: #137fec;
+        }
+        
+        /* Bootstrap modal personalizado para imágenes */
+        #imageModal .modal-content {
+            background: transparent;
+            border: none;
+        }
+        
+        #imageModal .modal-header {
+            border: none;
+            padding: 0;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1050;
+        }
+        
+        #imageModal .modal-body {
+            padding: 0;
+        }
+        
+        #modalImage {
+            max-height: 90vh;
+            max-width: 100%;
+            object-fit: contain;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        /* CORRECCIÓN CRÍTICA: Ocultar backdrop de Bootstrap cuando hay video */
+        .modal-backdrop {
+            z-index: 1040;
+        }
+        
+        /* Si hay video activo, forzar ocultamiento del backdrop */
+        body:has(#mainVideo:not(.hidden)) .modal-backdrop {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+        }
+        
+        /* Alternativa para navegadores que no soportan :has() */
+        body.video-active .modal-backdrop {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+        }
+        
+        /* Forzar eliminación de backdrop si existe cuando hay video */
+        #mainVideo:not(.hidden) ~ * .modal-backdrop,
+        body:has(#mainVideo:not(.hidden)) .modal-backdrop {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+            position: fixed !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-background-off text-text-main flex flex-col min-h-screen overflow-x-hidden">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">shopping_bag</span>
+                    </div>
+                    <a href="/" class="text-xl sm:text-2xl font-bold tracking-tight text-text-main hover:text-primary transition-colors">
+                        detodoya.com
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="/" class="text-sm font-medium text-text-main hover:text-primary transition-colors">Inicio</a>
+                    <a href="/catalog" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Catálogo</a>
+                    <div class="relative group">
+                        <a href="javascript:void(0)" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Categorías</a>
+                        <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="p-2">
+                                <a href="/catalog" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Ver Todo</a>
+                                <a th:each="category : ${product.categories}" 
+                                   th:href="@{/catalog(category=${category.name})}" 
+                                   th:text="${category.name}"
+                                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"></a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button aria-label="Search" onclick="openSearchModal()" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors">
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+                    <div class="hidden sm:flex gap-1">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#E4405F] transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
+                        </a>
+                        <a href="https://wa.me/5491159293920" target="_blank" aria-label="WhatsApp" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#25D366] transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
+                        </a>
+                    </div>
+                    <div class="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
+                    <!-- Carrito (sin funcionalidad) -->
+                    <button aria-label="Carrito" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors" title="Próximamente">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary rounded-full">0</span>
+                    </button>
+                    <a href="/admin/login" class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-sm hover:shadow-md" target="_blank">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">admin_panel_settings</span>
+                        <span class="hidden sm:inline">Admin</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="flex-grow">
+        <!-- Breadcrumbs -->
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-wrap gap-2 items-center text-sm text-text-secondary">
+                <a href="/" class="hover:text-primary transition-colors">Inicio</a>
+                <span class="material-symbols-outlined text-base">chevron_right</span>
+                <a th:if="${product.categories != null and !product.categories.isEmpty()}" 
+                   th:href="@{/catalog(category=${product.categories[0].name})}" 
+                   th:text="${product.categories[0].name}"
+                   class="hover:text-primary transition-colors">Categoría</a>
+                <span th:if="${product.categories != null and !product.categories.isEmpty()}" class="material-symbols-outlined text-base">chevron_right</span>
+                <span class="text-text-main font-medium" th:text="${product.name}">Producto</span>
+            </div>
+        </div>
+        
+        <!-- Product Hero Section -->
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                <!-- Left Column: Gallery (7 cols) -->
+                <div class="lg:col-span-7 flex flex-col gap-4">
+                    <!-- Main Image -->
+                    <div class="aspect-[4/3] w-full bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group"
+                         id="mainImageContainer"
+                         style="z-index: 1;"
+                         onclick="return handleMainImageClick(event);">
+                        <!-- Badge de estado -->
+                        <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                              th:text="${product.etiquetaPromocional}"
+                              class="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm uppercase"></span>
+                        <span th:if="${product.esNuevo and (product.etiquetaPromocional == null or product.etiquetaPromocional.isEmpty())}" 
+                              class="absolute top-4 left-4 z-10 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">NUEVO</span>
+                        
+                        <!-- Botón Favorito -->
+                        <button class="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-md favorite-btn favorite-inactive hover:text-red-500 transition-colors text-gray-400"
+                                th:data-product-id="${product.pId}"
+                                th:onclick="'event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(' + ${product.pId} + ', this);'">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </button>
+                        
+                        <!-- Icono de play REMOVIDO - el video se reproduce automáticamente -->
+                        
+                        <!-- Imagen o Video Principal -->
+                        <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                       isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false},
+                                       hasImages=${product.images != null and !product.images.isEmpty()}">
+                            <!-- Video: siempre presente cuando hay imágenes para poder cambiar dinámicamente -->
+                            <video th:if="${hasImages}" 
+                                 th:src="${isVideo ? product.getImagenPrincipalUrl() : ''}" 
+                                 id="mainVideo"
+                                 th:class="${isVideo ? 'w-full h-full object-contain bg-white relative' : 'hidden w-full h-full object-contain bg-white'}"
+                                 autoplay muted loop playsinline
+                                 onclick="event.stopPropagation();"
+                                 style="z-index: 0; position: relative; pointer-events: auto;"></video>
+                            <!-- Imagen: siempre presente cuando hay imágenes para poder cambiar dinámicamente -->
+                            <img th:if="${hasImages}" 
+                                 th:src="${!isVideo ? product.getImagenPrincipalUrl() : ''}" 
+                                 id="mainImage"
+                                 th:class="${!isVideo ? 'w-full h-full object-contain bg-white cursor-pointer' : 'hidden w-full h-full object-contain bg-white'}"
+                                 th:alt="${product.name}">
+                            <!-- Si no hay imágenes, mostrar placeholder -->
+                            <img th:if="${!hasImages}" 
+                                 src="https://via.placeholder.com/800x600/f8f9fa/666666?text=Detodoya" 
+                                 id="mainImage"
+                                 class="w-full h-full object-contain bg-white cursor-pointer"
+                                 th:alt="${product.name}"
+                                 onclick="event.stopPropagation();">
+                        </div>
+                    </div>
+                    
+                    <!-- Thumbnails -->
+                    <div th:if="${product.images != null and product.images.size() > 1}" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                        <button th:each="image, iterStat : ${product.images}" 
+                                th:data-image-url="${image.getImageUrl()}"
+                                th:data-is-video="${image.isVideo}"
+                                th:data-image-index="${iterStat.index}"
+                                th:class="${iterStat.first} ? 'thumbnail-btn thumbnail-active' : 'thumbnail-btn'"
+                                class="shrink-0 w-24 h-24 rounded-lg border-2 border-gray-200 overflow-hidden relative hover:border-primary transition-colors flex-shrink-0"
+                                style="min-width: 96px; max-width: 96px; min-height: 96px; max-height: 96px;"
+                                th:onclick="'changeMainImage(this); event.stopPropagation();'">
+                            <video th:if="${image.isVideo}" 
+                                 th:src="${image.getImageUrl()}" 
+                                 class="w-full h-full object-cover"
+                                 style="width: 100%; height: 100%; object-fit: cover;"
+                                 muted loop></video>
+                            <img th:unless="${image.isVideo}" 
+                                 th:src="${image.getThumbnailUrl()}" 
+                                 class="w-full h-full object-cover"
+                                 style="width: 100%; height: 100%; object-fit: cover;"
+                                 th:alt="${product.name}">
+                            <div th:if="${image.isVideo}" class="absolute inset-0 bg-black/20 flex items-center justify-center">
+                                <div class="bg-white/90 rounded-full p-1 shadow-sm">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">play_arrow</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right Column: Product Info (5 cols) - Sticky -->
+                <div class="lg:col-span-5 relative">
+                    <div class="sticky top-24 flex flex-col gap-6">
+                        <!-- Header Info -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span th:if="${product.categories != null and !product.categories.isEmpty()}" 
+                                      th:text="${product.categories[0].name}"
+                                      class="text-primary font-semibold text-sm tracking-wide uppercase"></span>
+                                <span th:if="${product.qty != null and product.qty > 0}" 
+                                      class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">En Stock</span>
+                                <span th:if="${product.qty == null or product.qty == 0}" 
+                                      class="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">Sin Stock</span>
+                            </div>
+                            <h1 class="text-text-main text-3xl md:text-4xl font-bold leading-tight mb-3" th:text="${product.name}">
+                                Nombre del Producto
+                            </h1>
+                            <!-- Rating placeholder -->
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="flex text-yellow-400 text-sm">
+                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
+                                    <span class="material-symbols-outlined fill-current text-[20px] text-gray-300">star</span>
+                                </div>
+                                <span class="text-sm text-text-secondary font-medium">- (Próximamente)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Block -->
+                        <div class="flex items-end gap-3 pb-6 border-b border-dashed border-gray-200">
+                            <span class="text-4xl font-bold text-primary" th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}">$0</span>
+                            <div th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" class="flex flex-col mb-1">
+                                <span class="text-sm text-gray-400 line-through font-medium" th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
+                                <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
+                                      class="text-xs text-red-500 font-bold"
+                                      th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '% OFF'"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Short Description -->
+                        <p th:if="${product.descripcion != null and !product.descripcion.isEmpty()}" 
+                           class="text-text-secondary text-base leading-relaxed"
+                           th:text="${#strings.abbreviate(product.descripcion, 200)}">
+                            Descripción del producto
+                        </p>
+                        
+                        <!-- Variants Selection -->
+                        <div class="space-y-4">
+                            <!-- Colores (solo si es INDUMENTARIA o tiene colores) -->
+                            <div th:if="${product.colores != null and product.colores.size() > 0}">
+                                <span class="block text-sm font-semibold text-text-main mb-3">
+                                    Color: <span class="font-normal text-gray-500" id="selectedColorName">-</span>
+                                </span>
+                                <div class="flex gap-3 flex-wrap">
+                                    <button th:each="color : ${product.colores}" 
+                                            th:data-color-name="${color.name}"
+                                            th:attr="style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
+                                                              ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
+                                                              ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')}"
+                                            class="size-10 rounded-full border-2 border-gray-200 hover:border-primary transition-all cursor-pointer"
+                                            onclick="selectColor(this)">
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Talles (solo si es INDUMENTARIA) -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.talles != null and !product.talles.isEmpty()}">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="block text-sm font-semibold text-text-main">Talle</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button th:each="talle : ${product.talles}" 
+                                            th:text="${talle.displayName}"
+                                            class="px-4 py-2 rounded-lg border border-gray-200 hover:border-primary text-text-secondary font-medium text-sm transition-colors"
+                                            onclick="selectSize(this)">
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Modelo (solo si es ELECTRONICA) -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.modelo != null and !product.modelo.isEmpty()}">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="block text-sm font-semibold text-text-main">Modelo</span>
+                                </div>
+                                <div class="px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-text-main font-medium text-sm">
+                                    <span th:text="${product.modelo}">Modelo</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                            <button class="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold h-12 rounded-lg transition-transform active:scale-95 shadow-sm"
+                                    th:data-product-name="${product.name}"
+                                    th:data-product-price="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"
+                                    onclick="openWhatsApp(this)">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path>
+                                </svg>
+                                Consultar WhatsApp
+                            </button>
+                            <a th:href="@{/contact(producto=${product.name})}" 
+                               class="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-primary text-text-main font-bold h-12 rounded-lg transition-colors">
+                                <span class="material-symbols-outlined">mail</span>
+                                Enviar Consulta
+                            </a>
+                        </div>
+                        
+                        <!-- Trust Indicators -->
+                        <div class="grid grid-cols-2 gap-4 pt-4 text-xs text-text-secondary">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+                                <span>Envío a todo el país</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+                                <span>Garantía</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
+                                <span>Pagos seguros</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">headphones</span>
+                                <span>Soporte técnico</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Details, Specs & Care (Tabs) -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+            <div class="border-b border-gray-200 mb-8 flex gap-8 overflow-x-auto no-scrollbar">
+                <button onclick="showTab('description')" id="tab-description" class="pb-4 border-b-2 border-primary text-primary font-bold text-lg tab-button tab-active whitespace-nowrap">
+                    Descripción
+                </button>
+                <button onclick="showTab('specs')" id="tab-specs" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
+                    Especificaciones
+                </button>
+                <button th:if="${product.cuidados != null and !product.cuidados.isEmpty()}" 
+                        onclick="showTab('care')" id="tab-care" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
+                    Cuidados
+                </button>
+                <button onclick="showTab('reviews')" id="tab-reviews" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
+                    Reseñas
+                </button>
+            </div>
+            
+            <div class="space-y-12">
+                <!-- Description Content -->
+                <section id="content-description" class="tab-content">
+                    <h3 class="text-2xl font-bold mb-4 text-text-main" th:text="${product.name}">Descripción</h3>
+                    <div class="prose prose-lg text-text-secondary max-w-none">
+                        <p class="mb-4" th:text="${product.descripcion ?: 'Producto de alta calidad con diseño único y materiales premium.'}">
+                            Descripción del producto
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- Specs Table -->
+                <section id="content-specs" class="tab-content hidden">
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
+                        <h3 class="text-xl font-bold mb-6 text-text-main flex items-center gap-2">
+                            <span class="material-symbols-outlined">settings</span>
+                            Especificaciones Técnicas
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+                            <!-- Campos dinámicos según TipoProducto -->
+                            
+                            <!-- INDUMENTARIA -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.medidas != null and !product.medidas.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Medidas</span>
+                                <span class="text-text-main font-semibold" th:text="${product.medidas}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.material != null and !product.material.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Material</span>
+                                <span class="text-text-main font-semibold" th:text="${product.material}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.generos != null and !product.generos.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Género</span>
+                                <span class="text-text-main font-semibold" th:text="${product.getGenerosComoTexto()}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.temporadas != null and !product.temporadas.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Temporada</span>
+                                <span class="text-text-main font-semibold" th:text="${product.getTemporadasComoTexto()}"></span>
+                            </div>
+                            
+                            <!-- LIBROS -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.autor != null and !product.autor.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Autor</span>
+                                <span class="text-text-main font-semibold" th:text="${product.autor}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.editorial != null and !product.editorial.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Editorial</span>
+                                <span class="text-text-main font-semibold" th:text="${product.editorial}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.isbn != null and !product.isbn.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">ISBN</span>
+                                <span class="text-text-main font-semibold" th:text="${product.isbn}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.paginas != null}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Páginas</span>
+                                <span class="text-text-main font-semibold" th:text="${product.paginas} + ' páginas'"></span>
+                            </div>
+                            
+                            <!-- ELECTRONICA -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.marca != null and !product.marca.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Marca</span>
+                                <span class="text-text-main font-semibold" th:text="${product.marca}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.modelo != null and !product.modelo.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Modelo</span>
+                                <span class="text-text-main font-semibold" th:text="${product.modelo}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.garantia != null and !product.garantia.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Garantía</span>
+                                <span class="text-text-main font-semibold" th:text="${product.garantia}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.potencia != null and !product.potencia.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Potencia</span>
+                                <span class="text-text-main font-semibold" th:text="${product.potencia}"></span>
+                            </div>
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.consumo != null and !product.consumo.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Consumo</span>
+                                <span class="text-text-main font-semibold" th:text="${product.consumo}"></span>
+                            </div>
+                            
+                            <!-- Campos genéricos (todos los tipos) -->
+                            <div th:if="${product.peso != null and !product.peso.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Peso</span>
+                                <span class="text-text-main font-semibold" th:text="${product.peso}"></span>
+                            </div>
+                            <div th:if="${product.dimensiones != null and !product.dimensiones.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100">
+                                <span class="text-gray-500 font-medium">Dimensiones</span>
+                                <span class="text-text-main font-semibold" th:text="${product.dimensiones}"></span>
+                            </div>
+                            <div th:if="${product.especificaciones != null and !product.especificaciones.isEmpty()}" 
+                                 class="flex justify-between py-3 border-b border-gray-100 md:col-span-2">
+                                <span class="text-gray-500 font-medium">Especificaciones</span>
+                                <span class="text-text-main font-semibold text-right" th:text="${product.especificaciones}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Care Content -->
+                <section th:if="${product.cuidados != null and !product.cuidados.isEmpty()}" id="content-care" class="tab-content hidden">
+                    <h3 class="text-xl font-bold mb-4 text-text-main">Cuidados</h3>
+                    <div class="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
+                        <p class="text-text-secondary leading-relaxed" th:text="${product.cuidados}">
+                            Instrucciones de cuidado del producto
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- Reviews Content (placeholder) -->
+                <section id="content-reviews" class="tab-content hidden">
+                    <h3 class="text-xl font-bold mb-6 text-text-main">Opiniones de clientes</h3>
+                    <div class="bg-gray-50 rounded-xl p-6 md:p-8 text-center">
+                        <span class="material-symbols-outlined text-6xl text-gray-400 mb-4">rate_review</span>
+                        <p class="text-text-secondary">Sistema de reseñas próximamente</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal de Búsqueda -->
+    <div id="searchModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 p-6 relative">
+            <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h3 class="text-2xl font-bold text-text-main mb-4">Buscar Productos</h3>
+            <form action="/catalog" method="get" class="flex gap-3">
+                <div class="flex-1 relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                        <span class="material-symbols-outlined">search</span>
+                    </span>
+                    <input type="text" 
+                           name="search" 
+                           placeholder="Buscar productos..." 
+                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                           autofocus>
+                </div>
+                <button type="submit" class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined">search</span>
+                    Buscar
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <!-- Brand -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 bg-primary rounded-md flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
+                        </div>
+                        <span class="text-lg font-bold text-text-main">detodoya.com</span>
+                    </div>
+                    <p class="text-text-secondary text-sm leading-relaxed">
+                        Tu destino confiable para encontrar productos de calidad al mejor precio. Exploramos el mundo para traerte lo mejor.
+                    </p>
+                    <div class="flex gap-4 mt-2">
+                        <a href="https://www.instagram.com/detodoya" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">photo_camera</span>
+                        </a>
+                        <a href="https://wa.me/5491159293920" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">chat</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Links 1 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/" class="hover:text-primary transition-colors">Inicio</a></li>
+                        <li><a href="/catalog" class="hover:text-primary transition-colors">Catálogo Completo</a></li>
+                        <li><a href="/about" class="hover:text-primary transition-colors">Sobre Nosotros</a></li>
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Links 2 -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Ayuda & Soporte</h4>
+                    <ul class="space-y-3 text-sm text-text-secondary">
+                        <li><a href="/contact" class="hover:text-primary transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Términos y Condiciones</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="font-bold text-text-main mb-4">Contáctanos</h4>
+                    <ul class="space-y-4 text-sm text-text-secondary">
+                        <li class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">location_on</span>
+                            <span>Buenos Aires, Argentina</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">call</span>
+                            <span>+54 9 11 5929-3920</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">mail</span>
+                            <span>info@detodoya.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+                <p>© 2025 detodoya.com. Todos los derechos reservados.</p>
+                <div class="flex items-center gap-2">
+                    <p>Desarrollado por</p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" class="h-8 w-auto">
+                    <p>Lucerogustavo Si</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- WhatsApp Button Flotante -->
+    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" 
+       target="_blank"
+       aria-label="Contactar por WhatsApp">
+        <span class="material-symbols-outlined">chat</span>
+    </a>
+    
+    <!-- Scripts -->
+    <!-- Favorites JS -->
+    <script src="/js/favorites.js"></script>
+    
+    <!-- WhatsApp JS -->
+    <script src="/js/whatsapp.js"></script>
+    
+    <script>
+        // Funciones para Modal de Búsqueda
+        function openSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    const input = modal.querySelector('input[name="search"]');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+        
+        function closeSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+        
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('searchModal');
+            if (modal && !modal.querySelector('.bg-white').contains(e.target) && !e.target.closest('button[onclick="openSearchModal()"]')) {
+                closeSearchModal();
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearchModal();
+            }
+        });
+        
+        // Funciones para Tabs
+        function showTab(tabName) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remover active de todos los botones
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('tab-active', 'border-primary', 'text-primary');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Mostrar contenido seleccionado
+            const content = document.getElementById('content-' + tabName);
+            if (content) {
+                content.classList.remove('hidden');
+            }
+            
+            // Activar botón seleccionado
+            const button = document.getElementById('tab-' + tabName);
+            if (button) {
+                button.classList.add('tab-active', 'border-primary', 'text-primary');
+                button.classList.remove('border-transparent', 'text-gray-500');
+            }
+        }
+        
+        // Función para cambiar imagen principal
+        function changeMainImage(thumbnail) {
+            const imageUrl = thumbnail.getAttribute('data-image-url');
+            const isVideo = thumbnail.getAttribute('data-is-video') === 'true';
+            
+            let mainImage = document.getElementById('mainImage');
+            let mainVideo = document.getElementById('mainVideo');
+            const playIconContainer = document.getElementById('playIconContainer');
+            
+            // Si no existe el elemento necesario, crearlo
+            const container = document.querySelector('.lg\\:col-span-7 > div:first-child');
+            if (!container) return;
+            
+            if (isVideo) {
+                // Necesitamos el elemento video
+                if (!mainVideo) {
+                    // Crear elemento video si no existe
+                    mainVideo = document.createElement('video');
+                    mainVideo.id = 'mainVideo';
+                    mainVideo.className = 'w-full h-full object-contain bg-white';
+                    mainVideo.setAttribute('autoplay', '');
+                    mainVideo.setAttribute('muted', '');
+                    mainVideo.setAttribute('loop', '');
+                    mainVideo.setAttribute('playsinline', '');
+                    mainVideo.onclick = function(e) { e.stopPropagation(); };
+                    container.querySelector('.aspect-\\[4\\/3\\] > div:last-child')?.appendChild(mainVideo);
+                }
+                // Ocultar imagen si existe
+                if (mainImage) {
+                    mainImage.classList.add('hidden');
+                }
+                // NO mostrar icono de play - el video se reproduce automáticamente
+                // Mostrar y cargar video
+                mainVideo.src = imageUrl;
+                mainVideo.classList.remove('hidden');
+                mainVideo.load();
+                mainVideo.play().catch(e => console.log('Error al reproducir video:', e));
+                
+                // Actualizar el contenedor para que NO abra modal cuando es video
+                const mainContainer = document.getElementById('mainImageContainer');
+                if (mainContainer) {
+                    // Remover atributos de Bootstrap modal cuando es video
+                    mainContainer.removeAttribute('data-bs-toggle');
+                    mainContainer.removeAttribute('data-bs-target');
+                    mainContainer.style.cursor = 'default';
+                }
+                // Ocultar imagen del modal si es video
+                const modalImage = document.getElementById('modalImage');
+                if (modalImage) {
+                    modalImage.classList.add('d-none');
+                }
+                // Eliminar cualquier backdrop de Bootstrap que pueda existir
+                setTimeout(function() {
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }, 100);
+            } else {
+                // Necesitamos el elemento imagen
+                if (!mainImage) {
+                    // Crear elemento imagen si no existe
+                    mainImage = document.createElement('img');
+                    mainImage.id = 'mainImage';
+                    mainImage.className = 'w-full h-full object-contain bg-white cursor-pointer';
+                    mainImage.alt = document.querySelector('h1')?.textContent || 'Producto';
+                    container.querySelector('.aspect-\\[4\\/3\\] > div:last-child')?.appendChild(mainImage);
+                }
+                // Ocultar video si existe
+                if (mainVideo) {
+                    mainVideo.pause();
+                    mainVideo.classList.add('hidden');
+                }
+                // Mostrar y cargar imagen
+                mainImage.src = imageUrl;
+                mainImage.classList.remove('hidden');
+                
+                // Configurar el contenedor para abrir modal Bootstrap al hacer clic en la imagen
+                const mainContainer = document.getElementById('mainImageContainer');
+                const imageIndex = parseInt(thumbnail.getAttribute('data-image-index')) || 0;
+                
+                if (mainContainer) {
+                    mainContainer.style.cursor = 'pointer';
+                    // Agregar atributos de Bootstrap modal para imágenes
+                    mainContainer.setAttribute('data-bs-toggle', 'modal');
+                    mainContainer.setAttribute('data-bs-target', '#imageModal');
+                    // Actualizar imagen del modal
+                    const modalImage = document.getElementById('modalImage');
+                    if (modalImage) {
+                        modalImage.src = imageUrl;
+                        modalImage.classList.remove('d-none');
+                    }
+                }
+            }
+            
+            // Remover active de todos los thumbnails
+            document.querySelectorAll('.thumbnail-btn').forEach(btn => {
+                btn.classList.remove('thumbnail-active', 'border-primary');
+                btn.classList.add('border-gray-200');
+            });
+            
+            // Agregar active al thumbnail seleccionado
+            thumbnail.classList.add('thumbnail-active', 'border-primary');
+            thumbnail.classList.remove('border-gray-200');
+        }
+        
+        // Función para seleccionar color
+        function selectColor(button) {
+            document.querySelectorAll('[onclick="selectColor(this)"]').forEach(btn => {
+                btn.classList.remove('border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
+            });
+            button.classList.add('border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
+            
+            const colorName = button.getAttribute('data-color-name');
+            const colorNameDisplay = document.getElementById('selectedColorName');
+            if (colorNameDisplay) {
+                colorNameDisplay.textContent = colorName;
+            }
+        }
+        
+        // Función para seleccionar talle
+        function selectSize(button) {
+            document.querySelectorAll('[onclick="selectSize(this)"]').forEach(btn => {
+                btn.classList.remove('border-primary', 'bg-primary', 'text-white');
+                btn.classList.add('border-gray-200', 'text-text-secondary');
+            });
+            button.classList.add('border-primary', 'bg-primary', 'text-white');
+            button.classList.remove('border-gray-200', 'text-text-secondary');
+        }
+        
+        // Función para abrir WhatsApp
+        function openWhatsApp(button) {
+            const productName = button.getAttribute('data-product-name');
+            const productPrice = button.getAttribute('data-product-price');
+            
+            if (window.WhatsAppIntegration) {
+                window.WhatsAppIntegration.openWhatsApp(productName, productPrice);
+            } else {
+                const message = encodeURIComponent(`Hola! Me interesa el producto: ${productName} - ${productPrice}`);
+                window.open(`https://wa.me/5491159293920?text=${message}`, '_blank');
+            }
+        }
+        
+        // Inicializar primera imagen como activa y configurar icono de play
+        document.addEventListener('DOMContentLoaded', function() {
+            // CORRECCIÓN: Asegurar que el lightbox esté completamente oculto inicialmente
+            const lightboxModal = document.getElementById('lightboxModal');
+            if (lightboxModal) {
+                lightboxModal.classList.remove('active');
+                lightboxModal.classList.add('hidden');
+                // Forzar estilos inline para asegurar que esté oculto
+                lightboxModal.style.display = 'none';
+                lightboxModal.style.visibility = 'hidden';
+                lightboxModal.style.opacity = '0';
+                lightboxModal.style.pointerEvents = 'none';
+                lightboxModal.style.zIndex = '-9999';
+                lightboxModal.style.position = 'fixed';
+                lightboxModal.style.top = '-9999px';
+                lightboxModal.style.left = '-9999px';
+                document.body.style.overflow = '';
+            }
+            
+            const firstThumbnail = document.querySelector('.thumbnail-btn');
+            if (firstThumbnail) {
+                firstThumbnail.classList.add('thumbnail-active', 'border-primary');
+                firstThumbnail.classList.remove('border-gray-200');
+            }
+            
+            // Configurar el contenedor principal según el tipo inicial
+            const mainContainer = document.getElementById('mainImageContainer');
+            if (mainContainer) {
+                const mainImage = document.getElementById('mainImage');
+                const mainVideo = document.getElementById('mainVideo');
+                
+                // Remover cualquier onclick previo y asegurar z-index correcto
+                mainContainer.onclick = null;
+                mainContainer.style.zIndex = '1';
+                mainContainer.style.position = 'relative';
+                
+                if (mainImage && !mainImage.classList.contains('hidden')) {
+                    // Si es imagen inicial, configurar para abrir modal Bootstrap
+                    mainContainer.style.cursor = 'pointer';
+                    mainContainer.setAttribute('data-bs-toggle', 'modal');
+                    mainContainer.setAttribute('data-bs-target', '#imageModal');
+                    // Actualizar imagen del modal
+                    const modalImage = document.getElementById('modalImage');
+                    if (modalImage && mainImage.src) {
+                        modalImage.src = mainImage.src;
+                        modalImage.classList.remove('d-none');
+                    }
+                } else if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                    // Si es video inicial, NO configurar modal - solo dejar que el video se reproduzca
+                    mainContainer.removeAttribute('data-bs-toggle');
+                    mainContainer.removeAttribute('data-bs-target');
+                    mainContainer.style.cursor = 'default';
+                    // Asegurar que el video tenga z-index correcto y no interfiera
+                    if (mainVideo) {
+                        mainVideo.style.zIndex = '0';
+                        mainVideo.style.position = 'relative';
+                        mainVideo.style.pointerEvents = 'auto';
+                    }
+                    // Ocultar imagen del modal si es video
+                    const modalImage = document.getElementById('modalImage');
+                    if (modalImage) {
+                        modalImage.classList.add('d-none');
+                    }
+                    // Eliminar cualquier backdrop de Bootstrap que pueda existir
+                    setTimeout(function() {
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) {
+                            backdrop.remove();
+                        }
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }, 100);
+                }
+            }
+        });
+    </script>
+    
+    <!-- Modal Bootstrap para imagen ampliada - SOLO para imágenes, NUNCA para videos -->
+    <div class="modal fade" id="imageModal" tabindex="-1" data-bs-backdrop="true" data-bs-keyboard="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px;"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" 
+                         th:if="${product.images != null and !product.images.isEmpty()}" 
+                         th:src="${product.images[0].getImageUrl()}" 
+                         class="img-fluid" 
+                         style="max-height: 90vh; max-width: 100%; object-fit: contain; background: white; border-radius: 10px;">
+                    <div th:if="${product.images == null or product.images.isEmpty()}" class="text-center py-5">
+                        <span class="material-symbols-outlined" style="font-size: 5rem; color: white;">image</span>
+                        <p class="text-white mt-3">Imagen no disponible</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Script para prevenir backdrop ANTES de cargar Bootstrap -->
+    <script>
+        // CORRECCIÓN CRÍTICA: Prevenir creación de backdrop ANTES de que Bootstrap se cargue
+        // Interceptar la creación del backdrop a nivel de DOM
+        (function() {
+            const originalAppendChild = Node.prototype.appendChild;
+            Node.prototype.appendChild = function(child) {
+                // Si se está intentando agregar un backdrop y hay video activo, no agregarlo
+                if (child && child.classList && child.classList.contains('modal-backdrop')) {
+                    const mainVideo = document.getElementById('mainVideo');
+                    if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                        // Hay video activo, NO agregar el backdrop
+                        return child; // Retornar sin agregar
+                    }
+                }
+                return originalAppendChild.call(this, child);
+            };
+        })();
+    </script>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script th:inline="javascript">
+        // CORRECCIÓN CRÍTICA: Interceptar creación de backdrop DESPUÉS de que Bootstrap se carga
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            // Sobrescribir el método que crea el backdrop
+            const Modal = bootstrap.Modal;
+            const originalConstructor = Modal.prototype.constructor;
+            
+            // Interceptar el método show que crea el backdrop
+            const originalShow = Modal.prototype.show;
+            Modal.prototype.show = function() {
+                const mainVideo = document.getElementById('mainVideo');
+                // Si hay video activo, NO mostrar el modal
+                if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                    // Prevenir que se cree el backdrop
+                    this._config = this._config || {};
+                    this._config.backdrop = false;
+                    return;
+                }
+                // Si no hay video, mostrar normalmente
+                return originalShow.call(this);
+            };
+            
+            // También interceptar la creación del backdrop directamente
+            const originalSetBackdrop = Modal.prototype._setBackdrop;
+            if (originalSetBackdrop) {
+                Modal.prototype._setBackdrop = function() {
+                    const mainVideo = document.getElementById('mainVideo');
+                    if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                        // Hay video activo, NO crear backdrop
+                        return;
+                    }
+                    return originalSetBackdrop.call(this);
+                };
+            }
+        }
+        
+        // Observar el DOM para detectar cuando se crea un backdrop y eliminarlo inmediatamente si hay video
+        const observer = new MutationObserver(function(mutations) {
+            const mainVideo = document.getElementById('mainVideo');
+            if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                // Hay video activo, eliminar cualquier backdrop que se cree
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(function(backdrop) {
+                    backdrop.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; z-index: -9999 !important; position: fixed !important; top: -9999px !important; left: -9999px !important; width: 0 !important; height: 0 !important;';
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        });
+        
+        // Iniciar observación inmediatamente
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        // Función para eliminar backdrop de Bootstrap si existe - MÁS AGRESIVA
+        function removeBootstrapBackdrop() {
+            // Buscar todos los backdrops (por si hay múltiples)
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                // Aplicar estilos forzados antes de remover
+                backdrop.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; z-index: -9999 !important; position: fixed !important; top: -9999px !important; left: -9999px !important; width: 0 !important; height: 0 !important;';
+                backdrop.remove();
+            });
+            
+            // También remover clase del body y restaurar estilos
+            document.body.classList.remove('modal-open', 'video-active');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.width = '';
+            document.body.style.height = '';
+        }
+        
+        // Función para verificar y eliminar backdrop cuando hay video
+        function checkAndRemoveBackdrop() {
+            const mainVideo = document.getElementById('mainVideo');
+            if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                // Hay video activo, eliminar backdrop
+                removeBootstrapBackdrop();
+                document.body.classList.add('video-active');
+                
+                // CORRECCIÓN ADICIONAL: Buscar TODOS los elementos que puedan ser el recuadro gris
+                // Buscar elementos con posición fixed que puedan estar causando el problema
+                const allFixedElements = document.querySelectorAll('[style*="position: fixed"], [style*="position:fixed"]');
+                allFixedElements.forEach(function(el) {
+                    const style = window.getComputedStyle(el);
+                    if (style.position === 'fixed' && 
+                        (style.backgroundColor.includes('rgba(0, 0, 0') || 
+                         style.backgroundColor.includes('rgb(0, 0, 0') ||
+                         el.classList.contains('modal-backdrop') ||
+                         el.classList.contains('backdrop'))) {
+                        // Es un backdrop o overlay, eliminarlo
+                        el.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; z-index: -9999 !important; position: fixed !important; top: -9999px !important; left: -9999px !important; width: 0 !important; height: 0 !important;';
+                        el.remove();
+                    }
+                });
+            } else {
+                document.body.classList.remove('video-active');
+            }
+        }
+        
+        // Función para manejar click en imagen principal - solo abrir modal si es imagen, no video
+        function handleMainImageClick(event) {
+            // No abrir si se hace clic en el botón de favoritos
+            if (event.target.closest('.favorite-btn')) {
+                return false;
+            }
+            
+            // Verificar que NO sea video antes de abrir modal
+            const mainVideo = document.getElementById('mainVideo');
+            if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                // Es video, NO abrir modal y eliminar cualquier backdrop existente
+                event.preventDefault();
+                event.stopPropagation();
+                removeBootstrapBackdrop();
+                return false;
+            }
+            
+            // Es imagen, permitir que Bootstrap abra el modal
+            return true;
+        }
+        
+        // Actualizar imagen del modal cuando se cambia de thumbnail
+        document.addEventListener('DOMContentLoaded', function() {
+            // CORRECCIÓN CRÍTICA: Verificar inmediatamente si es video y remover atributos
+            const mainContainer = document.getElementById('mainImageContainer');
+            const mainVideo = document.getElementById('mainVideo');
+            const mainImage = document.getElementById('mainImage');
+            
+            // Verificar estado inicial
+            if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                // Es video inicial, remover atributos inmediatamente y deshabilitar modal
+                if (mainContainer) {
+                    mainContainer.removeAttribute('data-bs-toggle');
+                    mainContainer.removeAttribute('data-bs-target');
+                    mainContainer.style.cursor = 'default';
+                    mainContainer.style.pointerEvents = 'auto';
+                }
+                // Deshabilitar el modal completamente
+                const imageModal = document.getElementById('imageModal');
+                if (imageModal) {
+                    const modalInstance = bootstrap.Modal.getInstance(imageModal);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                    // Cambiar configuración del modal para que no use backdrop
+                    imageModal.setAttribute('data-bs-backdrop', 'false');
+                }
+                // Eliminar cualquier backdrop que pueda existir
+                removeBootstrapBackdrop();
+                // Verificar múltiples veces para asegurar
+                setTimeout(removeBootstrapBackdrop, 10);
+                setTimeout(removeBootstrapBackdrop, 50);
+                setTimeout(removeBootstrapBackdrop, 100);
+                setTimeout(removeBootstrapBackdrop, 200);
+                setTimeout(removeBootstrapBackdrop, 500);
+            } else if (mainImage && !mainImage.classList.contains('hidden')) {
+                // Es imagen inicial, agregar atributos para modal
+                if (mainContainer) {
+                    mainContainer.setAttribute('data-bs-toggle', 'modal');
+                    mainContainer.setAttribute('data-bs-target', '#imageModal');
+                    mainContainer.style.cursor = 'pointer';
+                }
+                // Habilitar backdrop para imágenes
+                const imageModal = document.getElementById('imageModal');
+                if (imageModal) {
+                    imageModal.setAttribute('data-bs-backdrop', 'true');
+                }
+            }
+            
+            // Escuchar cambios en thumbnails para actualizar modal
+            document.querySelectorAll('.thumbnail-btn').forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    const imageUrl = this.getAttribute('data-image-url');
+                    const isVideo = this.getAttribute('data-is-video') === 'true';
+                    const modalImage = document.getElementById('modalImage');
+                    
+                    if (modalImage && !isVideo) {
+                        // Solo actualizar si es imagen
+                        modalImage.src = imageUrl;
+                        modalImage.classList.remove('d-none');
+                    } else if (modalImage && isVideo) {
+                        // Ocultar si es video
+                        modalImage.classList.add('d-none');
+                        // Eliminar backdrop si existe
+                        removeBootstrapBackdrop();
+                    }
+                });
+            });
+            
+            // Observar cambios en el modal de Bootstrap para eliminar backdrop cuando hay video
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal) {
+                // Escuchar evento de Bootstrap antes de que se abra
+                imageModal.addEventListener('show.bs.modal', function(event) {
+                    const mainVideo = document.getElementById('mainVideo');
+                    if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                        // Es video, prevenir que se abra el modal
+                        event.preventDefault();
+                        removeBootstrapBackdrop();
+                    }
+                });
+                
+                // Si el modal se abre por error, cerrarlo inmediatamente si es video
+                imageModal.addEventListener('shown.bs.modal', function() {
+                    const mainVideo = document.getElementById('mainVideo');
+                    if (mainVideo && !mainVideo.classList.contains('hidden')) {
+                        // Es video, cerrar modal inmediatamente
+                        const modal = bootstrap.Modal.getInstance(imageModal);
+                        if (modal) {
+                            modal.hide();
+                        }
+                        removeBootstrapBackdrop();
+                    }
+                });
+            }
+            
+            // Verificar periódicamente si hay backdrop cuando hay video (por si acaso) - más agresivo
+            setInterval(function() {
+                checkAndRemoveBackdrop();
+                // También verificar directamente en el DOM
+                const backdrop = document.querySelector('.modal-backdrop');
+                const mainVideo = document.getElementById('mainVideo');
+                if (backdrop && mainVideo && !mainVideo.classList.contains('hidden')) {
+                    // Hay backdrop y video activo - eliminar inmediatamente
+                    console.log('⚠️ Backdrop detectado con video activo - eliminando...');
+                    backdrop.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; z-index: -9999 !important; position: fixed !important; top: -9999px !important; left: -9999px !important; width: 0 !important; height: 0 !important;';
+                    backdrop.remove();
+                    document.body.classList.remove('modal-open', 'video-active');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }
+                
+                // DIAGNÓSTICO: Buscar todos los elementos fixed que puedan ser el problema
+                const mainVideoCheck = document.getElementById('mainVideo');
+                if (mainVideoCheck && !mainVideoCheck.classList.contains('hidden')) {
+                    const allFixed = document.querySelectorAll('*');
+                    allFixed.forEach(function(el) {
+                        const style = window.getComputedStyle(el);
+                        if (style.position === 'fixed' && 
+                            (parseFloat(style.opacity) > 0) &&
+                            (style.backgroundColor.includes('rgba(0,') || 
+                             style.backgroundColor.includes('rgb(0,') ||
+                             el.classList.contains('modal-backdrop'))) {
+                            console.warn('🔍 Elemento sospechoso encontrado:', el, {
+                                classes: el.className,
+                                id: el.id,
+                                backgroundColor: style.backgroundColor,
+                                zIndex: style.zIndex,
+                                opacity: style.opacity
+                            });
+                            // Eliminarlo inmediatamente
+                            el.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; z-index: -9999 !important; position: fixed !important; top: -9999px !important; left: -9999px !important; width: 0 !important; height: 0 !important;';
+                            el.remove();
+                        }
+                    });
+                }
+            }, 10); // Verificar cada 10ms para ser más agresivo
+            
+            // Verificar inmediatamente al cargar
+            checkAndRemoveBackdrop();
+            
+            // Verificar también después de un pequeño delay para asegurar que Bootstrap haya cargado
+            setTimeout(checkAndRemoveBackdrop, 100);
+            setTimeout(checkAndRemoveBackdrop, 500);
+            setTimeout(checkAndRemoveBackdrop, 1000);
+            
+            // Observar cambios en el video para eliminar backdrop
+            if (mainVideo) {
+                const observer = new MutationObserver(function(mutations) {
+                    checkAndRemoveBackdrop();
+                    // También verificar y actualizar atributos del contenedor
+                    const mainContainer = document.getElementById('mainImageContainer');
+                    if (mainVideo.classList.contains('hidden')) {
+                        // Video oculto, es imagen - agregar atributos
+                        if (mainContainer) {
+                            mainContainer.setAttribute('data-bs-toggle', 'modal');
+                            mainContainer.setAttribute('data-bs-target', '#imageModal');
+                            mainContainer.style.cursor = 'pointer';
+                        }
+                    } else {
+                        // Video visible - remover atributos
+                        if (mainContainer) {
+                            mainContainer.removeAttribute('data-bs-toggle');
+                            mainContainer.removeAttribute('data-bs-target');
+                            mainContainer.style.cursor = 'default';
+                        }
+                    }
+                });
+                observer.observe(mainVideo, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oriola</title>
+    
+    <!-- CSS de Lovely Denim -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css?v=1000">
+    <link rel="stylesheet" href="/css/lovelydenim-replica.css">
+
+    <style>
+        /* Estilos base de Lovely Denim */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+        }
+        
+        .bg-base {
+            background-color: #fff;
+        }
+        
+        
+        /* Título principal */
+        .lovely-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 400;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 40px 0 30px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Sección de Historias - Solo móvil */
+        .lovely-stories {
+            display: none;
+            max-width: 100%;
+            margin: 0 auto 40px auto;
+            padding: 0 10px;
+        }
+        
+        .lovely-story-video {
+            width: 100%;
+            height: 60vh;
+            object-fit: cover;
+            object-position: center;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background-color: #000;
+        }
+        
+        .lovely-story-container {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+        
+        /* Carrusel de categorías - Implementación Swiper como Lovely Denim */
+        .lovely-categories {
+            width: 100%;
+            max-width: 1330px;
+            border-bottom: 1px solid #ededed;
+            padding: 0 10px 16px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        
+        @media screen and (max-width: 1024px) {
+            .lovely-categories {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+        }
+        
+        .lovely-categories-container {
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .swiper {
+            width: 100%;
+            padding: 0;
+        }
+        
+        .swiper-wrapper {
+            align-items: stretch;
+        }
+        
+        .swiper-slide {
+            height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Flechas de navegación - Estilo Lovely Denim */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #171717;
+            transition: all 0.3s ease;
+            z-index: 10;
+            overflow: hidden;
+            padding: 0;
+        }
+        
+        .carousel-nav:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 7px 7px rgba(0, 0, 0, 0.3);
+        }
+        
+        .carousel-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .carousel-nav.prev {
+            left: 8px;
+        }
+        
+        .carousel-nav.next {
+            right: 8px;
+        }
+        
+        /* Indicadores de posición - OCULTOS */
+        .carousel-indicators {
+            display: none !important;
+        }
+        
+        .carousel-indicator {
+            display: none !important;
+        }
+        
+        .lovely-category-item {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            padding: 0 10px;
+        }
+        
+        .lovely-category-item:hover {
+            transform: none;
+        }
+        
+        .lovely-category-image-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        @media screen and (min-width: 1024px) {
+            .lovely-category-image-container {
+                width: auto;
+                height: 280px;
+            }
+        }
+        
+        .lovely-category-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        @media screen and (min-width: 1024px) {
+            .lovely-category-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
+        
+        .lovely-category-item:hover .lovely-category-image {
+            transform: scale(1.05);
+        }
+        
+        /* Prevenir cualquier efecto no deseado en títulos de categorías */
+        .lovely-category-item .lovely-category-title,
+        .lovely-category-item:hover .lovely-category-title,
+        .lovely-category-item:focus .lovely-category-title,
+        .lovely-category-item:active .lovely-category-title {
+            text-shadow: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: none !important;
+            color: #000 !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin: 10px 0 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            overflow: visible !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            text-overflow: initial !important;
+            transform: none !important;
+            position: static !important;
+            letter-spacing: 0.3px !important;
+        }
+        
+        .lovely-category-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            text-align: center;
+            text-transform: uppercase;
+            margin: 10px 0 0;
+            width: 100%;
+            position: static;
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            transform: none;
+            left: auto;
+            bottom: auto;
+            text-shadow: none;
+            border: none;
+            outline: none;
+            overflow: visible;
+            white-space: normal;
+            word-wrap: break-word;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Grid de productos - Réplica exacta */
+        .lovely-products {
+            max-width: 1330px;
+            margin: 0 auto;
+            padding: 0 20px;
+            margin-bottom: 80px;
+        }
+        
+        .lovely-products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .product-image-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: block;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Asegurar que el div wrapper interno llene el contenedor en escritorio */
+        .product-image-container > div {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Etiqueta promocional */
+        .product-promo-label {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .product-promo-label.sale {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .product-promo-label.new {
+            background: linear-gradient(135deg, #2ed573, #1e90ff);
+        }
+        
+        .product-promo-label.hot {
+            background: linear-gradient(135deg, #ff9ff3, #f368e0);
+        }
+        
+        .product-promo-label.offer {
+            background: linear-gradient(135deg, #ffa726, #ff7043);
+        }
+        
+        .product-image {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            min-width: 100% !important;
+            min-height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+            transition: transform 0.3s ease;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background-color: #f8f9fa;
+        }
+        
+        /* Asegurar que las imágenes dentro del wrapper también llenen */
+        .product-image-container > div .product-image,
+        .product-image-container > div img,
+        .product-image-container > div video {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            min-width: 100% !important;
+            min-height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .product-price-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        .product-price-original {
+            font-size: 14px;
+            color: #999;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+        
+        .product-discount {
+            background: #ff4757;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        /* Responsive */
+        /* Mobile Carousel Styles */
+        .lovely-categories-mobile {
+            display: none;
+        }
+        
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            margin: 0 5px;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .carousel-slide {
+            min-width: calc(50% - 2px);
+            margin-right: 4px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .carousel-slide .lovely-category-image-container {
+            height: 250px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .carousel-slide .lovely-category-image {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .carousel-slide:last-child {
+            margin-right: 0;
+        }
+        
+        .carousel-slide:hover .lovely-category-image {
+            transform: scale(1.05);
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 8px;
+        }
+        
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #c1c1c1;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .carousel-dot.active {
+            background-color: #171717;
+        }
+        
+        @media (max-width: 1024px) {
+            .lovely-category-item {
+                min-width: 200px;
+                flex-shrink: 0;
+            }
+            
+            .lovely-products-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .product-image-container {
+                height: 420px;
+            }
+            
+            .lovely-title {
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .lovely-stories {
+                display: block;
+            }
+            
+            .lovely-category-item {
+                min-width: 150px;
+                flex-shrink: 0;
+            }
+            
+            .carousel-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+            
+            .carousel-nav.prev {
+                left: 5px;
+            }
+            
+            .carousel-nav.next {
+                right: 5px;
+            }
+            
+            .lovely-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 0 20px;
+            }
+            
+            .product-image-container {
+                height: 300px;
+                overflow: hidden;
+                position: relative;
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Asegurar que el div wrapper no interfiera */
+            .product-image-container > div {
+                width: 100% !important;
+                height: 100% !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Forzar que las imágenes llenen completamente el contenedor en móvil */
+            .product-image-container .product-image,
+            .product-image-container img.product-image,
+            .product-image-container video.product-image,
+            .product-image-container > div .product-image,
+            .product-image-container > div img,
+            .product-image-container > div video {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                min-width: 100% !important;
+                min-height: 100% !important;
+                object-fit: cover !important;
+                object-position: center center !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+            }
+            
+            .lovely-title {
+                font-size: 24px;
+                margin: 30px 0 20px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .lovely-categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .lovely-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                padding: 0 15px;
+            }
+            
+            .product-image-container {
+                height: 320px;
+                overflow: hidden;
+                position: relative;
+                display: block;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Asegurar que el div wrapper no interfiera */
+            .product-image-container > div {
+                width: 100% !important;
+                height: 100% !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Forzar que las imágenes llenen completamente el contenedor en móvil pequeño */
+            .product-image-container .product-image,
+            .product-image-container img.product-image,
+            .product-image-container video.product-image,
+            .product-image-container > div .product-image,
+            .product-image-container > div img,
+            .product-image-container > div video {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100% !important;
+                max-height: 100% !important;
+                min-width: 100% !important;
+                min-height: 100% !important;
+                object-fit: cover !important;
+                object-position: center center !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+            }
+            
+            .product-card {
+                margin-bottom: 15px;
+            }
+            
+            .product-name {
+                font-size: 14px;
+            }
+            
+            .product-price {
+                font-size: 14px;
+            }
+            
+            .lovely-title {
+                font-size: 20px;
+            }
+        }
+        
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-base">
+    <!-- Header -->
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Oriola</a>
+                
+                <div class="header-nav">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Overlay para el menú móvil -->
+                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+                    
+                    <!-- Menú para PC (≥ 769px) -->
+                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link active">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <div class="dropdown-grid">
+                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                                        <a th:each="category : ${categories}" 
+                                           th:href="@{/catalog(category=${category.name})}" 
+                                           class="dropdown-item" 
+                                           th:text="${category.name}">Categoría</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Menú para Móvil (≤ 768px) -->
+                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Ver Todo</a>
+                        </li>
+                        <li class="nav-item" th:each="category : ${categories}">
+                            <a th:href="@{/catalog(category=${category.name})}" 
+                               class="nav-link" 
+                               th:text="${category.name}"
+                               onclick="closeMobileMenu()">Categoría</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="header-actions">
+                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
+                    <div class="search-bar" id="searchBar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
+                    </div>
+                    <div class="header-icons">
+                        <!-- Search icon - only visible on mobile -->
+                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="https://www.instagram.com/oriola.denim" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/orioladenim" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491168570940" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Historias - Solo móvil -->
+    <section class="lovely-stories" th:if="${historiaPrincipal != null}">
+        <div class="lovely-story-container">
+            <video th:src="@{/uploads/{videoPath}(videoPath=${historiaPrincipal.videoPath})}" 
+                   class="lovely-story-video"
+                   autoplay 
+                   muted 
+                   loop 
+                   playsinline>
+                Tu navegador no soporta videos.
+            </video>
+        </div>
+    </section>
+
+    <!-- Título principal -->
+    <h1 class="lovely-title">CATEGORÍAS</h1>
+
+    <!-- Grid de categorías - Conectado con tu backend -->
+    <section class="lovely-categories" th:if="${carouselCategories != null and !carouselCategories.isEmpty()}">
+        <div class="lovely-categories-container">
+            <!-- Swiper -->
+            <div class="swiper" id="categoriesSwiper">
+                <div class="swiper-wrapper">
+                    <!-- Categorías dinámicas desde tu backend -->
+                    <div th:each="cat : ${carouselCategories}" 
+                         class="swiper-slide">
+                        <div class="lovely-category-item" 
+                             th:data-category-name="${cat.name}"
+                             onclick="goToCategory(this)">
+                            <div class="lovely-category-image-container">
+                                <img th:src="${cat.imagePath != null and !cat.imagePath.isEmpty()} ? @{/uploads/{imagePath}(imagePath=${cat.imagePath})} : 'https://via.placeholder.com/300x280/000000/ffffff?text=' + ${cat.name}" 
+                                     th:alt="${cat.name}" 
+                                     class="lovely-category-image">
+                            </div>
+                            <div class="lovely-category-title" th:text="${cat.name}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Flechas de navegación -->
+            <button class="carousel-nav prev" id="prevBtn">‹</button>
+            <button class="carousel-nav next" id="nextBtn">›</button>
+        </div>
+    </section>
+
+    <!-- Grid de productos - Conectado con tu backend -->
+    <section class="lovely-products" th:if="${products != null and !products.isEmpty()}">
+        <div class="lovely-products-grid">
+            <!-- Productos dinámicos desde tu backend -->
+            <div th:each="product : ${products}" 
+                 class="product-card"
+                 th:data-product-id="${product.pId}"
+                 onclick="goToProduct(this)">
+                <div class="product-image-container">
+                    <!-- Calcular si es video usando th:with -->
+                    <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                   isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                        <!-- Mostrar video si es video -->
+                        <video th:if="${isVideo}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             th:title="${product.name}" 
+                             class="product-image"
+                             muted loop autoplay
+                             style="width: 100%; height: 100%; object-fit: cover;"></video>
+                        <!-- Mostrar imagen si no es video -->
+                        <img th:if="${!isVideo and imagenPrincipal != null}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             th:alt="${product.name}" 
+                             class="product-image">
+                    </div>
+                    <img th:if="${product.images == null or product.images.empty}" 
+                         src="https://via.placeholder.com/350x350/f8f9fa/666666?text=Oriola" 
+                         th:alt="${product.name}" 
+                         class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" th:text="${product.name}"></h3>
+                    <div class="product-price-container">
+                        <div class="product-price">
+                            <span th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" 
+                                  class="product-price-original" 
+                                  th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
+                            <span th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"></span>
+                            <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
+                                  class="product-discount" 
+                                  th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '%'"></span>
+                        </div>
+                        <!-- Etiqueta promocional -->
+                        <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                             class="product-promo-label"
+                             th:text="${product.etiquetaPromocional}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491168570940?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Oriola</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Indumentaria con estilo y personalidad. Cada prenda está diseñada para que te sientas único y cómodo.
+                    </p>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/oriola.denim" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/orioladenim" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491168570940" target="_blank" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">54 11 6857 0940</span>
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">orioladenim@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Oriola. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Swiper JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Función para toggle del menú móvil
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            
+            mobileMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        
+        // Función para cerrar el menú móvil
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        // Función para ir a la categoría
+        function goToCategory(element) {
+            const categoryName = element.getAttribute('data-category-name');
+            console.log('🔄 [CARRUSEL] Clic en categoría:', categoryName);
+            
+            // Efecto visual de clic
+            element.style.transform = 'scale(0.95)';
+            element.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.opacity = '1';
+            }, 150);
+            
+            const url = '/catalog?category=' + encodeURIComponent(categoryName);
+            console.log('🔄 [CARRUSEL] Redirigiendo a:', url);
+            
+            // Pequeño delay para mostrar el efecto visual
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+        
+        
+        // Variables del carrusel Swiper
+        let categoriesSwiper = null;
+        
+        // Inicializar carrusel con Swiper
+        function initCarousel() {
+            if (categoriesSwiper) {
+                categoriesSwiper.destroy(true, true);
+            }
+            
+            // Calcular slides por vista según el tamaño de pantalla
+            let slidesPerView = 4;
+            let spaceBetween = 8;
+            
+            if (window.innerWidth <= 768) {
+                slidesPerView = 2;
+                spaceBetween = 8;
+            } else if (window.innerWidth <= 1024) {
+                slidesPerView = 3;
+                spaceBetween = 8;
+            }
+            
+            console.log(`🚀 Inicializando Swiper: ${slidesPerView} slides por vista`);
+            
+            categoriesSwiper = new Swiper('#categoriesSwiper', {
+                slidesPerView: slidesPerView,
+                spaceBetween: spaceBetween,
+                loop: true,
+                autoplay: false,
+                navigation: {
+                    nextEl: '#nextBtn',
+                    prevEl: '#prevBtn',
+                },
+                // Paginación removida - sin puntitos
+                breakpoints: {
+                    320: {
+                        slidesPerView: 2,
+                        spaceBetween: 8
+                    },
+                    768: {
+                        slidesPerView: 3,
+                        spaceBetween: 8
+                    },
+                    1024: {
+                        slidesPerView: 4,
+                        spaceBetween: 8
+                    }
+                },
+                on: {
+                    init: function () {
+                        console.log('✅ Swiper inicializado correctamente');
+                    },
+                    slideChange: function () {
+                        console.log('🔄 Slide cambiado:', this.activeIndex);
+                    }
+                }
+            });
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initCarousel();
+        });
+        
+        // Redimensionar ventana
+        window.addEventListener('resize', function() {
+            initCarousel();
+        });
+        
+        // Función para ir al detalle del producto
+        function goToProduct(element) {
+            const productId = element.getAttribute('data-product-id');
+            console.log('🔄 [PRODUCTO] Clic en producto:', productId);
+            
+            // Efecto visual de clic
+            element.style.transform = 'scale(0.95)';
+            element.style.opacity = '0.8';
+            
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.opacity = '1';
+            }, 150);
+            
+            const url = '/product/' + productId;
+            console.log('🔄 [PRODUCTO] Redirigiendo a:', url);
+            
+            // Pequeño delay para mostrar el efecto visual
+            setTimeout(() => {
+                window.location.href = url;
+            }, 200);
+        }
+        
+        // Efectos hover para productos
+        document.addEventListener('DOMContentLoaded', function() {
+            const productItems = document.querySelectorAll('.product-card');
+            
+            productItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+                });
+            });
+            
+            // Inicializar carrusel móvil
+            initMobileCarousel();
+        });
+        
+        // Función para inicializar el carrusel móvil
+        function initMobileCarousel() {
+            const carousel = document.getElementById('categoryCarousel');
+            const dotsContainer = document.getElementById('categoryDots');
+            
+            if (!carousel || !dotsContainer) return;
+            
+            const slides = carousel.querySelectorAll('.carousel-slide');
+            const totalSlides = slides.length;
+            const slidesPerView = 2;
+            const totalPages = Math.ceil(totalSlides / slidesPerView);
+            let currentPage = 0;
+            
+            // Crear dots
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot';
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToPage(i));
+                dotsContainer.appendChild(dot);
+            }
+            
+            // Función para ir a una página específica
+            function goToPage(page) {
+                currentPage = page;
+                const translateX = -page * 100;
+                carousel.style.transform = `translateX(${translateX}%)`;
+                
+                // Actualizar dots
+                const dots = dotsContainer.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === page);
+                });
+            }
+            
+            // Touch/swipe support
+            let startX = 0;
+            let isDragging = false;
+            
+            carousel.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+            
+            carousel.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+            });
+            
+            carousel.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const endX = e.changedTouches[0].clientX;
+                const diffX = startX - endX;
+                
+                if (Math.abs(diffX) > 50) { // Minimum swipe distance
+                    if (diffX > 0 && currentPage < totalPages - 1) {
+                        goToPage(currentPage + 1);
+                    } else if (diffX < 0 && currentPage > 0) {
+                        goToPage(currentPage - 1);
+                    }
+                }
+            });
+            
+            // Auto-advance (opcional)
+            setInterval(() => {
+                if (currentPage < totalPages - 1) {
+                    goToPage(currentPage + 1);
+                } else {
+                    goToPage(0); // Loop back to start
+                }
+            }, 5000); // Change slide every 5 seconds
+        }
+    </script>
+</body>
+</html>

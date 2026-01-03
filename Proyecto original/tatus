@@ -1,0 +1,432 @@
+[1mdiff --git a/documentacion/cargar-productos-webp.sql b/documentacion/cargar-productos-webp.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..243d82e[m
+[1m--- /dev/null[m
+[1m+++ b/documentacion/cargar-productos-webp.sql[m
+[36m@@ -0,0 +1,287 @@[m
+[32m+[m[32m-- Script SQL para cargar 10 productos de prueba[m
+[32m+[m[32m-- Sin acentos y optimizado para WebP[m
+[32m+[m
+[32m+[m[32m-- Limpiar productos existentes (opcional)[m
+[32m+[m[32m-- DELETE FROM product_image WHERE product_id IN (SELECT p_id FROM product);[m
+[32m+[m[32m-- DELETE FROM product;[m
+[32m+[m
+[32m+[m[32m-- Insertar 10 productos de prueba[m
+[32m+[m[32mINSERT INTO product ([m
+[32m+[m[32m    name, talle, medidas, color, price, qty, descripcion, categoria,[m[41m [m
+[32m+[m[32m    material, cuidados, temporada, genero, edad_recomendada,[m[41m [m
+[32m+[m[32m    tallas_disponibles, colores_disponibles, es_destacado, es_nuevo,[m[41m [m
+[32m+[m[32m    descuento_porcentaje, precio_original, activo, fecha_creacion, fecha_actualizacion[m
+[32m+[m[32m) VALUES[m[41m [m
+[32m+[m[32m-- Producto 1: Remera basica[m
+[32m+[m[32m([m
+[32m+[m[32m    'Remera Basica Algodon',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Largo: 70cm, Ancho: 50cm, Manga: 20cm',[m
+[32m+[m[32m    'Blanco',[m
+[32m+[m[32m    25.99,[m
+[32m+[m[32m    50,[m
+[32m+[m[32m    'Remera de algodon 100% comoda y fresca para el verano. Corte clasico y tela suave.',[m
+[32m+[m[32m    'REMERAS',[m
+[32m+[m[32m    'Algodon 100%',[m
+[32m+[m[32m    'Lavar en frio, no usar secadora, planchar a temperatura media',[m
+[32m+[m[32m    'VERANO',[m
+[32m+[m[32m    'UNISEX',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL',[m
+[32m+[m[32m    'Blanco,Azul,Negro,Rosa',[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 2: Buzo con capucha[m
+[32m+[m[32m([m
+[32m+[m[32m    'Buzo Capucha Invierno',[m
+[32m+[m[32m    'L',[m
+[32m+[m[32m    'Largo: 75cm, Ancho: 55cm, Manga: 60cm',[m
+[32m+[m[32m    'Gris',[m
+[32m+[m[32m    45.99,[m
+[32m+[m[32m    30,[m
+[32m+[m[32m    'Buzo con capucha ideal para el invierno. Tela gruesa y calida.',[m
+[32m+[m[32m    'BUZOS',[m
+[32m+[m[32m    'Algodon 80%, Poliester 20%',[m
+[32m+[m[32m    'Lavar en frio, secar al aire, no planchar',[m
+[32m+[m[32m    'INVIERNO',[m
+[32m+[m[32m    'UNISEX',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL,XXL',[m
+[32m+[m[32m    'Gris,Negro,Azul Marino',[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    15.0,[m
+[32m+[m[32m    54.99,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 3: Camisa formal[m
+[32m+[m[32m([m
+[32m+[m[32m    'Camisa Formal Hombre',[m
+[32m+[m[32m    'L',[m
+[32m+[m[32m    'Largo: 80cm, Ancho: 52cm, Manga: 65cm',[m
+[32m+[m[32m    'Azul',[m
+[32m+[m[32m    35.99,[m
+[32m+[m[32m    25,[m
+[32m+[m[32m    'Camisa formal de algodon para ocasiones especiales. Corte clasico y elegante.',[m
+[32m+[m[32m    'CAMISAS',[m
+[32m+[m[32m    'Algodon 100%',[m
+[32m+[m[32m    'Lavar en frio, planchar a temperatura alta',[m
+[32m+[m[32m    'TODO_EL_ANO',[m
+[32m+[m[32m    'HOMBRE',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL,XXL',[m
+[32m+[m[32m    'Azul,Blanco,Rosa Claro',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 4: Pantalon jean[m
+[32m+[m[32m([m
+[32m+[m[32m    'Jean Clasico Mujer',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Cintura: 38cm, Largo: 100cm, Ancho: 45cm',[m
+[32m+[m[32m    'Azul',[m
+[32m+[m[32m    55.99,[m
+[32m+[m[32m    40,[m
+[32m+[m[32m    'Jean clasico de mezclilla para mujer. Corte recto y comodo.',[m
+[32m+[m[32m    'PANTALONES',[m
+[32m+[m[32m    'Mezclilla 98%, Elastano 2%',[m
+[32m+[m[32m    'Lavar en frio, no usar secadora, planchar al reves',[m
+[32m+[m[32m    'TODO_EL_ANO',[m
+[32m+[m[32m    'MUJER',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    '38,40,42,44,46',[m
+[32m+[m[32m    'Azul,Negro,Gris Claro',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    20.0,[m
+[32m+[m[32m    69.99,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 5: Vestido verano[m
+[32m+[m[32m([m
+[32m+[m[32m    'Vestido Floral Verano',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Largo: 95cm, Ancho: 48cm, Manga: 15cm',[m
+[32m+[m[32m    'Rosa',[m
+[32m+[m[32m    42.99,[m
+[32m+[m[32m    20,[m
+[32m+[m[32m    'Vestido floral perfecto para el verano. Tela liviana y fresca.',[m
+[32m+[m[32m    'VESTIDOS',[m
+[32m+[m[32m    'Viscosa 100%',[m
+[32m+[m[32m    'Lavar a mano, no usar secadora, planchar a temperatura baja',[m
+[32m+[m[32m    'VERANO',[m
+[32m+[m[32m    'MUJER',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL',[m
+[32m+[m[32m    'Rosa,Azul,Verde,Blanco',[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 6: Short deportivo[m
+[32m+[m[32m([m
+[32m+[m[32m    'Short Deportivo Unisex',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Largo: 45cm, Cintura: 40cm, Ancho: 50cm',[m
+[32m+[m[32m    'Negro',[m
+[32m+[m[32m    28.99,[m
+[32m+[m[32m    35,[m
+[32m+[m[32m    'Short deportivo comodo para gimnasio o deportes. Tela elastica.',[m
+[32m+[m[32m    'SHORTS',[m
+[32m+[m[32m    'Poliester 85%, Elastano 15%',[m
+[32m+[m[32m    'Lavar en frio, secar al aire, no planchar',[m
+[32m+[m[32m    'VERANO',[m
+[32m+[m[32m    'UNISEX',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL',[m
+[32m+[m[32m    'Negro,Azul,Gris,Blanco',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 7: Chomba polo[m
+[32m+[m[32m([m
+[32m+[m[32m    'Chomba Polo Clasica',[m
+[32m+[m[32m    'L',[m
+[32m+[m[32m    'Largo: 75cm, Ancho: 50cm, Manga: 25cm',[m
+[32m+[m[32m    'Blanco',[m
+[32m+[m[32m    32.99,[m
+[32m+[m[32m    30,[m
+[32m+[m[32m    'Chomba polo clasica de algodon. Perfecta para el verano.',[m
+[32m+[m[32m    'CHOMBAS',[m
+[32m+[m[32m    'Algodon 100%',[m
+[32m+[m[32m    'Lavar en frio, planchar a temperatura media',[m
+[32m+[m[32m    'VERANO',[m
+[32m+[m[32m    'UNISEX',[m
+[32m+[m[32m    'Adultos',[m
+[32m+[m[32m    'S,M,L,XL,XXL',[m
+[32m+[m[32m    'Blanco,Azul,Rosa,Verde',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    10.0,[m
+[32m+[m[32m    36.99,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 8: Buzo nino[m
+[32m+[m[32m([m
+[32m+[m[32m    'Buzo Nino Invierno',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Largo: 60cm, Ancho: 40cm, Manga: 45cm',[m
+[32m+[m[32m    'Azul',[m
+[32m+[m[32m    38.99,[m
+[32m+[m[32m    25,[m
+[32m+[m[32m    'Buzo calido para nino. Tela suave y resistente.',[m
+[32m+[m[32m    'BUZOS',[m
+[32m+[m[32m    'Algodon 70%, Poliester 30%',[m
+[32m+[m[32m    'Lavar en frio, secar al aire, no planchar',[m
+[32m+[m[32m    'INVIERNO',[m
+[32m+[m[32m    'NINO',[m
+[32m+[m[32m    '6-12 años',[m
+[32m+[m[32m    'S,M,L',[m
+[32m+[m[32m    'Azul,Rojo,Verde,Negro',[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 9: Vestido nina[m
+[32m+[m[32m([m
+[32m+[m[32m    'Vestido Nina Primavera',[m
+[32m+[m[32m    'S',[m
+[32m+[m[32m    'Largo: 70cm, Ancho: 35cm, Manga: 20cm',[m
+[32m+[m[32m    'Rosa',[m
+[32m+[m[32m    29.99,[m
+[32m+[m[32m    20,[m
+[32m+[m[32m    'Vestido lindo para nina. Tela suave y comoda.',[m
+[32m+[m[32m    'VESTIDOS',[m
+[32m+[m[32m    'Algodon 100%',[m
+[32m+[m[32m    'Lavar en frio, secar al aire, planchar a temperatura baja',[m
+[32m+[m[32m    'PRIMAVERA',[m
+[32m+[m[32m    'NINA',[m
+[32m+[m[32m    '4-10 años',[m
+[32m+[m[32m    'XS,S,M',[m
+[32m+[m[32m    'Rosa,Azul,Verde,Amarillo',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m),[m
+[32m+[m
+[32m+[m[32m-- Producto 10: Pantalon nino[m
+[32m+[m[32m([m
+[32m+[m[32m    'Pantalon Nino Deportivo',[m
+[32m+[m[32m    'M',[m
+[32m+[m[32m    'Cintura: 30cm, Largo: 80cm, Ancho: 35cm',[m
+[32m+[m[32m    'Gris',[m
+[32m+[m[32m    24.99,[m
+[32m+[m[32m    30,[m
+[32m+[m[32m    'Pantalon deportivo para nino. Comodo y resistente.',[m
+[32m+[m[32m    'PANTALONES',[m
+[32m+[m[32m    'Algodon 60%, Poliester 40%',[m
+[32m+[m[32m    'Lavar en frio, secar al aire, no planchar',[m
+[32m+[m[32m    'TODO_EL_ANO',[m
+[32m+[m[32m    'NINO',[m
+[32m+[m[32m    '6-12 años',[m
+[32m+[m[32m    'S,M,L',[m
+[32m+[m[32m    'Gris,Azul,Negro,Verde',[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    false,[m
+[32m+[m[32m    0.0,[m
+[32m+[m[32m    null,[m
+[32m+[m[32m    true,[m
+[32m+[m[32m    NOW(),[m
+[32m+[m[32m    NOW()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32m-- Verificar que se insertaron correctamente[m
+[32m+[m[32mSELECT[m[41m [m
+[32m+[m[32m    p_id,[m[41m [m
+[32m+[m[32m    name,[m[41m [m
+[32m+[m[32m    categoria,[m[41m [m
+[32m+[m[32m    genero,[m[41m [m
+[32m+[m[32m    talle,[m[41m [m
+[32m+[m[32m    price,[m[41m [m
+[32m+[m[32m    es_destacado,[m[41m [m
+[32m+[m[32m    es_nuevo,[m
+[32m+[m[32m    descuento_porcentaje[m
+[32m+[m[32mFROM product[m[41m [m
+[32m+[m[32mORDER BY p_id;[m
+[1mdiff --git a/documentacion/comandos-commit-push.md b/documentacion/comandos-commit-push.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..89f0630[m
+[1m--- /dev/null[m
+[1m+++ b/documentacion/comandos-commit-push.md[m
+[36m@@ -0,0 +1,122 @@[m
+[32m+[m[32m# Comandos para Commit y Push - 14 Enero 2025[m
+[32m+[m
+[32m+[m[32m## 🚀 **COMANDOS RECOMENDADOS**[m
+[32m+[m
+[32m+[m[32m### **1. Verificar Estado del Repositorio**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit status[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### **2. Agregar Archivos Modificados**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit add .[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### **3. Commit con Mensaje Descriptivo**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit commit -m "feat: Implementar sistema avanzado de gestión de imágenes[m
+[32m+[m
+[32m+[m[32m- Galería de producto interactiva con thumbnails dinámicos[m
+[32m+[m[32m- Calidad de imágenes optimizada con interpolación BICUBIC[m
+[32m+[m[32m- Límite profesional de 5 imágenes por producto[m
+[32m+[m[32m- Manejo directo de archivos WebP con fallback robusto[m
+[32m+[m[32m- Eliminación en cascada de imágenes al eliminar productos[m
+[32m+[m[32m- Modal de ampliación optimizado para pantalla completa[m
+[32m+[m[32m- Validación inteligente de límites en frontend y backend[m
+[32m+[m
+[32m+[m[32mArchivos modificados:[m
+[32m+[m[32m- ImageProcessingService.java: Calidad mejorada[m
+[32m+[m[32m- WebPConversionService.java: Servicio WebP avanzado[m
+[32m+[m[32m- ProductService.java: Eliminación en cascada[m
+[32m+[m[32m- FileUploadController.java: Límite de 5 imágenes[m
+[32m+[m[32m- product-detail.html: Galería interactiva[m
+[32m+[m[32m- admin/product-images.html: Validación de límites[m
+[32m+[m[32m- style.css: Estilos para galería[m
+[32m+[m[32m- mejoras-implementadas.md: Documentación actualizada[m
+[32m+[m
+[32m+[m[32mTesting: ✅ Completado[m
+[32m+[m[32mEstado: 🚀 Listo para producción"[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### **4. Push al Repositorio Remoto**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit push origin main[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## 📋 **VERIFICACIÓN PRE-COMMIT**[m
+[32m+[m
+[32m+[m[32m### **Archivos que DEBEN estar incluidos:**[m
+[32m+[m[32m- [x] `src/main/java/com/otz/service/ImageProcessingService.java`[m
+[32m+[m[32m- [x] `src/main/java/com/otz/service/WebPConversionService.java`[m
+[32m+[m[32m- [x] `src/main/java/com/otz/service/ProductService.java`[m
+[32m+[m[32m- [x] `src/main/java/com/otz/controller/FileUploadController.java`[m
+[32m+[m[32m- [x] `src/main/resources/templates/product-detail.html`[m
+[32m+[m[32m- [x] `src/main/resources/templates/admin/product-images.html`[m
+[32m+[m[32m- [x] `src/main/resources/static/css/style.css`[m
+[32m+[m[32m- [x] `documentacion/mejoras-implementadas.md`[m
+[32m+[m[32m- [x] `documentacion/resumen-commit-14-enero.md`[m
+[32m+[m
+[32m+[m[32m### **Verificar que NO hay archivos temporales:**[m
+[32m+[m[32m- [ ] `*.tmp`[m
+[32m+[m[32m- [ ] `*.log`[m
+[32m+[m[32m- [ ] `target/`[m
+[32m+[m[32m- [ ] `.idea/`[m
+[32m+[m[32m- [ ] `*.class`[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## 🔍 **COMANDOS DE VERIFICACIÓN**[m
+[32m+[m
+[32m+[m[32m### **Ver archivos modificados:**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit diff --name-only[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### **Ver cambios específicos:**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit diff src/main/java/com/otz/service/ImageProcessingService.java[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### **Ver historial de commits:**[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit log --oneline -5[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## ⚠️ **NOTAS IMPORTANTES**[m
+[32m+[m
+[32m+[m[32m1. **Verificar que la aplicación compile** antes del commit:[m
+[32m+[m[32m   ```bash[m
+[32m+[m[32m   mvn compile[m
+[32m+[m[32m   ```[m
+[32m+[m
+[32m+[m[32m2. **Verificar que la aplicación funcione** antes del push:[m
+[32m+[m[32m   ```bash[m
+[32m+[m[32m   mvn spring-boot:run[m
+[32m+[m[32m   ```[m
+[32m+[m
+[32m+[m[32m3. **Si hay conflictos**, resolverlos antes de hacer push[m
+[32m+[m
+[32m+[m[32m4. **Si es la primera vez**, configurar el repositorio remoto:[m
+[32m+[m[32m   ```bash[m
+[32m+[m[32m   git remote add origin [URL_DEL_REPOSITORIO][m
+[32m+[m[32m   ```[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## 📊 **RESUMEN DE CAMBIOS**[m
+[32m+[m
+[32m+[m[32m- **Archivos modificados:** 8[m
+[32m+[m[32m- **Líneas agregadas:** ~200[m
+[32m+[m[32m- **Líneas eliminadas:** ~50[m
+[32m+[m[32m- **Funcionalidades nuevas:** 6[m
+[32m+[m[32m- **Testing:** ✅ Completado[m
+[32m+[m[32m- **Estado:** 🚀 Listo para producción[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m**Fecha:** 14 de enero de 2025[m[41m  [m
+[32m+[m[32m**Desarrollado por:** Equipo de Desarrollo ORIOLA[m
+[1mdiff --git a/documentacion/mejoras-implementadas.md b/documentacion/mejoras-implementadas.md[m
+[1mindex 63202e6..bd66536 100644[m
+[1m--- a/documentacion/mejoras-implementadas.md[m
+[1m+++ b/documentacion/mejoras-implementadas.md[m
+[36m@@ -1,8 +1,8 @@[m
+ # Mejoras Implementadas - ORIOLA Indumentaria[m
+ [m
+[31m-**Fecha de actualización:** 13 de enero de 2025  [m
+[31m-**Versión:** 1.1  [m
+[31m-**Estado:** En desarrollo[m
+[32m+[m[

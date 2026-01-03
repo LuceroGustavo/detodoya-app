@@ -1,1201 +1,2063 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es-AR">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title th:text="${product.name} + ' - detodoya.com'">Producto - detodoya.com</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${product.name} + ' - detodoya.com'">Producto - detodoya.com</title>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#137fec",
-                        "primary-hover": "#0f6bc9",
-                        "background-light": "#ffffff",
-                        "background-off": "#f9fafb",
-                        "background-dark": "#101922",
-                        "text-main": "#111418",
-                        "text-secondary": "#637588",
-                    },
-                    fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "body": ["Inter", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "2xl": "1rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            font-size: 20px;
-        }
-        
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        /* Favoritos */
-        .favorite-btn {
-            transition: all 0.2s ease;
-        }
-        
-        .favorite-btn.favorite-active {
-            color: #ef4444;
-        }
-        
-        .favorite-btn.favorite-active .material-symbols-outlined {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        
-        .favorite-btn.favorite-inactive {
-            color: #9ca3af;
-        }
-        
-        .favorite-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        /* WhatsApp Button Flotante */
-        .whatsapp-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #25D366;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: white;
-            font-size: 32px;
-        }
-        
-        .whatsapp-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
-        }
-        
-        /* Galería */
-        .thumbnail-btn {
-            width: 96px !important;
-            height: 96px !important;
-            min-width: 96px !important;
-            min-height: 96px !important;
-            max-width: 96px !important;
-            max-height: 96px !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .thumbnail-btn img,
-        .thumbnail-btn video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-        }
-        
-        .thumbnail-active {
-            border-color: #137fec !important;
-            border-width: 2px !important;
-        }
-        
-        .tab-active {
-            border-bottom-color: #137fec;
-            color: #137fec;
-        }
-        
-        /* Asegurar que el lightbox esté oculto por defecto */
-        #lightboxModal {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-        
-        #lightboxModal:not(.hidden) {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/lovely-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
-<body class="bg-background-off text-text-main flex flex-col min-h-screen overflow-x-hidden">
-    
+<body>
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 sm:h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-2">
-                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                        <span class="material-symbols-outlined" style="font-size: 24px;">shopping_bag</span>
-                    </div>
-                    <a href="/" class="text-xl sm:text-2xl font-bold tracking-tight text-text-main hover:text-primary transition-colors">
-                        detodoya.com
-                    </a>
+    <header class="header-container">
+        <div class="header-content">
+            <div class="header-top">
+                <a href="/" class="logo">Detodoya</a>
+                
+                <div class="header-nav">
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <!-- Overlay para el menú móvil -->
+                    <div class="nav-overlay" id="navOverlay" onclick="closeMobileMenu()"></div>
+                    
+                    <!-- Menú para PC (≥ 769px) -->
+                    <ul class="nav-menu nav-menu-desktop" id="navMenuDesktop">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link">Catálogo</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0)" class="nav-link dropdown-toggle">Categorías</a>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <div class="dropdown-grid">
+                                        <a href="/catalog?category=REMERAS" class="dropdown-item">Remeras</a>
+                                        <a href="/catalog?category=PANTALONES" class="dropdown-item">Pantalones</a>
+                                        <a href="/catalog?category=CAMISAS" class="dropdown-item">Camisas</a>
+                                        <a href="/catalog?category=BUZOS" class="dropdown-item">Buzos</a>
+                                        <a href="/catalog?category=VESTIDOS" class="dropdown-item">Vestidos</a>
+                                        <a href="/catalog?category=SHORTS" class="dropdown-item">Shorts</a>
+                                        <a href="/catalog?category=CHOMBAS" class="dropdown-item">Chombas</a>
+                                        <a href="/catalog" class="dropdown-item">Ver Todo</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <!-- Menú para Móvil (≤ 768px) -->
+                    <ul class="nav-menu nav-menu-mobile" id="navMenuMobile">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link" onclick="closeMobileMenu()">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog" class="nav-link" onclick="closeMobileMenu()">Catálogo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=REMERAS" class="nav-link" onclick="closeMobileMenu()">Remeras</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=PANTALONES" class="nav-link" onclick="closeMobileMenu()">Pantalones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=CAMISAS" class="nav-link" onclick="closeMobileMenu()">Camisas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=BUZOS" class="nav-link" onclick="closeMobileMenu()">Buzos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=VESTIDOS" class="nav-link" onclick="closeMobileMenu()">Vestidos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=SHORTS" class="nav-link" onclick="closeMobileMenu()">Shorts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/catalog?category=CHOMBAS" class="nav-link" onclick="closeMobileMenu()">Chombas</a>
+                        </li>
+                    </ul>
                 </div>
                 
-                <!-- Desktop Navigation -->
-                <nav class="hidden md:flex items-center gap-8">
-                    <a href="/" class="text-sm font-medium text-text-main hover:text-primary transition-colors">Inicio</a>
-                    <a href="/catalog" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Catálogo</a>
-                    <div class="relative group">
-                        <a href="javascript:void(0)" class="text-sm font-medium text-text-secondary hover:text-primary transition-colors">Categorías</a>
-                        <div class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="p-2">
-                                <a href="/catalog" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Ver Todo</a>
-                                <a th:each="category : ${product.categories}" 
-                                   th:href="@{/catalog(category=${category.name})}" 
-                                   th:text="${category.name}"
-                                   class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"></a>
-                            </div>
-                        </div>
+                <div class="header-actions">
+                    <!-- Search bar - hidden on desktop, shown on mobile when search icon is clicked -->
+                    <div class="search-bar" id="searchBar">
+                        <input type="text" class="search-input" placeholder="Buscar productos...">
                     </div>
-                </nav>
-                
-                <!-- Actions -->
-                <div class="flex items-center gap-3">
-                    <button aria-label="Search" onclick="openSearchModal()" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors">
-                        <span class="material-symbols-outlined">search</span>
-                    </button>
-                    <div class="hidden sm:flex gap-1">
-                        <a href="https://www.instagram.com/detodoya" target="_blank" aria-label="Instagram" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#E4405F] transition-colors">
-                            <span class="material-symbols-outlined">photo_camera</span>
+                    <div class="header-icons">
+                        <!-- Search icon - only visible on mobile -->
+                        <button class="header-icon search-toggle" id="searchToggle" title="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="https://www.instagram.com/oriola.denim" class="header-icon" title="Instagram" target="_blank">
+                            <i class="bi bi-instagram"></i>
                         </a>
-                        <a href="https://wa.me/5491159293920" target="_blank" aria-label="WhatsApp" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-[#25D366] transition-colors">
-                            <span class="material-symbols-outlined">chat</span>
+                        <a href="https://www.facebook.com/orioladenim" class="header-icon" title="Facebook" target="_blank">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491168570940" class="header-icon" title="WhatsApp" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="/admin/login" class="header-icon" title="Administración" target="_blank">
+                            <i class="bi bi-gear"></i>
                         </a>
                     </div>
-                    <div class="h-6 w-px bg-gray-200 mx-1 hidden sm:block"></div>
-                    <!-- Carrito (sin funcionalidad) -->
-                    <button aria-label="Carrito" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-text-main transition-colors" title="Próximamente">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-primary rounded-full">0</span>
-                    </button>
-                    <a href="/admin/login" class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all shadow-sm hover:shadow-md" target="_blank">
-                        <span class="material-symbols-outlined" style="font-size: 18px;">admin_panel_settings</span>
-                        <span class="hidden sm:inline">Admin</span>
-                    </a>
                 </div>
             </div>
         </div>
     </header>
-    
-    <main class="flex-grow">
-        <!-- Breadcrumbs -->
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-wrap gap-2 items-center text-sm text-text-secondary">
-                <a href="/" class="hover:text-primary transition-colors">Inicio</a>
-                <span class="material-symbols-outlined text-base">chevron_right</span>
-                <a th:if="${product.categories != null and !product.categories.isEmpty()}" 
-                   th:href="@{/catalog(category=${product.categories[0].name})}" 
-                   th:text="${product.categories[0].name}"
-                   class="hover:text-primary transition-colors">Categoría</a>
-                <span th:if="${product.categories != null and !product.categories.isEmpty()}" class="material-symbols-outlined text-base">chevron_right</span>
-                <span class="text-text-main font-medium" th:text="${product.name}">Producto</span>
-            </div>
-        </div>
-        
-        <!-- Product Hero Section -->
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-                <!-- Left Column: Gallery (7 cols) -->
-                <div class="lg:col-span-7 flex flex-col gap-4">
-                    <!-- Main Image -->
-                    <div class="aspect-[4/3] w-full bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group"
-                         id="mainImageContainer"
-                         style="z-index: 1;">
-                        <!-- Badge de estado -->
-                        <span th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
-                              th:text="${product.etiquetaPromocional}"
-                              class="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm uppercase"></span>
-                        <span th:if="${product.esNuevo and (product.etiquetaPromocional == null or product.etiquetaPromocional.isEmpty())}" 
-                              class="absolute top-4 left-4 z-10 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">NUEVO</span>
-                        
-                        <!-- Botón Favorito -->
-                        <button class="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-md favorite-btn favorite-inactive hover:text-red-500 transition-colors text-gray-400"
-                                th:data-product-id="${product.pId}"
-                                th:onclick="'event.stopPropagation(); if(window.favoritesManager) window.favoritesManager.toggleFavorite(' + ${product.pId} + ', this);'">
-                            <span class="material-symbols-outlined">favorite</span>
-                        </button>
-                        
-                        <!-- Icono de play REMOVIDO - el video se reproduce automáticamente -->
-                        
-                        <!-- Imagen o Video Principal -->
-                        <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
-                                       isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false},
-                                       hasImages=${product.images != null and !product.images.isEmpty()}">
-                            <!-- Video: siempre presente cuando hay imágenes para poder cambiar dinámicamente -->
-                            <video th:if="${hasImages}" 
-                                 th:src="${isVideo ? product.getImagenPrincipalUrl() : ''}" 
-                                 id="mainVideo"
-                                 th:class="${isVideo ? 'w-full h-full object-contain bg-white relative' : 'hidden w-full h-full object-contain bg-white'}"
-                                 autoplay muted loop playsinline
-                                 onclick="event.stopPropagation();"
-                                 style="z-index: 0; position: relative; pointer-events: auto;"></video>
-                            <!-- Imagen: siempre presente cuando hay imágenes para poder cambiar dinámicamente -->
-                            <img th:if="${hasImages}" 
-                                 th:src="${!isVideo ? product.getImagenPrincipalUrl() : ''}" 
-                                 id="mainImage"
-                                 th:class="${!isVideo ? 'w-full h-full object-contain bg-white cursor-pointer' : 'hidden w-full h-full object-contain bg-white'}"
-                                 th:alt="${product.name}">
-                            <!-- Si no hay imágenes, mostrar placeholder -->
-                            <img th:if="${!hasImages}" 
-                                 src="https://via.placeholder.com/800x600/f8f9fa/666666?text=Detodoya" 
-                                 id="mainImage"
-                                 class="w-full h-full object-contain bg-white cursor-pointer"
-                                 th:alt="${product.name}"
-                                 onclick="event.stopPropagation();">
+
+
+    <!-- Product Detail -->
+    <section class="product-detail-section" style="background: white; margin-top: 0; padding: 40px 0;">
+        <div class="container product-detail-container">
+            <div class="row g-0">
+                <!-- Imagen del Producto -->
+                <div class="col-12 col-lg-6">
+                    <!-- Galería para PC -->
+                    <div class="product-gallery-desktop d-none d-lg-flex" style="max-width: 100%; width: 100%;">
+                        <!-- Thumbnails Verticales (Lado Izquierdo) -->
+                        <div class="thumbnail-column" th:if="${product.images != null and product.images.size() > 1}" style="margin-right: 25px; display: flex; flex-direction: column; height: 600px; overflow-y: auto;">
+                            <div th:each="image, iterStat : ${product.images}" 
+                                 th:class="${iterStat.first} ? 'thumbnail-vertical active' : 'thumbnail-vertical'"
+                                 th:data-image-url="${image.getImageUrl()}"
+                                 th:data-image-id="${image.id}"
+                                 th:data-is-video="${image.isVideo}"
+                                 class="thumbnail-vertical" 
+                                 style="width: 120px; height: 188px; margin-bottom: 16px; cursor: pointer; overflow: hidden; border: 1.5px solid transparent; transition: all 0.3s ease; text-align: center;">
+                                <!-- Mostrar video o imagen -->
+                                <video th:if="${image.isVideo}" th:src="${image.getImageUrl()}" muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                                <img th:unless="${image.isVideo}" th:src="${image.getThumbnailUrl()}" 
+                                     class="img-fluid" 
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
                         </div>
+                        
+                        <!-- Imagen Principal -->
+                        <div class="main-image-container" style="flex: 1; display: flex; justify-content: center; align-items: center; min-width: 0; overflow: hidden;">
+                            <div class="product-image-large" id="mainImageContainer" style="width: 100%; max-width: 520px; height: 600px; background: #fff; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 4rem; position: relative; overflow: hidden; cursor: pointer; border: 1px solid #e9ecef;" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                <i class="bi bi-image" th:if="${product.images == null or product.images.isEmpty()}"></i>
+                                <!-- Calcular si es video usando th:with -->
+                                <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                               isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                                    <!-- Video - Siempre presente pero oculto si no es video -->
+                                    <video th:if="${product.images != null and !product.images.isEmpty()}" 
+                                         th:src="${product.getImagenPrincipalUrl()}" 
+                                         id="mainVideo"
+                                         th:class="${isVideo} ? '' : 'd-none'"
+                                         autoplay muted loop
+                                         style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; background: white; object-position: center;"></video>
+                                    <!-- Imagen - Siempre presente pero oculto si es video -->
+                                    <img th:if="${product.images != null and !product.images.isEmpty()}" 
+                                         th:src="${product.getImagenPrincipalUrl()}" 
+                                         id="mainImage" 
+                                         th:class="${!isVideo and imagenPrincipal != null} ? 'img-fluid' : 'd-none img-fluid'"
+                                         style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; background: white; object-position: center;">
+                                </div>
+                                <div class="image-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s ease;">
+                                    <button class="btn btn-light btn-sm" style="background: rgba(255,255,255,0.9); border: none; padding: 8px 16px; border-radius: 4px;">
+                                        <i class="bi bi-zoom-in me-1"></i>Ampliar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+        <!-- Galería para Móvil -->
+        <div class="product-gallery-mobile d-lg-none" style="margin-top: 0; padding: 0;">
+            <div class="mobile-gallery-container" style="position: relative; width: 100%; height: 60vh; background: #fff; overflow: hidden; padding: 0; display: flex; justify-content: center;">
+                <!-- Imagen Principal Móvil -->
+                <div class="mobile-main-image" id="mobileMainImage" style="width: 85%; min-width: 300px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; padding: 0;">
+                    <i class="bi bi-image" th:if="${product.images == null or product.images.isEmpty()}" style="font-size: 4rem; color: #ccc;"></i>
+                    <!-- Calcular si es video usando th:with -->
+                    <div th:with="imagenPrincipal=${product.getImagenPrincipal()}, 
+                                   isVideo=${imagenPrincipal != null ? (imagenPrincipal.isVideo != null ? imagenPrincipal.isVideo : false) : false}">
+                        <!-- Video móvil - Siempre presente pero oculto si no es video -->
+                        <video th:if="${product.images != null and !product.images.isEmpty()}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             id="mobileVideo"
+                             th:class="${isVideo} ? '' : 'd-none'"
+                             autoplay muted loop
+                             style="width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 0; margin: 0; padding: 0;"></video>
+                        <!-- Imagen móvil - Siempre presente pero oculto si es video -->
+                        <img th:if="${product.images != null and !product.images.isEmpty()}" 
+                             th:src="${product.getImagenPrincipalUrl()}" 
+                             id="mobileImage"
+                             th:class="${!isVideo and imagenPrincipal != null} ? 'img-fluid' : 'd-none img-fluid'"
+                             style="width: 100%; height: 100%; object-fit: contain; background: white; border-radius: 0; margin: 0; padding: 0;">
                     </div>
                     
-                    <!-- Thumbnails -->
-                    <div th:if="${product.images != null and product.images.size() > 1}" class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-                        <button th:each="image, iterStat : ${product.images}" 
-                                th:data-image-url="${image.getImageUrl()}"
-                                th:data-is-video="${image.isVideo}"
-                                th:data-image-index="${iterStat.index}"
-                                th:class="${iterStat.first} ? 'thumbnail-btn thumbnail-active' : 'thumbnail-btn'"
-                                class="shrink-0 w-24 h-24 rounded-lg border-2 border-gray-200 overflow-hidden relative hover:border-primary transition-colors flex-shrink-0"
-                                style="min-width: 96px; max-width: 96px; min-height: 96px; max-height: 96px;"
-                                th:onclick="'changeMainImage(this); event.stopPropagation();'">
-                            <video th:if="${image.isVideo}" 
-                                 th:src="${image.getImageUrl()}" 
-                                 class="w-full h-full object-cover"
-                                 style="width: 100%; height: 100%; object-fit: cover;"
-                                 muted loop></video>
-                            <img th:unless="${image.isVideo}" 
-                                 th:src="${image.getThumbnailUrl()}" 
-                                 class="w-full h-full object-cover"
-                                 style="width: 100%; height: 100%; object-fit: cover;"
-                                 th:alt="${product.name}">
-                            <div th:if="${image.isVideo}" class="absolute inset-0 bg-black/20 flex items-center justify-center">
-                                <div class="bg-white/90 rounded-full p-1 shadow-sm">
-                                    <span class="material-symbols-outlined text-primary text-[20px]">play_arrow</span>
-                                </div>
-                            </div>
-                        </button>
+                    <!-- Botón de zoom -->
+                    <div class="mobile-zoom-btn" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <i class="bi bi-zoom-in"></i>
                     </div>
                 </div>
                 
-                <!-- Right Column: Product Info (5 cols) - Sticky -->
-                <div class="lg:col-span-5 relative">
-                    <div class="sticky top-24 flex flex-col gap-6">
-                        <!-- Header Info -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span th:if="${product.categories != null and !product.categories.isEmpty()}" 
-                                      th:text="${product.categories[0].name}"
-                                      class="text-primary font-semibold text-sm tracking-wide uppercase"></span>
-                                <span th:if="${product.qty != null and product.qty > 0}" 
-                                      class="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">En Stock</span>
-                                <span th:if="${product.qty == null or product.qty == 0}" 
-                                      class="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">Sin Stock</span>
+                <!-- Indicadores de puntos -->
+                <div class="mobile-gallery-indicators" th:if="${product.images != null and product.images.size() > 1}" 
+                     style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10;">
+                    <span th:each="image, iterStat : ${product.images}" 
+                          th:class="${iterStat.first} ? 'indicator active' : 'indicator'"
+                          th:data-image-index="${iterStat.index}"
+                          th:data-image-url="${image.getImageUrl()}"
+                          th:data-is-video="${image.isVideo}"
+                          class="indicator" 
+                          style="width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.44); cursor: pointer; transition: all 0.3s ease;"></span>
+                </div>
+            </div>
+        </div>
+                </div>
+
+                <!-- Información del Producto -->
+                <div class="col-12 col-lg-6">
+                    <div class="product-details" style="padding: 0 40px;">
+                        <!-- Título del producto -->
+                        <h1 class="product-title mb-4" th:text="${product.name}" 
+                            style="font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 400; color: #000; letter-spacing: 0px; text-transform: uppercase; line-height: 1.2;">
+                            Nombre del Producto
+                        </h1>
+                        
+                        <!-- Precio con etiqueta promocional -->
+                        <div class="product-price-container mb-4 d-flex align-items-center" style="gap: 12px;">
+                            <div class="product-price">
+                                <span class="current-price" th:text="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}" 
+                                      style="font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 400; color: #000;">$ 0</span>
                             </div>
-                            <h1 class="text-text-main text-3xl md:text-4xl font-bold leading-tight mb-3" th:text="${product.name}">
-                                Nombre del Producto
-                            </h1>
-                            <!-- Rating placeholder -->
-                            <div class="flex items-center gap-2 mb-4">
-                                <div class="flex text-yellow-400 text-sm">
-                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
-                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
-                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
-                                    <span class="material-symbols-outlined fill-current text-[20px]">star</span>
-                                    <span class="material-symbols-outlined fill-current text-[20px] text-gray-300">star</span>
+                            <!-- Etiqueta promocional -->
+                            <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                 class="product-promo-label"
+                                 th:text="${product.etiquetaPromocional}">
+                            </div>
+                        </div>
+                        
+                        <!-- Información de colores disponibles (desktop) -->
+                        <div class="product-colors-info mb-4 d-none d-lg-block">
+                            <div class="d-flex align-items-center mb-4" th:if="${product.colores != null and product.colores.size() > 0}">
+                                <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 15px;">Color</span>
+                                <div class="color-circles d-flex gap-3">
+                                    <!-- Colores del sistema nuevo -->
+                                    <div th:each="color : ${product.colores}" 
+                                         class="color-circle" 
+                                         th:title="${color.name}"
+                                         th:attr="style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
+                                                          ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
+                                                          ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')} + 'width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; cursor: default; transition: all 0.3s ease; position: relative;'">
+                                    </div>
                                 </div>
-                                <span class="text-sm text-text-secondary font-medium">- (Próximamente)</span>
                             </div>
                         </div>
-                        
-                        <!-- Price Block -->
-                        <div class="flex items-end gap-3 pb-6 border-b border-dashed border-gray-200">
-                            <span class="text-4xl font-bold text-primary" th:text="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}">$0</span>
-                            <div th:if="${product.precioOriginal != null and product.precioOriginal > product.price}" class="flex flex-col mb-1">
-                                <span class="text-sm text-gray-400 line-through font-medium" th:text="'$' + ${#numbers.formatDecimal(product.precioOriginal, 0, 0)}"></span>
-                                <span th:if="${product.descuentoPorcentaje != null and product.descuentoPorcentaje > 0}" 
-                                      class="text-xs text-red-500 font-bold"
-                                      th:text="'-' + ${#numbers.formatDecimal(product.descuentoPorcentaje, 0, 0)} + '% OFF'"></span>
-                            </div>
-                        </div>
-                        
-                        <!-- Short Description -->
-                        <p th:if="${product.descripcion != null and !product.descripcion.isEmpty()}" 
-                           class="text-text-secondary text-base leading-relaxed"
-                           th:text="${#strings.abbreviate(product.descripcion, 200)}">
-                            Descripción del producto
-                        </p>
-                        
-                        <!-- Variants Selection -->
-                        <div class="space-y-4">
-                            <!-- Colores (solo si es INDUMENTARIA o tiene colores) -->
-                            <div th:if="${product.colores != null and product.colores.size() > 0}">
-                                <span class="block text-sm font-semibold text-text-main mb-3">
-                                    Color: <span class="font-normal text-gray-500" id="selectedColorName">-</span>
-                                </span>
-                                <div class="flex gap-3 flex-wrap">
-                                    <button th:each="color : ${product.colores}" 
-                                            th:data-color-name="${color.name}"
-                                            th:attr="style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
-                                                              ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
-                                                              ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')}"
-                                            class="size-10 rounded-full border-2 border-gray-200 hover:border-primary transition-all cursor-pointer"
-                                            onclick="selectColor(this)">
+
+        <!-- Información inicial visible en móvil -->
+        <div class="mobile-initial-info d-lg-none mb-4" style="padding: 20px 30px; background: white;">
+            <div class="mobile-product-header">
+                <div class="mb-3">
+                    <h2 class="mobile-product-title mb-0" th:text="${product.name}" 
+                        style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 400; color: #000; letter-spacing: 0px; text-transform: uppercase; line-height: 1.2;">
+                        Nombre del Producto
+                    </h2>
+                    
+                </div>
+                                <div class="product-price-container mb-4 d-flex align-items-center" style="gap: 12px;">
+                                    <div class="mobile-product-price">
+                                        <span class="mobile-current-price" th:text="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}" 
+                                              style="font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 400; color: #000;">$ 0</span>
+                                    </div>
+                                    <!-- Etiqueta promocional -->
+                                    <div th:if="${product.etiquetaPromocional != null and !product.etiquetaPromocional.isEmpty()}" 
+                                         class="product-promo-label"
+                                         th:text="${product.etiquetaPromocional}">
+                                    </div>
+                                </div>
+                                
+                                <!-- Información de colores y talles -->
+                                <div class="mobile-variant-selector mb-3">
+                                    
+                                    
+                                    <!-- Colores -->
+                                    <div class="mobile-color-section mb-3">
+                                        <div th:if="${product.colores != null and product.colores.size() > 0}">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 10px;">Color:</span>
+                                                <div class="color-circles d-flex gap-2">
+                                                    <!-- Colores del sistema nuevo -->
+                                                    <div th:each="color : ${product.colores}" 
+                                                         class="color-circle mobile-color-circle" 
+                                                         th:title="${color.name}"
+                                                         th:attr="data-color-name=${color.name},
+                                                                  style=${(color.imagePath != null and !color.imagePath.isEmpty()) ? 
+                                                                          ('background-image: url(/uploads/' + color.imagePath + '); background-size: cover; background-position: center;') : 
+                                                                          ('background-color: ' + (color.hexCode != null ? color.hexCode : '#6c757d') + ';')} + 'width: 32px; height: 32px; border-radius: 50%; border: 2px solid #e0e0e0; cursor: pointer; transition: all 0.3s ease;'">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Nombre del color seleccionado (solo visible en móvil) -->
+                                            <div class="mobile-color-name-display" 
+                                                 id="mobileColorNameDisplay"
+                                                 style="font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #666; margin-top: 8px; min-height: 18px; display: none;">
+                                                <span id="mobileColorNameText"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Talles -->
+                                    <div class="mobile-size-section mb-3" th:if="${product.talles != null and !product.talles.isEmpty()}">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 10px;">Talle:</span>
+                                            <div class="size-options d-flex gap-2">
+                                                <button th:each="talle : ${product.talles}" 
+                                                        th:text="${talle.displayName}"
+                                                        class="size-btn" 
+                                                        style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; background: white; color: #000; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: default; transition: all 0.3s ease;">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Descripción del producto -->
+                                <div class="mobile-description mb-4">
+                                    <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; text-transform: uppercase; letter-spacing: 1px;">
+                                        Descripción
+                                    </h6>
+                                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #666; line-height: 1.6;" th:text="${product.descripcion ?: 'Producto de alta calidad con diseño único y materiales premium. Perfecto para destacar tu personalidad y sentirte cómodo en cualquier ocasión.'}"></p>
+                                </div>
+                                
+                                <!-- Botones de acción -->
+                                <div class="mobile-action-buttons d-grid gap-3">
+                                    <button class="btn btn-dark btn-lg" 
+                                            th:data-product-name="${product.name}"
+                                            th:data-product-price="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}"
+                                            style="background: #000; border: none; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                        <i class="bi bi-whatsapp me-2"></i>Consultar por WhatsApp
                                     </button>
+                                    <a th:href="@{/contact(producto=${product.name})}" class="btn btn-outline-dark btn-lg"
+                                       style="border: 2px solid #000; color: #000; background: transparent; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase; text-decoration: none;">
+                                        <i class="bi bi-envelope me-2"></i>Enviar Consulta
+                                    </a>
+                                </div>
+                                
+                                <!-- Especificaciones del producto -->
+                                <div class="mobile-specs mb-4">
+                                    <!-- Medidas -->
+                                    <div class="mb-3" th:if="${product.medidas}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-arrows-expand me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Medidas: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.medidas}"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Material -->
+                                    <div class="mb-3" th:if="${product.material}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-shield-check me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Material: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.material}"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Géneros -->
+                                    <div class="mb-3" th:if="${product.generos != null and !product.generos.isEmpty()}">
+                                        <div class="spec-item d-flex align-items-center">
+                                            <i class="bi bi-person me-2" style="color: #666; font-size: 14px;"></i>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Género: </span>
+                                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                                  th:text="${product.getGenerosComoTexto()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Características del Producto -->
+                                <div class="mobile-features mb-4">
+                                    <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                        Características del Producto
+                                    </h6>
+                                    <ul class="list-unstyled" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666;">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Material de alta calidad
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Diseño único y exclusivo
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Corte clásico y elegante
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                            Perfecto para ocasiones especiales
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Información de colores y talles para PC -->
+                        <div class="variant-selector-desktop d-none d-lg-block mb-5">
                             
-                            <!-- Talles (solo si es INDUMENTARIA) -->
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.talles != null and !product.talles.isEmpty()}">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="block text-sm font-semibold text-text-main">Talle</span>
-                                </div>
-                                <div class="flex flex-wrap gap-2">
-                                    <button th:each="talle : ${product.talles}" 
-                                            th:text="${talle.displayName}"
-                                            class="px-4 py-2 rounded-lg border border-gray-200 hover:border-primary text-text-secondary font-medium text-sm transition-colors"
-                                            onclick="selectSize(this)">
+                            
+                            <!-- Talles -->
+                            <div class="size-section mb-4" th:if="${product.talles != null and !product.talles.isEmpty()}">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #000; margin-right: 15px;">Talle</span>
+                                    <div class="size-options d-flex gap-2">
+                                        <button th:each="talle : ${product.talles}" 
+                                                th:text="${talle.displayName}"
+                                                class="size-btn" 
+                                                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e0e0e0; background: white; color: #000; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: default; transition: all 0.3s ease;">
                                     </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Modelo (solo si es ELECTRONICA) -->
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.modelo != null and !product.modelo.isEmpty()}">
-                                <div class="flex justify-between items-center mb-3">
-                                    <span class="block text-sm font-semibold text-text-main">Modelo</span>
-                                </div>
-                                <div class="px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-text-main font-medium text-sm">
-                                    <span th:text="${product.modelo}">Modelo</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Actions -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                            <button class="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold h-12 rounded-lg transition-transform active:scale-95 shadow-sm"
-                                    th:data-product-name="${product.name}"
-                                    th:data-product-price="'$' + ${#numbers.formatDecimal(product.price, 0, 0)}"
-                                    onclick="openWhatsApp(this)">
-                                <svg class="w-5 h-5 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path>
-                                </svg>
-                                Consultar WhatsApp
-                            </button>
-                            <a th:href="@{/contact(producto=${product.name})}" 
-                               class="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-primary text-text-main font-bold h-12 rounded-lg transition-colors">
-                                <span class="material-symbols-outlined">mail</span>
-                                Enviar Consulta
-                            </a>
+
+                        <!-- Sección de especificaciones para desktop -->
+                        <div class="product-specs mb-4 d-none d-lg-block">
+                            <div class="row">
+                                
+                                <!-- Medidas -->
+                                <div class="col-md-6 mb-3" th:if="${product.medidas}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-arrows-expand me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Medidas: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.medidas}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Material -->
+                                <div class="col-md-6 mb-3" th:if="${product.material}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-shield-check me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Material: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.material}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Géneros -->
+                                <div class="col-md-6 mb-3" th:if="${product.generos != null and !product.generos.isEmpty()}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-person me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Género: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                              th:text="${product.getGenerosComoTexto()}"></span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Temporadas -->
+                                <div class="col-md-6 mb-3" th:if="${product.temporadas != null and !product.temporadas.isEmpty()}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-calendar me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Temporada: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" 
+                                              th:text="${product.getTemporadasComoTexto()}"></span>
+                                    </div>
+                                </div>
+                                
+                                
+                                <!-- Edad recomendada -->
+                                <div class="col-md-6 mb-3" th:if="${product.edadRecomendada}">
+                                    <div class="spec-item d-flex align-items-center">
+                                        <i class="bi bi-people me-2" style="color: #666; font-size: 14px;"></i>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; font-weight: 400;">Edad: </span>
+                                        <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #000;" th:text="${product.edadRecomendada}"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <!-- Trust Indicators -->
-                        <div class="grid grid-cols-2 gap-4 pt-4 text-xs text-text-secondary">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
-                                <span>Envío a todo el país</span>
+
+                        <!-- Botones de acción para desktop -->
+                        <div class="product-actions mb-5 d-none d-lg-block">
+                            <div class="d-grid gap-3">
+                                <button class="btn btn-dark btn-lg" 
+                                        th:data-product-name="${product.name}"
+                                        th:data-product-price="'$ ' + ${#numbers.formatDecimal(product.price, 0, 0)}"
+                                        style="background: #000; border: none; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                    <i class="bi bi-whatsapp me-2"></i>Consultar por WhatsApp
+                                </button>
+                                <a th:href="@{/contact(producto=${product.name})}" class="btn btn-outline-dark btn-lg"
+                                   style="border: 2px solid #000; color: #000; background: transparent; padding: 16px 24px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; letter-spacing: 1px; border-radius: 8px; text-transform: uppercase;">
+                                    <i class="bi bi-envelope me-2"></i>Enviar Consulta
+                                </a>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
-                                <span>Garantía</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">credit_card</span>
-                                <span>Pagos seguros</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">headphones</span>
-                                <span>Soporte técnico</span>
-                            </div>
+                        </div>
+
+                        <!-- Características del producto para desktop -->
+                        <div class="product-features mb-4 d-none d-lg-block">
+                            <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                Características del Producto
+                            </h6>
+                            <ul class="list-unstyled" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666;">
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Material de alta calidad
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Diseño único y exclusivo
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Corte clásico y elegante
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check me-2" style="color: #000; font-size: 12px;"></i>
+                                    Perfecto para ocasiones especiales
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Cuidados del producto -->
+                        <div class="product-care mb-4" th:if="${product.cuidados}">
+                            <h6 class="mb-3" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 400; color: #000; letter-spacing: 1px; text-transform: uppercase;">
+                                Cuidados
+                            </h6>
+                            <div style="font-family: 'Inter', sans-serif; font-size: 13px; color: #666; line-height: 1.6;" th:text="${product.cuidados}"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Details, Specs & Care (Tabs) -->
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-            <div class="border-b border-gray-200 mb-8 flex gap-8 overflow-x-auto no-scrollbar">
-                <button onclick="showTab('description')" id="tab-description" class="pb-4 border-b-2 border-primary text-primary font-bold text-lg tab-button tab-active whitespace-nowrap">
-                    Descripción
-                </button>
-                <button onclick="showTab('specs')" id="tab-specs" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
-                    Especificaciones
-                </button>
-                <button th:if="${product.cuidados != null and !product.cuidados.isEmpty()}" 
-                        onclick="showTab('care')" id="tab-care" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
-                    Cuidados
-                </button>
-                <button onclick="showTab('reviews')" id="tab-reviews" class="pb-4 border-b-2 border-transparent text-gray-500 hover:text-text-main font-medium text-lg transition-colors tab-button whitespace-nowrap">
-                    Reseñas
-                </button>
-            </div>
-            
-            <div class="space-y-12">
-                <!-- Description Content -->
-                <section id="content-description" class="tab-content">
-                    <h3 class="text-2xl font-bold mb-4 text-text-main" th:text="${product.name}">Descripción</h3>
-                    <div class="prose prose-lg text-text-secondary max-w-none">
-                        <p class="mb-4" th:text="${product.descripcion ?: 'Producto de alta calidad con diseño único y materiales premium.'}">
-                            Descripción del producto
-                        </p>
-                    </div>
-                </section>
-                
-                <!-- Specs Table -->
-                <section id="content-specs" class="tab-content hidden">
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
-                        <h3 class="text-xl font-bold mb-6 text-text-main flex items-center gap-2">
-                            <span class="material-symbols-outlined">settings</span>
-                            Especificaciones Técnicas
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
-                            <!-- Campos dinámicos según TipoProducto -->
-                            
-                            <!-- INDUMENTARIA -->
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.medidas != null and !product.medidas.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Medidas</span>
-                                <span class="text-text-main font-semibold" th:text="${product.medidas}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.material != null and !product.material.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Material</span>
-                                <span class="text-text-main font-semibold" th:text="${product.material}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.generos != null and !product.generos.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Género</span>
-                                <span class="text-text-main font-semibold" th:text="${product.getGenerosComoTexto()}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.temporadas != null and !product.temporadas.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Temporada</span>
-                                <span class="text-text-main font-semibold" th:text="${product.getTemporadasComoTexto()}"></span>
-                            </div>
-                            
-                            <!-- LIBROS -->
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.autor != null and !product.autor.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Autor</span>
-                                <span class="text-text-main font-semibold" th:text="${product.autor}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.editorial != null and !product.editorial.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Editorial</span>
-                                <span class="text-text-main font-semibold" th:text="${product.editorial}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.isbn != null and !product.isbn.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">ISBN</span>
-                                <span class="text-text-main font-semibold" th:text="${product.isbn}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'LIBROS' and product.paginas != null}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Páginas</span>
-                                <span class="text-text-main font-semibold" th:text="${product.paginas} + ' páginas'"></span>
-                            </div>
-                            
-                            <!-- ELECTRONICA -->
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.marca != null and !product.marca.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Marca</span>
-                                <span class="text-text-main font-semibold" th:text="${product.marca}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.modelo != null and !product.modelo.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Modelo</span>
-                                <span class="text-text-main font-semibold" th:text="${product.modelo}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.garantia != null and !product.garantia.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Garantía</span>
-                                <span class="text-text-main font-semibold" th:text="${product.garantia}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.potencia != null and !product.potencia.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Potencia</span>
-                                <span class="text-text-main font-semibold" th:text="${product.potencia}"></span>
-                            </div>
-                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'ELECTRONICA' and product.consumo != null and !product.consumo.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Consumo</span>
-                                <span class="text-text-main font-semibold" th:text="${product.consumo}"></span>
-                            </div>
-                            
-                            <!-- Campos genéricos (todos los tipos) -->
-                            <div th:if="${product.peso != null and !product.peso.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Peso</span>
-                                <span class="text-text-main font-semibold" th:text="${product.peso}"></span>
-                            </div>
-                            <div th:if="${product.dimensiones != null and !product.dimensiones.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100">
-                                <span class="text-gray-500 font-medium">Dimensiones</span>
-                                <span class="text-text-main font-semibold" th:text="${product.dimensiones}"></span>
-                            </div>
-                            <div th:if="${product.especificaciones != null and !product.especificaciones.isEmpty()}" 
-                                 class="flex justify-between py-3 border-b border-gray-100 md:col-span-2">
-                                <span class="text-gray-500 font-medium">Especificaciones</span>
-                                <span class="text-text-main font-semibold text-right" th:text="${product.especificaciones}"></span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                
-                <!-- Care Content -->
-                <section th:if="${product.cuidados != null and !product.cuidados.isEmpty()}" id="content-care" class="tab-content hidden">
-                    <h3 class="text-xl font-bold mb-4 text-text-main">Cuidados</h3>
-                    <div class="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
-                        <p class="text-text-secondary leading-relaxed" th:text="${product.cuidados}">
-                            Instrucciones de cuidado del producto
-                        </p>
-                    </div>
-                </section>
-                
-                <!-- Reviews Content (placeholder) -->
-                <section id="content-reviews" class="tab-content hidden">
-                    <h3 class="text-xl font-bold mb-6 text-text-main">Opiniones de clientes</h3>
-                    <div class="bg-gray-50 rounded-xl p-6 md:p-8 text-center">
-                        <span class="material-symbols-outlined text-6xl text-gray-400 mb-4">rate_review</span>
-                        <p class="text-text-secondary">Sistema de reseñas próximamente</p>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </main>
-    
-    <!-- Modal de Búsqueda -->
-    <div id="searchModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 p-6 relative">
-            <button onclick="closeSearchModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <h3 class="text-2xl font-bold text-text-main mb-4">Buscar Productos</h3>
-            <form action="/catalog" method="get" class="flex gap-3">
-                <div class="flex-1 relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                        <span class="material-symbols-outlined">search</span>
-                    </span>
-                    <input type="text" 
-                           name="search" 
-                           placeholder="Buscar productos..." 
-                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                           autofocus>
+    </section>
+
+    <!-- Modal para imagen ampliada -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content" style="background: transparent; border: none;">
+                <div class="modal-header" style="border: none; padding: 0; position: absolute; top: 10px; right: 10px; z-index: 1050;">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px;"></button>
                 </div>
-                <button type="submit" class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center gap-2">
-                    <span class="material-symbols-outlined">search</span>
-                    Buscar
-                </button>
-            </form>
+                <div class="modal-body text-center" style="padding: 0; position: relative;">
+                    <!-- Botón anterior (izquierda) -->
+                    <button id="prevImageBtn" class="modal-nav-btn" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <!-- Botón siguiente (derecha) -->
+                    <button id="nextImageBtn" class="modal-nav-btn" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <!-- Imagen del modal -->
+                    <img id="modalImage" 
+                         th:if="${product.images != null and !product.images.isEmpty()}" 
+                         th:src="${product.images[0].getImageUrl()}" 
+                         class="img-fluid" 
+                         style="max-height: 90vh; max-width: 100%; object-fit: contain; background: white; border-radius: 10px;">
+                    <!-- Video del modal (se crea dinámicamente si es necesario) -->
+                    <video id="modalVideo" 
+                           class="img-fluid d-none" 
+                           autoplay muted loop controls
+                           style="max-height: 90vh; max-width: 100%; object-fit: contain; background: black; border-radius: 10px;">
+                    </video>
+                    <div th:if="${product.images == null or product.images.isEmpty()}" class="text-center py-5">
+                        <i class="bi bi-image" style="font-size: 5rem; color: white;"></i>
+                        <p class="text-white mt-3">Imagen no disponible</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5491168570940?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
+       class="whatsapp-button" target="_blank">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                <!-- Brand -->
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="size-6 bg-primary rounded-md flex items-center justify-center text-white">
-                            <span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
-                        </div>
-                        <span class="text-lg font-bold text-text-main">detodoya.com</span>
-                    </div>
-                    <p class="text-text-secondary text-sm leading-relaxed">
-                        Tu destino confiable para encontrar productos de calidad al mejor precio. Exploramos el mundo para traerte lo mejor.
+    <footer class="footer" style="background: #000; padding: 35px 0 20px; margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 25px;">
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; letter-spacing: 1px;">Detodoya</h3>
+                    <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #ccc; line-height: 1.6; margin-bottom: 20px;">
+                        Tu catálogo de productos online. Encuentra todo lo que necesitas en un solo lugar.
                     </p>
-                    <div class="flex gap-4 mt-2">
-                        <a href="https://www.instagram.com/detodoya" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">photo_camera</span>
+                    <div class="social-links" style="display: flex; gap: 15px;">
+                        <a href="https://www.instagram.com/oriola.denim" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-instagram"></i>
                         </a>
-                        <a href="https://wa.me/5491159293920" target="_blank" class="text-gray-400 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">chat</span>
+                        <a href="https://www.facebook.com/orioladenim" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://wa.me/5491168570940" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="mailto:orioladenim@gmail.com" style="color: #ccc; font-size: 18px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">
+                            <i class="bi bi-envelope"></i>
                         </a>
                     </div>
                 </div>
                 
-                <!-- Links 1 -->
-                <div>
-                    <h4 class="font-bold text-text-main mb-4">Enlaces Rápidos</h4>
-                    <ul class="space-y-3 text-sm text-text-secondary">
-                        <li><a href="/" class="hover:text-primary transition-colors">Inicio</a></li>
-                        <li><a href="/catalog" class="hover:text-primary transition-colors">Catálogo Completo</a></li>
-                        <li><a href="/about" class="hover:text-primary transition-colors">Sobre Nosotros</a></li>
-                        <li><a href="/contact" class="hover:text-primary transition-colors">Contacto</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Links 2 -->
-                <div>
-                    <h4 class="font-bold text-text-main mb-4">Ayuda & Soporte</h4>
-                    <ul class="space-y-3 text-sm text-text-secondary">
-                        <li><a href="/contact" class="hover:text-primary transition-colors">Centro de Ayuda</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Términos y Condiciones</a></li>
-                        <li><a href="#" class="hover:text-primary transition-colors">Política de Privacidad</a></li>
+                <!-- Navigation Links -->
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Enlaces</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Inicio</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/catalog" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Catálogo</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/about" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Sobre Nosotros</a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/contact" style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc; text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Contacto</a>
+                        </li>
                     </ul>
                 </div>
                 
                 <!-- Contact Info -->
-                <div>
-                    <h4 class="font-bold text-text-main mb-4">Contáctanos</h4>
-                    <ul class="space-y-4 text-sm text-text-secondary">
-                        <li class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">location_on</span>
-                            <span>Buenos Aires, Argentina</span>
+                <div class="footer-section">
+                    <h4 class="footer-title" style="font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Contacto</h4>
+                    <ul class="footer-links" style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-geo-alt" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">Buenos Aires, Argentina</span>
                         </li>
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">call</span>
-                            <span>+54 9 11 5929-3920</span>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-telephone" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">54 11 6857 0940</span>
                         </li>
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary shrink-0" style="font-size: 20px;">mail</span>
-                            <span>info@detodoya.com</span>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <i class="bi bi-envelope" style="color: #ccc; margin-right: 8px; font-size: 12px;"></i>
+                            <span style="font-family: 'Inter', sans-serif; font-size: 13px; color: #ccc;">orioladenim@gmail.com</span>
                         </li>
                     </ul>
                 </div>
+                
             </div>
             
-            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
-                <p>© 2025 detodoya.com. Todos los derechos reservados.</p>
-                <div class="flex items-center gap-2">
-                    <p>Desarrollado por</p>
-                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" class="h-8 w-auto">
-                    <p>Lucerogustavo Si</p>
+            <!-- Footer Bottom -->
+            <div class="footer-bottom" style="border-top: 1px solid #333; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                    © 2025 Detodoya. Todos los derechos reservados.
+                </p>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Desarrollado por
+                    </p>
+                    <img src="/img/Logo footer.png" alt="Lucerogustavo Si" style="height: 40px; width: auto;">
+                    <p style="font-family: 'Inter', sans-serif; font-size: 12px; color: #999; margin: 0;">
+                        Lucerogustavo Si
+                    </p>
                 </div>
             </div>
         </div>
     </footer>
-    
-    <!-- WhatsApp Button Flotante -->
-    <a href="https://wa.me/5491159293920?text=Hola!%20Me%20interesa%20conocer%20más%20sobre%20sus%20productos" 
-       class="whatsapp-button" 
-       target="_blank"
-       aria-label="Contactar por WhatsApp">
-        <span class="material-symbols-outlined">chat</span>
-    </a>
-    
-    <!-- Scripts -->
-    <!-- Favorites JS -->
-    <script src="/js/favorites.js"></script>
-    
-    <!-- WhatsApp JS -->
+
+    <style>
+        /* Responsive Footer */
+        @media (max-width: 768px) {
+            .footer {
+                padding: 25px 0 15px !important;
+                margin-top: 60px !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .footer-section {
+                position: relative;
+                padding-bottom: 15px;
+            }
+            
+            .footer-section:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent 0%, #333 20%, #333 80%, transparent 100%);
+                margin-top: 15px;
+            }
+            
+            .footer-title {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .footer-section p {
+                margin-bottom: 12px !important;
+                font-size: 13px !important;
+            }
+            
+            .social-links {
+                margin-bottom: 0 !important;
+            }
+            
+            .footer-links li {
+                margin-bottom: 8px !important;
+            }
+            
+            .newsletter-form {
+                margin-top: 0 !important;
+            }
+            
+            .footer-bottom {
+                flex-direction: column !important;
+                gap: 8px !important;
+                text-align: center !important;
+                padding-top: 15px !important;
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/whatsapp.js"></script>
-    
     <script>
-        // Funciones para Modal de Búsqueda
-        function openSearchModal() {
-            const modal = document.getElementById('searchModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                setTimeout(() => {
-                    const input = modal.querySelector('input[name="search"]');
-                    if (input) input.focus();
-                }, 100);
-            }
-        }
-        
-        function closeSearchModal() {
-            const modal = document.getElementById('searchModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-        
-        document.addEventListener('click', function(e) {
-            const modal = document.getElementById('searchModal');
-            if (modal && !modal.querySelector('.bg-white').contains(e.target) && !e.target.closest('button[onclick="openSearchModal()"]')) {
-                closeSearchModal();
+        // Efecto de scroll en navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-oriola');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 107, 107, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)';
+                navbar.style.backdropFilter = 'none';
             }
         });
+
+        // Variables para navegación del modal
+        let currentModalImageIndex = 0;
+        let modalImages = [];
         
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeSearchModal();
-            }
-        });
-        
-        // Funciones para Tabs
-        function showTab(tabName) {
-            // Ocultar todos los contenidos
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.add('hidden');
+        // Función para actualizar la lista de imágenes y videos del modal (incluye videos)
+        function updateModalImagesList() {
+            const thumbnails = document.querySelectorAll('.thumbnail-vertical');
+            modalImages = [];
+            thumbnails.forEach((thumb, index) => {
+                const isVideo = thumb.getAttribute('data-is-video') === 'true';
+                modalImages.push({
+                    index: index,
+                    url: thumb.getAttribute('data-image-url'),
+                    isVideo: isVideo,
+                    thumbnail: thumb
+                });
             });
-            
-            // Remover active de todos los botones
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('tab-active', 'border-primary', 'text-primary');
-                btn.classList.add('border-transparent', 'text-gray-500');
-            });
-            
-            // Mostrar contenido seleccionado
-            const content = document.getElementById('content-' + tabName);
-            if (content) {
-                content.classList.remove('hidden');
-            }
-            
-            // Activar botón seleccionado
-            const button = document.getElementById('tab-' + tabName);
-            if (button) {
-                button.classList.add('tab-active', 'border-primary', 'text-primary');
-                button.classList.remove('border-transparent', 'text-gray-500');
-            }
         }
         
-        // Función para cambiar imagen principal
-        function changeMainImage(thumbnail) {
-            const imageUrl = thumbnail.getAttribute('data-image-url');
-            const isVideo = thumbnail.getAttribute('data-is-video') === 'true';
+        // Función para mostrar imagen o video en el modal (index es el índice dentro de modalImages)
+        function showModalImage(index) {
+            if (modalImages.length === 0) return;
+            if (index < 0) index = modalImages.length - 1;
+            if (index >= modalImages.length) index = 0;
             
-            let mainImage = document.getElementById('mainImage');
-            let mainVideo = document.getElementById('mainVideo');
-            const playIconContainer = document.getElementById('playIconContainer');
+            currentModalImageIndex = index;
+            const modalImage = document.getElementById('modalImage');
+            const modalVideo = document.getElementById('modalVideo');
+            const modalBody = document.querySelector('#imageModal .modal-body');
             
-            // Si no existe el elemento necesario, crearlo
-            const container = document.querySelector('.lg\\:col-span-7 > div:first-child');
-            if (!container) return;
-            
-            if (isVideo) {
-                // Necesitamos el elemento video
-                if (!mainVideo) {
-                    // Crear elemento video si no existe
-                    mainVideo = document.createElement('video');
-                    mainVideo.id = 'mainVideo';
-                    mainVideo.className = 'w-full h-full object-contain bg-white';
-                    mainVideo.setAttribute('autoplay', '');
-                    mainVideo.setAttribute('muted', '');
-                    mainVideo.setAttribute('loop', '');
-                    mainVideo.setAttribute('playsinline', '');
-                    mainVideo.onclick = function(e) { e.stopPropagation(); };
-                    container.querySelector('.aspect-\\[4\\/3\\] > div:last-child')?.appendChild(mainVideo);
-                }
-                // Ocultar imagen si existe
-                if (mainImage) {
-                    mainImage.classList.add('hidden');
-                }
-                // NO mostrar icono de play - el video se reproduce automáticamente
-                // Mostrar y cargar video
-                mainVideo.src = imageUrl;
-                mainVideo.classList.remove('hidden');
-                mainVideo.load();
-                mainVideo.play().catch(e => console.log('Error al reproducir video:', e));
+            if (modalImages[index]) {
+                const item = modalImages[index];
                 
-                // Actualizar el contenedor para que NO abra lightbox cuando es video
-                const mainContainer = document.getElementById('mainImageContainer');
-                if (mainContainer) {
-                    mainContainer.onclick = null;
-                    mainContainer.style.cursor = 'default';
-                }
-            } else {
-                // Necesitamos el elemento imagen
-                if (!mainImage) {
-                    // Crear elemento imagen si no existe
-                    mainImage = document.createElement('img');
-                    mainImage.id = 'mainImage';
-                    mainImage.className = 'w-full h-full object-contain bg-white cursor-pointer';
-                    mainImage.alt = document.querySelector('h1')?.textContent || 'Producto';
-                    container.querySelector('.aspect-\\[4\\/3\\] > div:last-child')?.appendChild(mainImage);
-                }
-                // Ocultar video si existe
-                if (mainVideo) {
-                    mainVideo.pause();
-                    mainVideo.classList.add('hidden');
-                }
-                // Mostrar y cargar imagen
-                mainImage.src = imageUrl;
-                mainImage.classList.remove('hidden');
-                
-                // Configurar el contenedor para abrir lightbox al hacer clic en la imagen
-                const mainContainer = document.getElementById('mainImageContainer');
-                const imageIndex = parseInt(thumbnail.getAttribute('data-image-index')) || 0;
-                
-                if (mainContainer) {
-                    mainContainer.style.cursor = 'pointer';
-                    mainContainer.onclick = function(e) {
-                        // No abrir si se hace clic en el botón de favoritos
-                        if (e.target.closest('.favorite-btn')) {
-                            return;
+                if (item.isVideo) {
+                    // Es un video
+                    if (modalVideo) {
+                        modalVideo.src = item.url;
+                        modalVideo.classList.remove('d-none');
+                    } else {
+                        // Crear elemento video si no existe
+                        const video = document.createElement('video');
+                        video.id = 'modalVideo';
+                        video.className = 'img-fluid';
+                        video.autoplay = true;
+                        video.muted = true;
+                        video.loop = true;
+                        video.controls = true;
+                        video.style.cssText = 'max-height: 90vh; max-width: 100%; object-fit: contain; background: black; border-radius: 10px;';
+                        video.src = item.url;
+                        if (modalBody) {
+                            modalBody.insertBefore(video, modalImage);
                         }
-                        // Abrir lightbox con el índice de la imagen seleccionada
-                        openLightbox(imageIndex);
-                    };
-                }
-            }
-            
-            // Remover active de todos los thumbnails
-            document.querySelectorAll('.thumbnail-btn').forEach(btn => {
-                btn.classList.remove('thumbnail-active', 'border-primary');
-                btn.classList.add('border-gray-200');
-            });
-            
-            // Agregar active al thumbnail seleccionado
-            thumbnail.classList.add('thumbnail-active', 'border-primary');
-            thumbnail.classList.remove('border-gray-200');
-        }
-        
-        // Función para seleccionar color
-        function selectColor(button) {
-            document.querySelectorAll('[onclick="selectColor(this)"]').forEach(btn => {
-                btn.classList.remove('border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
-            });
-            button.classList.add('border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
-            
-            const colorName = button.getAttribute('data-color-name');
-            const colorNameDisplay = document.getElementById('selectedColorName');
-            if (colorNameDisplay) {
-                colorNameDisplay.textContent = colorName;
-            }
-        }
-        
-        // Función para seleccionar talle
-        function selectSize(button) {
-            document.querySelectorAll('[onclick="selectSize(this)"]').forEach(btn => {
-                btn.classList.remove('border-primary', 'bg-primary', 'text-white');
-                btn.classList.add('border-gray-200', 'text-text-secondary');
-            });
-            button.classList.add('border-primary', 'bg-primary', 'text-white');
-            button.classList.remove('border-gray-200', 'text-text-secondary');
-        }
-        
-        // Función para abrir WhatsApp
-        function openWhatsApp(button) {
-            const productName = button.getAttribute('data-product-name');
-            const productPrice = button.getAttribute('data-product-price');
-            
-            if (window.WhatsAppIntegration) {
-                window.WhatsAppIntegration.openWhatsApp(productName, productPrice);
-            } else {
-                const message = encodeURIComponent(`Hola! Me interesa el producto: ${productName} - ${productPrice}`);
-                window.open(`https://wa.me/5491159293920?text=${message}`, '_blank');
-            }
-        }
-        
-        // Inicializar primera imagen como activa y configurar icono de play
-        document.addEventListener('DOMContentLoaded', function() {
-            // Asegurar que el lightbox esté cerrado inicialmente
-            const lightboxModal = document.getElementById('lightboxModal');
-            if (lightboxModal) {
-                lightboxModal.classList.add('hidden');
-                lightboxModal.style.display = 'none';
-                lightboxModal.style.visibility = 'hidden';
-                lightboxModal.style.opacity = '0';
-                lightboxModal.style.pointerEvents = 'none';
-                document.body.style.overflow = '';
-            }
-            
-            const firstThumbnail = document.querySelector('.thumbnail-btn');
-            if (firstThumbnail) {
-                firstThumbnail.classList.add('thumbnail-active', 'border-primary');
-                firstThumbnail.classList.remove('border-gray-200');
-            }
-            
-            // Configurar el contenedor principal según el tipo inicial
-            const mainContainer = document.getElementById('mainImageContainer');
-            if (mainContainer) {
-                const mainImage = document.getElementById('mainImage');
-                const mainVideo = document.getElementById('mainVideo');
-                
-                // Remover cualquier onclick previo y asegurar z-index correcto
-                mainContainer.onclick = null;
-                mainContainer.style.zIndex = '1';
-                mainContainer.style.position = 'relative';
-                
-                if (mainImage && !mainImage.classList.contains('hidden')) {
-                    // Si es imagen inicial, abrir lightbox al hacer clic
-                    mainContainer.style.cursor = 'pointer';
-                    mainContainer.onclick = function(e) {
-                        // No abrir si se hace clic en el botón de favoritos
-                        if (e.target.closest('.favorite-btn')) {
-                            return;
-                        }
-                        const index = 0; // Índice de la imagen principal
-                        openLightbox(index);
-                    };
-                } else if (mainVideo && !mainVideo.classList.contains('hidden')) {
-                    // Si es video inicial, NO abrir lightbox - solo dejar que el video se reproduzca
-                    mainContainer.onclick = null;
-                    mainContainer.style.cursor = 'default';
-                    // Asegurar que el video tenga z-index correcto y no interfiera
-                    if (mainVideo) {
-                        mainVideo.style.zIndex = '0';
-                        mainVideo.style.position = 'relative';
-                        mainVideo.style.pointerEvents = 'auto';
+                    }
+                    if (modalImage) {
+                        modalImage.classList.add('d-none');
+                    }
+                } else {
+                    // Es una imagen
+                    if (modalImage) {
+                        modalImage.src = item.url;
+                        modalImage.classList.remove('d-none');
+                    }
+                    if (modalVideo) {
+                        modalVideo.classList.add('d-none');
                     }
                 }
             }
+            
+            // Actualizar thumbnails activos
+            document.querySelectorAll('.thumbnail-vertical').forEach(t => t.classList.remove('active'));
+            if (modalImages[index] && modalImages[index].thumbnail) {
+                modalImages[index].thumbnail.classList.add('active');
+            }
+        }
+        
+        // Función para imagen anterior en el modal
+        function prevModalImage() {
+            if (modalImages.length === 0) return;
+            const newIndex = (currentModalImageIndex - 1 + modalImages.length) % modalImages.length;
+            showModalImage(newIndex);
+        }
+        
+        // Función para imagen siguiente en el modal
+        function nextModalImage() {
+            if (modalImages.length === 0) return;
+            const newIndex = (currentModalImageIndex + 1) % modalImages.length;
+            showModalImage(newIndex);
+        }
+        
+        // Cambio de thumbnails interactivos
+        document.querySelectorAll('.thumbnail-vertical').forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Remover clase active de todos los thumbnails
+                document.querySelectorAll('.thumbnail-vertical').forEach(t => t.classList.remove('active'));
+                // Agregar clase active al thumbnail clickeado
+                this.classList.add('active');
+                
+                // Obtener URL de la imagen de alta calidad
+                const imageUrl = this.getAttribute('data-image-url');
+                const isVideo = this.getAttribute('data-is-video') === 'true';
+                const imageIndex = Array.from(document.querySelectorAll('.thumbnail-vertical')).indexOf(this);
+                
+                if (imageUrl) {
+                    // Obtener elementos de video e imagen
+                    const mainImage = document.getElementById('mainImage');
+                    const mainVideo = document.getElementById('mainVideo');
+                    const modalImage = document.getElementById('modalImage');
+                    const mainContainer = document.getElementById('mainImageContainer');
+                    
+                    if (isVideo) {
+                        // Es un video, mostrar video y ocultar imagen
+                        if (mainVideo) {
+                            mainVideo.src = imageUrl;
+                            mainVideo.classList.remove('d-none');
+                        }
+                        if (mainImage) {
+                            mainImage.classList.add('d-none');
+                        }
+                        // Mantener atributos del modal para que se pueda abrir el video en pantalla completa
+                        if (mainContainer) {
+                            mainContainer.setAttribute('data-bs-toggle', 'modal');
+                            mainContainer.setAttribute('data-bs-target', '#imageModal');
+                            mainContainer.style.cursor = 'pointer';
+                        }
+                        // Actualizar índice del modal (buscar en modalImages el que corresponde a este thumbnail)
+                        const imgIndex = modalImages.findIndex(img => img.index === imageIndex);
+                        if (imgIndex !== -1) {
+                            currentModalImageIndex = imgIndex;
+                        } else if (modalImages.length > 0) {
+                            // Si no se encuentra, usar el primero
+                            currentModalImageIndex = 0;
+                        }
+                    } else {
+                        // Es una imagen, mostrar imagen y ocultar video
+                        if (mainImage) {
+                            mainImage.src = imageUrl;
+                            mainImage.classList.remove('d-none');
+                        }
+                        if (mainVideo) {
+                            mainVideo.classList.add('d-none');
+                        }
+                        if (modalImage) {
+                            modalImage.src = imageUrl;
+                            modalImage.classList.remove('d-none');
+                        }
+                        // Agregar atributos del modal para que se abra al hacer clic
+                        if (mainContainer) {
+                            mainContainer.setAttribute('data-bs-toggle', 'modal');
+                            mainContainer.setAttribute('data-bs-target', '#imageModal');
+                            mainContainer.style.cursor = 'pointer';
+                        }
+                        // Actualizar índice del modal (buscar en modalImages el que corresponde a este thumbnail)
+                        const imgIndex = modalImages.findIndex(img => img.index === imageIndex);
+                        if (imgIndex !== -1) {
+                            currentModalImageIndex = imgIndex;
+                        } else if (modalImages.length > 0) {
+                            // Si no se encuentra, usar el primero
+                            currentModalImageIndex = 0;
+                        }
+                    }
+                }
+            });
+            
+            // Efecto hover
+            thumb.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.borderColor = '#000';
+                }
+            });
+            
+            thumb.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('active')) {
+                    this.style.transform = 'scale(1)';
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        });
+
+        // Función global para abrir WhatsApp desde Thymeleaf
+        function openWhatsApp(productName, productPrice) {
+            WhatsAppIntegration.openWhatsApp(productName, productPrice);
+        }
+
+        // Manejar click del botón de WhatsApp en detalle de producto
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar lista de imágenes del modal
+            updateModalImagesList();
+            
+            // Configurar estado inicial del contenedor principal - siempre permitir abrir modal
+            const mainContainer = document.getElementById('mainImageContainer');
+            const mainVideo = document.getElementById('mainVideo');
+            const mainImage = document.getElementById('mainImage');
+            
+            // Siempre permitir abrir el modal (tanto para imágenes como videos)
+            if (mainContainer) {
+                mainContainer.setAttribute('data-bs-toggle', 'modal');
+                mainContainer.setAttribute('data-bs-target', '#imageModal');
+                mainContainer.style.cursor = 'pointer';
+            }
+            
+            // Establecer índice inicial del modal
+            const initialThumbnail = document.querySelector('.thumbnail-vertical.active');
+            if (initialThumbnail) {
+                const initialIndex = Array.from(document.querySelectorAll('.thumbnail-vertical')).indexOf(initialThumbnail);
+                const imgIndex = modalImages.findIndex(img => img.index === initialIndex);
+                if (imgIndex !== -1) {
+                    currentModalImageIndex = imgIndex;
+                }
+            }
+            
+            // Botones de navegación del modal
+            const prevBtn = document.getElementById('prevImageBtn');
+            const nextBtn = document.getElementById('nextImageBtn');
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    prevModalImage();
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    nextModalImage();
+                });
+            }
+            
+            // Navegación con teclado en el modal
+            document.addEventListener('keydown', function(e) {
+                const modal = document.getElementById('imageModal');
+                if (modal && modal.classList.contains('show')) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        prevModalImage();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        nextModalImage();
+                    } else if (e.key === 'Escape') {
+                        // Bootstrap ya maneja el Escape, pero por si acaso
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }
+                }
+            });
+            
+            // Evento cuando se abre el modal - actualizar imagen/video actual
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal) {
+                imageModal.addEventListener('show.bs.modal', function() {
+                    // Buscar el thumbnail activo (el que está seleccionado actualmente)
+                    const activeThumbnail = document.querySelector('.thumbnail-vertical.active');
+                    
+                    if (activeThumbnail && modalImages.length > 0) {
+                        // Obtener el índice del thumbnail activo
+                        const allThumbnails = document.querySelectorAll('.thumbnail-vertical');
+                        const activeIndex = Array.from(allThumbnails).indexOf(activeThumbnail);
+                        
+                        // Buscar ese índice en modalImages
+                        const imgIndex = modalImages.findIndex(img => img.index === activeIndex);
+                        
+                        if (imgIndex !== -1) {
+                            // Mostrar la imagen/video correspondiente al thumbnail activo
+                            showModalImage(imgIndex);
+                        } else if (modalImages.length > 0) {
+                            // Si no se encuentra, mostrar la primera
+                            showModalImage(0);
+                        }
+                    } else if (modalImages.length > 0) {
+                        // Si no hay thumbnail activo, usar el índice actual o el primero
+                        if (currentModalImageIndex >= 0 && currentModalImageIndex < modalImages.length) {
+                            showModalImage(currentModalImageIndex);
+                        } else {
+                            showModalImage(0);
+                        }
+                    }
+                });
+            }
+            
+            // Ocultar botones de navegación si solo hay una imagen
+            if (modalImages.length <= 1) {
+                const navButtons = document.querySelectorAll('.modal-nav-btn');
+                navButtons.forEach(btn => {
+                    if (btn) btn.style.display = 'none';
+                });
+            }
+            
+            // Botones de WhatsApp (PC y móvil)
+            document.querySelectorAll('button[data-product-name]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productName = this.getAttribute('data-product-name');
+                    const productPrice = this.getAttribute('data-product-price');
+                    openWhatsApp(productName, productPrice);
+                });
+            });
         });
     </script>
-    
-    <!-- Lightbox Modal -->
-    <div id="lightboxModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm" style="display: none !important;">
-        <div class="relative w-full h-full flex items-center justify-center p-4">
-            <!-- Botón cerrar -->
-            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            
-            <!-- Botón anterior -->
-            <button onclick="changeLightboxImage(-1)" class="absolute left-4 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-colors">
-                <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-            
-            <!-- Botón siguiente -->
-            <button onclick="changeLightboxImage(1)" class="absolute right-4 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white p-3 rounded-full transition-colors">
-                <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-            
-            <!-- Contenedor de imagen/video -->
-            <div class="max-w-7xl w-full h-full flex items-center justify-center">
-                <img id="lightboxImage" class="max-w-full max-h-full object-contain hidden" alt="Product image">
-                <video id="lightboxVideo" class="max-w-full max-h-full object-contain hidden" controls autoplay muted loop></video>
-            </div>
-            
-            <!-- Contador de imágenes -->
-            <div id="lightboxCounter" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm">
-                <span id="lightboxCurrent">1</span> / <span id="lightboxTotal">1</span>
-            </div>
-            
-            <!-- Indicadores de puntos (dots) -->
-            <div id="lightboxDots" class="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex gap-2"></div>
-        </div>
-    </div>
-    
-    <script th:inline="javascript">
-        // Datos de imágenes para el lightbox - obtener desde los thumbnails
-        let productImages = [];
-        let currentLightboxIndex = 0;
+
+    <style>
+        .product-title-large {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-color);
+        }
+
+        .product-price-large {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        .price-currency {
+            font-size: 2rem;
+            vertical-align: top;
+        }
+
+        /* Etiqueta promocional */
+        .product-promo-label {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
         
-        // Inicializar datos de imágenes desde los thumbnails
-        document.addEventListener('DOMContentLoaded', function() {
-            const thumbnails = document.querySelectorAll('.thumbnail-btn');
-            productImages = Array.from(thumbnails).map(thumb => ({
-                imageUrl: thumb.getAttribute('data-image-url'),
-                isVideo: thumb.getAttribute('data-is-video') === 'true',
-                index: parseInt(thumb.getAttribute('data-image-index')) || 0
-            }));
-        });
+        /* Ajustar el tamaño de la etiqueta en móvil */
+        @media (max-width: 768px) {
+            .product-promo-label {
+                font-size: 10px;
+                padding: 4px 10px;
+            }
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-image-large:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .thumbnail-vertical {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .thumbnail-vertical:hover {
+            border-color: #151414 !important;
+        }
+
+        .thumbnail-vertical.active {
+            border: 1.5px solid #151414 !important;
+        }
+
+        .thumbnail-vertical img {
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-vertical:hover img {
+            transform: scale(1.1);
+        }
+
+        .product-image-large {
+            transition: all 0.3s ease;
+        }
+
+        .product-image-large:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
         
-        // Función para abrir lightbox
-        function openLightbox(index) {
-            if (!productImages || productImages.length === 0) {
-                // Si no hay datos, obtenerlos de los thumbnails
-                const thumbnails = document.querySelectorAll('.thumbnail-btn');
-                productImages = Array.from(thumbnails).map(thumb => ({
-                    imageUrl: thumb.getAttribute('data-image-url'),
-                    isVideo: thumb.getAttribute('data-is-video') === 'true',
-                    index: parseInt(thumb.getAttribute('data-image-index')) || 0
-                }));
+        /* Asegurar que las imágenes se mantengan dentro del contenedor */
+        .main-image-container {
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .product-image-large {
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .product-image-large img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            object-position: center !important;
+        }
+
+        /* Modal mejorado */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            box-shadow: none;
+        }
+
+        #modalImage {
+            transition: all 0.3s ease;
+        }
+
+        #modalImage:hover {
+            transform: scale(1.02);
+        }
+
+        .spec-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-features ul li {
+            padding: 0.25rem 0;
+        }
+
+        /* Estilos para galería móvil */
+        .mobile-gallery-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-main-image {
+            overflow: hidden;
+        }
+        
+        .mobile-main-image img {
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-main-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .mobile-gallery-indicators .indicator.active {
+            background: #000 !important;
+            transform: scale(1.2);
+        }
+
+        .mobile-gallery-indicators .indicator:hover {
+            background: rgba(0,0,0,0.8) !important;
+        }
+
+        /* Selector de colores móvil */
+        .color-circle.active {
+            border-color: #000 !important;
+            transform: scale(1.1);
+        }
+
+        .color-circle.active .color-check {
+            opacity: 1 !important;
+        }
+
+        .color-circle:hover {
+            transform: scale(1.05);
+        }
+
+        /* Mejoras de tipografía para móvil */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 24px !important;
+                font-weight: 500 !important;
+                letter-spacing: 0.5px !important;
+            }
+
+            .product-price .current-price {
+                font-size: 28px !important;
+                font-weight: 600 !important;
+            }
+
+            .product-description p {
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+            }
+
+            .spec-item {
+                font-size: 14px !important;
+            }
+
+            .product-actions .btn {
+                font-size: 16px !important;
+                padding: 16px 24px !important;
+                font-weight: 500 !important;
+            }
+        }
+
+        /* Estilos para el modal de zoom móvil */
+        .mobile-zoom-modal {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Estilos para el carrusel en pantalla completa */
+        .fullscreen-carousel-container {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        .fullscreen-carousel-track {
+            will-change: transform;
+        }
+        
+        .fullscreen-carousel-slide {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .fullscreen-carousel-slide img,
+        .fullscreen-carousel-slide video {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .fullscreen-carousel-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .fullscreen-carousel-indicator.active {
+            transform: scale(1.3);
+        }
+        
+        .fullscreen-carousel-indicator:hover {
+            background: rgba(255,255,255,0.8) !important;
+        }
+        
+        /* Prevenir scroll del body cuando el modal está abierto */
+        body.carousel-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        /* Mejoras en el layout móvil */
+        @media (max-width: 768px) {
+            .product-detail-section {
+                margin-top: 0 !important;
+            }
+
+            .product-details {
+                padding: 20px;
+                background: white;
+            }
+
+            .product-specs .row {
+                margin: 0 -10px;
+            }
+
+            .product-specs .col-md-6 {
+                padding: 0 10px;
+                margin-bottom: 15px;
+            }
+
+            /* Ocultar título y precio originales en móvil */
+            .product-title,
+            .product-price {
+                display: none !important;
+            }
+
+            /* Mostrar información inicial móvil */
+            .mobile-initial-info {
+                background: white;
+                padding: 20px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            /* Ajustar altura de galería móvil */
+            .mobile-gallery-container {
+                height: 60vh !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             
+            /* Reducir márgenes del contenedor principal */
+            .product-detail-container {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            
+            /* Reducir padding de la sección principal */
+            .product-detail-section {
+                padding: 0 !important;
+                margin-top: 0 !important;
+            }
+            
+            /* Ajustar padding del contenido */
+            .product-details {
+                padding: 15px !important;
+            }
+            
+            /* Hacer que la galería móvil ocupe todo el ancho */
+            .product-gallery-mobile {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Mejorar scroll */
+            .product-details {
+                min-height: 100vh;
+            }
+
+            /* Ajustar imagen móvil */
+            .mobile-main-image img {
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+
+            /* Estilos para botones de cantidad */
+            .quantity-btn {
+                border: 2px solid #e0e0e0 !important;
+                background: white !important;
+                color: #000 !important;
+                transition: all 0.3s ease;
+            }
+
+            .quantity-btn:hover {
+                border-color: #000 !important;
+                background: #f8f9fa !important;
+            }
+
+            /* Estilos para botones de talle */
+            .size-btn.active {
+                border-color: #000 !important;
+                background: #000 !important;
+                color: white !important;
+            }
+
+            .size-btn:hover {
+                border-color: #666 !important;
+            }
+
+            /* Estilos para círculos de color */
+            .color-circle.active {
+            border-color: #151414 !important;
+                transform: scale(1.1);
+            }
+
+            .color-circle.active .color-check {
+                opacity: 1 !important;
+            }
+
+            .color-circle:hover {
+                transform: scale(1.05);
+            border-color: #666 !important;
+        }
+
+        /* Estilos para botones de talle */
+        .size-btn.active {
+            border-color: #151414 !important;
+            background: #151414 !important;
+            color: white !important;
+        }
+
+        .size-btn:hover {
+            border-color: #666 !important;
+            }
+
+            /* Círculos de colores en la fila del precio */
+            .mobile-color-circles-price .color-circle {
+                width: 24px !important;
+                height: 24px !important;
+                border: 2px solid #e0e0e0 !important;
+            }
+
+            .mobile-color-circles-price .color-circle.active {
+                border-color: #151414 !important;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Estilos para PC */
+        @media (min-width: 769px) {
+            .mobile-initial-info {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Versión ultra-simplificada del menú móvil
+        let isMobileMenuOpen = false;
+        
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navMenu || !overlay || !toggle) return;
+            
+            // Prevenir múltiples ejecuciones simultáneas
+            if (toggle.disabled) return;
+            toggle.disabled = true;
+            
+            if (isMobileMenuOpen) {
+                // Cerrar menú
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            } else {
+                // Abrir menú
+                navMenu.classList.add('active');
+                overlay.classList.add('active');
+                toggle.innerHTML = '<i class="bi bi-x"></i>';
+                isMobileMenuOpen = true;
+            }
+            
+            // Rehabilitar después de un breve delay
+            setTimeout(() => {
+                toggle.disabled = false;
+            }, 50);
+        }
+
+        // Cerrar menú móvil
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('navMenuMobile');
+            const overlay = document.getElementById('navOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navMenu && overlay && toggle) {
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                toggle.innerHTML = '<i class="bi bi-list"></i>';
+                isMobileMenuOpen = false;
+            }
+        }
+
+        function toggleSearch() {
+            const searchBar = document.getElementById('searchBar');
+            const searchToggle = document.getElementById('searchToggle');
+            
+            if (searchBar.classList.contains('active')) {
+                searchBar.classList.remove('active');
+                searchToggle.innerHTML = '<i class="bi bi-search"></i>';
+            } else {
+                searchBar.classList.add('active');
+                searchToggle.innerHTML = '<i class="bi bi-x"></i>';
+                // Focus on search input when opened
+                searchBar.querySelector('.search-input').focus();
+            }
+        }
+
+        // Variables para galería móvil
+        let currentImageIndex = 0;
+        let productImages = [];
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Función para cambiar imagen en galería móvil
+        function changeMobileImage(index) {
             if (productImages.length === 0) return;
             
-            currentLightboxIndex = index >= 0 && index < productImages.length ? index : 0;
-            const modal = document.getElementById('lightboxModal');
-            const lightboxTotal = document.getElementById('lightboxTotal');
+            currentImageIndex = index;
+            const mobileImage = document.getElementById('mobileImage');
+            const mobileVideo = document.getElementById('mobileVideo');
+            const indicators = document.querySelectorAll('.mobile-gallery-indicators .indicator');
             
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.style.display = 'flex';
-                modal.style.visibility = 'visible';
-                modal.style.opacity = '1';
-                modal.style.pointerEvents = 'auto';
-                document.body.style.overflow = 'hidden';
-                updateLightboxContent();
-                if (lightboxTotal) {
-                    lightboxTotal.textContent = productImages.length;
+            if (productImages[index]) {
+                const isVideo = productImages[index].getIsVideo();
+                const imageUrl = productImages[index].getImageUrl();
+                
+                if (isVideo) {
+                    // Es un video
+                    if (mobileVideo) {
+                        mobileVideo.src = imageUrl;
+                        mobileVideo.classList.remove('d-none');
+                    }
+                    if (mobileImage) {
+                        mobileImage.classList.add('d-none');
+                    }
+                } else {
+                    // Es una imagen
+                    if (mobileImage) {
+                        mobileImage.src = imageUrl;
+                        mobileImage.classList.remove('d-none');
+                    }
+                    if (mobileVideo) {
+                        mobileVideo.classList.add('d-none');
+                    }
+                }
+            }
+            
+            // Actualizar indicadores
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.add('active');
+                    indicator.style.background = 'rgba(255,255,255,1)';
+                } else {
+                    indicator.classList.remove('active');
+                    indicator.style.background = 'rgba(255,255,255,0.5)';
+                }
+            });
+        }
+
+        // Función para siguiente imagen
+        function nextMobileImage() {
+            if (productImages.length === 0) return;
+            const nextIndex = (currentImageIndex + 1) % productImages.length;
+            changeMobileImage(nextIndex);
+        }
+
+        // Función para imagen anterior
+        function prevMobileImage() {
+            if (productImages.length === 0) return;
+            const prevIndex = currentImageIndex === 0 ? productImages.length - 1 : currentImageIndex - 1;
+            changeMobileImage(prevIndex);
+        }
+
+        // Variables para el carrusel en pantalla completa
+        let fullscreenCarouselIndex = 0;
+        let fullscreenCarouselModal = null;
+        let fullscreenTouchStartX = 0;
+        let fullscreenTouchEndX = 0;
+
+        // Función para zoom de imagen móvil con carrusel
+        function zoomMobileImage() {
+            if (productImages.length === 0) return;
+            
+            // Usar el índice actual de la imagen
+            fullscreenCarouselIndex = currentImageIndex;
+            
+            // Crear modal de zoom con carrusel
+            fullscreenCarouselModal = document.createElement('div');
+            fullscreenCarouselModal.className = 'mobile-zoom-modal';
+            fullscreenCarouselModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                touch-action: pan-y;
+            `;
+            
+            // Contenedor del carrusel
+            const carouselContainer = document.createElement('div');
+            carouselContainer.className = 'fullscreen-carousel-container';
+            carouselContainer.style.cssText = `
+                position: relative;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            `;
+            
+            // Contenedor de imágenes/videos con transform para el carrusel
+            const carouselTrack = document.createElement('div');
+            carouselTrack.className = 'fullscreen-carousel-track';
+            carouselTrack.style.cssText = `
+                display: flex;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                transition: transform 0.3s ease;
+            `;
+            
+            // Crear slides para cada imagen/video
+            productImages.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'fullscreen-carousel-slide';
+                slide.style.cssText = `
+                    min-width: 100%;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                `;
+                
+                const isVideo = image.getIsVideo();
+                const imageUrl = image.getImageUrl();
+                
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = imageUrl;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.loop = true;
+                    video.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(img);
                 }
                 
-                // Inicializar event listeners de swipe si no están ya inicializados
-                const lightboxContent = modal.querySelector('.max-w-7xl');
-                if (lightboxContent && !lightboxContent.hasAttribute('data-swipe-initialized')) {
-                    lightboxContent.setAttribute('data-swipe-initialized', 'true');
-                    lightboxContent.addEventListener('touchstart', function(e) {
-                        touchStartX = e.changedTouches[0].screenX;
-                    }, { passive: true });
-                    
-                    lightboxContent.addEventListener('touchend', function(e) {
-                        touchEndX = e.changedTouches[0].screenX;
-                        handleSwipe();
-                    }, { passive: true });
+                carouselTrack.appendChild(slide);
+            });
+            
+            carouselContainer.appendChild(carouselTrack);
+            
+            // Indicadores de posición (puntos)
+            if (productImages.length > 1) {
+                const indicatorsContainer = document.createElement('div');
+                indicatorsContainer.className = 'fullscreen-carousel-indicators';
+                indicatorsContainer.style.cssText = `
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 10px;
+                    z-index: 10000;
+                `;
+                
+                productImages.forEach((image, index) => {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'fullscreen-carousel-indicator';
+                    if (index === fullscreenCarouselIndex) {
+                        indicator.classList.add('active');
+                    }
+                    indicator.style.cssText = `
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: ${index === fullscreenCarouselIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'};
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    `;
+                    indicator.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        goToFullscreenImage(index);
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                });
+                
+                carouselContainer.appendChild(indicatorsContainer);
+            }
+            
+            // Botón de cerrar
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                background: rgba(0,0,0,0.5);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10000;
+                font-size: 20px;
+                transition: all 0.3s ease;
+            `;
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeFullscreenCarousel();
+            });
+            closeBtn.addEventListener('mouseenter', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.8)';
+                closeBtn.style.transform = 'scale(1.1)';
+            });
+            closeBtn.addEventListener('mouseleave', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.5)';
+                closeBtn.style.transform = 'scale(1)';
+            });
+            
+            carouselContainer.appendChild(closeBtn);
+            
+            fullscreenCarouselModal.appendChild(carouselContainer);
+            document.body.appendChild(fullscreenCarouselModal);
+            
+            // Prevenir scroll del body
+            document.body.classList.add('carousel-open');
+            
+            // Actualizar posición inicial
+            updateFullscreenCarouselPosition();
+            
+            // Eventos de touch para swipe
+            carouselTrack.addEventListener('touchstart', (e) => {
+                fullscreenTouchStartX = e.touches[0].clientX;
+                // Pausar transición durante el drag
+                carouselTrack.style.transition = 'none';
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchmove', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                const currentX = e.touches[0].clientX;
+                const diff = currentX - fullscreenTouchStartX;
+                // Mover el carrusel mientras se arrastra
+                const translateX = -(fullscreenCarouselIndex * 100) + (diff / window.innerWidth * 100);
+                carouselTrack.style.transform = `translateX(${translateX}%)`;
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchend', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                
+                fullscreenTouchEndX = e.changedTouches[0].clientX;
+                const diff = fullscreenTouchStartX - fullscreenTouchEndX;
+                const swipeThreshold = 50;
+                
+                // Restaurar transición
+                carouselTrack.style.transition = 'transform 0.3s ease';
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente imagen
+                        nextFullscreenImage();
+                    } else {
+                        // Swipe derecha - imagen anterior
+                        prevFullscreenImage();
+                    }
+                } else {
+                    // Volver a la posición actual si no se superó el threshold
+                    updateFullscreenCarouselPosition();
                 }
-            }
-        }
-        
-        // Función para cerrar lightbox
-        function closeLightbox() {
-            const modal = document.getElementById('lightboxModal');
-            const lightboxVideo = document.getElementById('lightboxVideo');
+                
+                fullscreenTouchStartX = 0;
+            }, { passive: true });
             
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.style.display = 'none';
-                modal.style.visibility = 'hidden';
-                modal.style.opacity = '0';
-                modal.style.pointerEvents = 'none';
-                document.body.style.overflow = '';
-            }
+            // Prevenir el cierre al hacer clic en el contenido
+            carouselContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
             
-            if (lightboxVideo) {
-                lightboxVideo.pause();
-            }
-        }
-        
-        // Función para cambiar imagen en lightbox
-        function changeLightboxImage(direction) {
-            if (!productImages || productImages.length === 0) return;
-            
-            currentLightboxIndex += direction;
-            
-            if (currentLightboxIndex < 0) {
-                currentLightboxIndex = productImages.length - 1;
-            } else if (currentLightboxIndex >= productImages.length) {
-                currentLightboxIndex = 0;
-            }
-            
-            updateLightboxContent();
-        }
-        
-        // Función para actualizar contenido del lightbox
-        function updateLightboxContent() {
-            if (!productImages || productImages.length === 0) return;
-            
-            const currentImage = productImages[currentLightboxIndex];
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxVideo = document.getElementById('lightboxVideo');
-            const lightboxCurrent = document.getElementById('lightboxCurrent');
-            const lightboxDots = document.getElementById('lightboxDots');
-            
-            if (!currentImage) return;
-            
-            const isVideo = currentImage.isVideo || false;
-            const imageUrl = currentImage.imageUrl || '';
-            
-            if (isVideo) {
-                if (lightboxImage) lightboxImage.classList.add('hidden');
-                if (lightboxVideo) {
-                    lightboxVideo.src = imageUrl;
-                    lightboxVideo.classList.remove('hidden');
-                    lightboxVideo.load();
-                    lightboxVideo.play().catch(e => console.log('Error al reproducir video:', e));
+            // Cerrar al hacer clic en el fondo
+            fullscreenCarouselModal.addEventListener('click', (e) => {
+                if (e.target === fullscreenCarouselModal) {
+                    closeFullscreenCarousel();
                 }
-            } else {
-                if (lightboxVideo) {
-                    lightboxVideo.pause();
-                    lightboxVideo.classList.add('hidden');
-                }
-                if (lightboxImage) {
-                    lightboxImage.src = imageUrl;
-                    lightboxImage.classList.remove('hidden');
-                }
-            }
-            
-            if (lightboxCurrent) {
-                lightboxCurrent.textContent = currentLightboxIndex + 1;
-            }
-            
-            // Actualizar indicadores de puntos
-            updateLightboxDots();
-        }
-        
-        // Función para actualizar los indicadores de puntos
-        function updateLightboxDots() {
-            const lightboxDots = document.getElementById('lightboxDots');
-            if (!lightboxDots || !productImages || productImages.length === 0) return;
-            
-            lightboxDots.innerHTML = '';
-            
-            productImages.forEach((image, index) => {
-                const dot = document.createElement('button');
-                dot.className = `w-2 h-2 rounded-full transition-all ${
-                    index === currentLightboxIndex 
-                        ? 'bg-white w-6' 
-                        : 'bg-white/40 hover:bg-white/60'
-                }`;
-                dot.onclick = () => {
-                    currentLightboxIndex = index;
-                    updateLightboxContent();
-                };
-                lightboxDots.appendChild(dot);
             });
         }
         
-        // Variables para swipe táctil
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        // Función para manejar swipe
-        function handleSwipe() {
-            const swipeThreshold = 50; // Mínimo de píxeles para considerar un swipe
-            const diff = touchStartX - touchEndX;
+        // Función para actualizar posición del carrusel en pantalla completa
+        function updateFullscreenCarouselPosition() {
+            if (!fullscreenCarouselModal) return;
+            const carouselTrack = fullscreenCarouselModal.querySelector('.fullscreen-carousel-track');
+            if (carouselTrack) {
+                carouselTrack.style.transform = `translateX(-${fullscreenCarouselIndex * 100}%)`;
+            }
             
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    // Swipe izquierda - siguiente imagen
-                    changeLightboxImage(1);
+            // Actualizar indicadores
+            const indicators = fullscreenCarouselModal.querySelectorAll('.fullscreen-carousel-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === fullscreenCarouselIndex) {
+                    indicator.classList.add('active');
+                    indicator.style.background = 'rgba(255,255,255,1)';
                 } else {
-                    // Swipe derecha - imagen anterior
-                    changeLightboxImage(-1);
+                    indicator.classList.remove('active');
+                    indicator.style.background = 'rgba(255,255,255,0.5)';
                 }
+            });
+        }
+        
+        // Función para siguiente imagen en pantalla completa
+        function nextFullscreenImage() {
+            if (productImages.length === 0) return;
+            fullscreenCarouselIndex = (fullscreenCarouselIndex + 1) % productImages.length;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para imagen anterior en pantalla completa
+        function prevFullscreenImage() {
+            if (productImages.length === 0) return;
+            fullscreenCarouselIndex = fullscreenCarouselIndex === 0 ? productImages.length - 1 : fullscreenCarouselIndex - 1;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para ir a una imagen específica en pantalla completa
+        function goToFullscreenImage(index) {
+            if (index >= 0 && index < productImages.length) {
+                fullscreenCarouselIndex = index;
+                updateFullscreenCarouselPosition();
             }
         }
         
-        
-        // Cerrar lightbox con ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeLightbox();
-            } else if (e.key === 'ArrowLeft') {
-                const modal = document.getElementById('lightboxModal');
-                if (modal && !modal.classList.contains('hidden')) {
-                    changeLightboxImage(-1);
+        // Función para cerrar el carrusel en pantalla completa
+        function closeFullscreenCarousel() {
+            if (fullscreenCarouselModal && document.body.contains(fullscreenCarouselModal)) {
+                document.body.removeChild(fullscreenCarouselModal);
+                fullscreenCarouselModal = null;
+                // Restaurar scroll del body
+                document.body.classList.remove('carousel-open');
+            }
+        }
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener imágenes del producto
+            const imageElements = document.querySelectorAll('[data-image-url]');
+            productImages = Array.from(imageElements).map(el => ({
+                getImageUrl: () => el.getAttribute('data-image-url'),
+                getThumbnailUrl: () => el.querySelector('img') ? el.querySelector('img').src : '',
+                getIsVideo: () => el.getAttribute('data-is-video') === 'true'
+            }));
+
+            // Search functionality
+            const searchToggle = document.getElementById('searchToggle');
+            if (searchToggle) {
+                searchToggle.addEventListener('click', toggleSearch);
+            }
+
+            // Dropdown functionality - Solo en PC
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const dropdown = this.closest('.dropdown');
+                    
+                    // Solo funcionar en PC (≥ 769px)
+                    if (window.innerWidth >= 769) {
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            }
+
+            // Galería móvil - Indicadores
+            document.querySelectorAll('.mobile-gallery-indicators .indicator').forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    changeMobileImage(index);
+                });
+            });
+
+            // Galería móvil - Botón de zoom
+            const mobileZoomBtn = document.querySelector('.mobile-zoom-btn');
+            if (mobileZoomBtn) {
+                mobileZoomBtn.addEventListener('click', zoomMobileImage);
+            }
+
+            // Galería móvil - Touch gestures
+            const mobileMainImage = document.getElementById('mobileMainImage');
+            const mobileImage = document.getElementById('mobileImage');
+            const mobileVideo = document.getElementById('mobileVideo');
+            
+            if (mobileMainImage) {
+                let touchStartedOnImage = false;
+                let touchMoved = false;
+                let touchStartTime = 0;
+                
+                mobileMainImage.addEventListener('touchstart', (e) => {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartTime = Date.now();
+                    touchStartedOnImage = true;
+                    touchMoved = false;
+                }, { passive: true });
+
+                mobileMainImage.addEventListener('touchmove', (e) => {
+                    if (touchStartedOnImage) {
+                        const currentX = e.touches[0].clientX;
+                        const diff = Math.abs(touchStartX - currentX);
+                        // Si hay movimiento horizontal significativo, es un swipe
+                        if (diff > 10) {
+                            touchMoved = true;
+                        }
+                    }
+                }, { passive: true });
+
+                mobileMainImage.addEventListener('touchend', (e) => {
+                    if (touchStartedOnImage) {
+                        touchEndX = e.changedTouches[0].clientX;
+                        const diff = Math.abs(touchStartX - touchEndX);
+                        const touchDuration = Date.now() - touchStartTime;
+                        window.lastTouchEnd = Date.now();
+                        
+                        // Si hubo movimiento horizontal significativo (swipe)
+                        if (touchMoved && diff > 50) {
+                            handleSwipe();
+                        } else if (!touchMoved && touchDuration < 300) {
+                            // Si fue un tap rápido sin movimiento, abrir zoom
+                            setTimeout(() => {
+                                if (!fullscreenCarouselModal) {
+                                    zoomMobileImage();
+                                }
+                            }, 50);
+                        }
+                    }
+                    touchStartedOnImage = false;
+                    touchMoved = false;
+                }, { passive: true });
+
+                // Click en la imagen principal (para casos donde no haya touch)
+                mobileMainImage.addEventListener('click', (e) => {
+                    // Solo si no hubo un touch reciente
+                    const timeSinceTouchEnd = Date.now() - (window.lastTouchEnd || 0);
+                    if (timeSinceTouchEnd > 300) {
+                        zoomMobileImage();
+                    }
+                });
+                
+                // También permitir click directo en imagen/video
+                if (mobileImage) {
+                    mobileImage.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        zoomMobileImage();
+                    });
                 }
-            } else if (e.key === 'ArrowRight') {
-                const modal = document.getElementById('lightboxModal');
-                if (modal && !modal.classList.contains('hidden')) {
-                    changeLightboxImage(1);
+                
+                if (mobileVideo) {
+                    mobileVideo.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        zoomMobileImage();
+                    });
                 }
             }
+
+            // Los colores ahora son solo informativos (sin funcionalidad de selección)
+
+            // Los talles ahora son solo informativos (sin funcionalidad de selección)
+
+            // Cerrar menú móvil al hacer clic en enlaces
+            document.querySelectorAll('.nav-menu-mobile .nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+
+            // Cerrar menú móvil al hacer clic en el overlay
+            const overlay = document.getElementById('navOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Manejar resize de ventana
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    closeMobileMenu();
+                }
+            });
         });
-        
-        // Cerrar lightbox al hacer clic fuera del contenido
-        document.getElementById('lightboxModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeLightbox();
+
+        // Función para manejar swipe
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                // Solo procesar si no estamos en pantalla completa
+                if (!fullscreenCarouselModal) {
+                    if (diff > 0) {
+                        // Swipe izquierda - siguiente imagen
+                        nextMobileImage();
+                    } else {
+                        // Swipe derecha - imagen anterior
+                        prevMobileImage();
+                    }
+                }
+            }
+        }
+
+        // Mostrar nombre del color al tocar/seleccionar en móvil
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileColorCircles = document.querySelectorAll('.mobile-color-circle');
+            const colorNameDisplay = document.getElementById('mobileColorNameDisplay');
+            const colorNameText = document.getElementById('mobileColorNameText');
+            
+            if (mobileColorCircles.length > 0 && colorNameDisplay && colorNameText) {
+                mobileColorCircles.forEach(function(circle) {
+                    // Manejar click/touch
+                    circle.addEventListener('click', function() {
+                        const colorName = this.getAttribute('data-color-name');
+                        if (colorName) {
+                            colorNameText.textContent = colorName;
+                            colorNameDisplay.style.display = 'block';
+                            
+                            // Remover selección anterior
+                            mobileColorCircles.forEach(function(c) {
+                                c.style.border = '2px solid #e0e0e0';
+                                c.style.transform = 'scale(1)';
+                            });
+                            
+                            // Resaltar el color seleccionado
+                            this.style.border = '2px solid #000';
+                            this.style.transform = 'scale(1.1)';
+                            
+                            // Ocultar después de 3 segundos si no hay otra interacción
+                            clearTimeout(window.colorNameTimeout);
+                            window.colorNameTimeout = setTimeout(function() {
+                                colorNameDisplay.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+                    
+                    // También mostrar en hover para dispositivos con mouse (tablets)
+                    circle.addEventListener('mouseenter', function() {
+                        const colorName = this.getAttribute('data-color-name');
+                        if (colorName && window.innerWidth <= 991) { // Solo en móvil/tablet
+                            colorNameText.textContent = colorName;
+                            colorNameDisplay.style.display = 'block';
+                            clearTimeout(window.colorNameTimeout);
+                        }
+                    });
+                });
             }
         });
     </script>

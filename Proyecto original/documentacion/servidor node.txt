@@ -1,0 +1,14 @@
+automatico 
+ssh root@149.104.92.116
+/home/oriola/scripts/deploy.sh
+
+ssh root@149.104.92.116
+/home/oriola/scripts/menu-deploy.sh
+
+otros
+
+clonar
+   cd /home/oriola && git clone https://github.com/LuceroGustavo/OriolaIndumentaria.git
+verificar clonacion
+   ls -la /home/oriola/OriolaIndumentaria
+

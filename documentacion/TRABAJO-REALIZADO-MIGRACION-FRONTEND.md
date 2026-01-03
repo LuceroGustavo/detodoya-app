@@ -301,3 +301,5 @@ La migración del frontend público y las correcciones en el panel de administra
 **Última actualización:** Enero 2025  
 **Autor:** Sistema de Documentación Automática
 
+
+

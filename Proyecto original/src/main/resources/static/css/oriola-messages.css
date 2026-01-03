@@ -1,0 +1,329 @@
+/**
+ * Estilos para Sistema de Mensajes Oriola
+ * Estilo minimalista - Rojo para errores, Verde para éxitos
+ */
+
+#oriola-messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+.oriola-message {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 12px;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-in-out;
+    pointer-events: auto;
+    position: relative;
+    border-left: 4px solid;
+    min-width: 320px;
+    max-width: 400px;
+}
+
+.oriola-message-show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Colores según tipo */
+.oriola-message-error {
+    border-left-color: #dc3545;
+}
+
+.oriola-message-success {
+    border-left-color: #28a745;
+}
+
+.oriola-message-info {
+    border-left-color: #17a2b8;
+}
+
+.oriola-message-warning {
+    border-left-color: #ffc107;
+}
+
+.oriola-message-content {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.oriola-message-header {
+    margin-bottom: 4px;
+}
+
+.oriola-message-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+}
+
+.oriola-message-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.oriola-message-icon {
+    font-size: 18px;
+    line-height: 1.2;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.oriola-message-error .oriola-message-icon {
+    color: #dc3545;
+}
+
+.oriola-message-success .oriola-message-icon {
+    color: #28a745;
+}
+
+.oriola-message-info .oriola-message-icon {
+    color: #17a2b8;
+}
+
+.oriola-message-warning .oriola-message-icon {
+    color: #ffc107;
+}
+
+.oriola-message-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #212529;
+    flex: 1;
+}
+
+.oriola-message-error .oriola-message-text {
+    color: #721c24;
+}
+
+.oriola-message-success .oriola-message-text {
+    color: #155724;
+}
+
+.oriola-message-info .oriola-message-text {
+    color: #0c5460;
+}
+
+.oriola-message-warning .oriola-message-text {
+    color: #856404;
+}
+
+.oriola-message-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.oriola-message-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #212529;
+}
+
+.oriola-message-error .oriola-message-close:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.oriola-message-success .oriola-message-close:hover {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+/* Estilos para modal de confirmación */
+.oriola-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: oriolaFadeIn 0.2s ease-in-out;
+    backdrop-filter: blur(2px);
+}
+
+.oriola-confirm-dialog {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    width: 90%;
+    padding: 0;
+    overflow: hidden;
+    animation: oriolaSlideDown 0.3s ease-out;
+    border-left: 4px solid #ffc107;
+}
+
+.oriola-confirm-dialog-content {
+    padding: 24px;
+}
+
+.oriola-confirm-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    margin-bottom: 12px;
+}
+
+.oriola-confirm-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.oriola-confirm-icon {
+    font-size: 24px;
+    color: #ffc107;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.oriola-confirm-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #212529;
+    flex: 1;
+}
+
+.oriola-confirm-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.oriola-confirm-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: 1px solid;
+}
+
+.oriola-confirm-cancel {
+    border-color: #dee2e6;
+    background: #ffffff;
+    color: #6c757d;
+}
+
+.oriola-confirm-cancel:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.oriola-confirm-ok {
+    border-color: #ffc107;
+    background: #ffc107;
+    color: #212529;
+    font-weight: 600;
+}
+
+.oriola-confirm-ok:hover {
+    background: #ffb300;
+    border-color: #ffb300;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.oriola-confirm-btn:active {
+    transform: translateY(0);
+}
+
+/* Animaciones */
+@keyframes oriolaFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes oriolaFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes oriolaSlideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes oriolaSlideUp {
+    from { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to { 
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #oriola-messages-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .oriola-message {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .oriola-confirm-dialog {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .oriola-confirm-buttons {
+        flex-direction: column-reverse;
+    }
+    
+    .oriola-confirm-btn {
+        width: 100%;
+    }
+}
+

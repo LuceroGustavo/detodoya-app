@@ -225,3 +225,5 @@ Permitir que el administrador elija si un producto debe mostrar colores o no, in
 **Última actualización:** Enero 2025  
 **Próxima revisión:** Después de implementar tareas de prioridad alta
 
+
+
