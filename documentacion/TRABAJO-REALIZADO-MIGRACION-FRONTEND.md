@@ -298,8 +298,104 @@ La migración del frontend público y las correcciones en el panel de administra
 
 ---
 
-**Última actualización:** Enero 2025  
+---
+
+## 🎬 **FASE 4: MIGRACIÓN COMPLETA DE PRODUCT-DETAIL.HTML (2 de Enero 2025)**
+
+### **4.1 Migración al Nuevo Diseño con Soporte Completo de Videos**
+
+**Objetivo:** Migrar completamente `product-detail.html` al nuevo diseño Tailwind CSS manteniendo toda la funcionalidad existente, especialmente el soporte para videos sin el problema del fondo gris.
+
+**Problema Anterior:**
+- El archivo tenía problemas cuando se subía un video: aparecía un fondo gris que bloqueaba la interacción
+- El diseño no coincidía con el nuevo estilo de Detodoya.com
+- Faltaba integración completa con el backend
+
+**Cambios Realizados:**
+
+1. **✅ Integración Completa del Nuevo Diseño:**
+   - Header nuevo con Tailwind CSS (consistente con `index.html` y `catalog.html`)
+   - Footer nuevo con diseño moderno
+   - Layout responsive con grid de 12 columnas
+   - Breadcrumb dinámico con Thymeleaf
+
+2. **✅ Soporte Completo para Videos:**
+   - Videos reales en la galería principal (no solo thumbnails)
+   - Videos en thumbnails con indicador de play
+   - Videos en el modal de vista completa
+   - **Solución al problema del fondo gris:** Los videos se muestran directamente sin activar modales automáticamente
+   - Detección automática de video vs imagen usando `th:with` y `isVideo`
+
+3. **✅ Modal Funcional Mejorado:**
+   - Modal de Bootstrap para vista completa de imágenes/videos
+   - Navegación con flechas (anterior/siguiente)
+   - Navegación con teclado (← → Escape)
+   - El modal abre con la imagen/video seleccionada actualmente
+   - Soporte para videos en el modal con controles
+
+4. **✅ Galería de Imágenes/Videos:**
+   - Thumbnails horizontales con diseño moderno
+   - Indicador visual para videos (ícono de play)
+   - Cambio dinámico de imagen principal al hacer clic en thumbnails
+   - Soporte para videos reales en thumbnails (autoplay muted loop)
+
+5. **✅ Información del Producto Dinámica:**
+   - Nombre, precio, descripción conectados con Thymeleaf
+   - Categoría dinámica desde `product.categories[0].name`
+   - Colores con selección interactiva
+   - Talles dinámicos
+   - Botones de WhatsApp y Email funcionales
+
+6. **✅ Tabs Funcionales:**
+   - Tab de Descripción con contenido dinámico
+   - Tab de Especificaciones con datos del backend (medidas, material, género, temporada, edad)
+   - Tab de Cuidados (solo se muestra si existe `product.cuidados`)
+   - JavaScript para cambiar entre tabs
+
+7. **✅ JavaScript Completo:**
+   - Función `updateModalImagesList()` para actualizar lista de imágenes/videos
+   - Función `showModalImage(index)` para mostrar imagen/video en modal
+   - Funciones `prevModalImage()` y `nextModalImage()` para navegación
+   - Función `showTab(tabName)` para cambiar entre tabs
+   - Función `openWhatsApp()` para abrir WhatsApp con mensaje prellenado
+   - Event listeners para thumbnails, modal, teclado, y botones
+
+**Archivos Modificados:**
+- `src/main/resources/templates/product-detail.html` (reescrito completamente)
+
+**Características Técnicas:**
+- Uso de `th:with` para calcular si es video dinámicamente
+- Clases condicionales con `th:class` para mostrar/ocultar elementos
+- Bootstrap 5 para el modal
+- Tailwind CSS para todo el diseño
+- Material Symbols para iconos
+- Bootstrap Icons para iconos adicionales
+
+**Estructura del Nuevo Archivo:**
+1. Header con navegación y búsqueda
+2. Breadcrumb dinámico
+3. Sección principal con grid de 12 columnas:
+   - Columna 7: Galería de imágenes/videos
+   - Columna 5: Información del producto
+4. Sección de tabs (Descripción, Especificaciones, Cuidados)
+5. Modal de Bootstrap para vista completa
+6. Footer con diseño moderno
+7. JavaScript completo para toda la funcionalidad
+
+**Problemas Resueltos:**
+- ✅ Videos funcionan correctamente sin fondo gris
+- ✅ Modal abre con la imagen/video seleccionada
+- ✅ Navegación entre imágenes/videos funciona perfectamente
+- ✅ Tabs funcionan correctamente
+- ✅ Todo conectado dinámicamente con el backend
+
+**Estado:** ✅ Funcional - Requiere algunos retoques menores (pendiente)
+
+---
+
+**Última actualización:** 2 de Enero 2025  
 **Autor:** Sistema de Documentación Automática
+
 
 
 
