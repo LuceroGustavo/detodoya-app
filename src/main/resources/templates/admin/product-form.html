@@ -699,6 +699,46 @@
                                                           placeholder="Ej: Procesador: Snapdragon 888, RAM: 8GB, Almacenamiento: 128GB"></textarea>
                                             </div>
                                         </div>
+                                        
+                                        <!-- Sección opcional de colores para electrónica -->
+                                        <div class="row mb-3" id="campo-colores-opcional-electronica">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="colores-opcional-electronica" class="form-label">
+                                                    Colores Disponibles (Opcional)
+                                                    <i class="bi bi-question-circle text-primary ms-1" 
+                                                       data-bs-toggle="tooltip" 
+                                                       data-bs-placement="top" 
+                                                       title="Opcional: Selecciona los colores disponibles para este producto"></i>
+                                                </label>
+                                                
+                                                <!-- Colores seleccionados (chips) -->
+                                                <div id="selected-colors-opcional-electronica" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                    <div id="no-colors-opcional-electronica" class="text-muted small">
+                                                        <i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Dropdown de colores disponibles -->
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="colorDropdownOpcionalElectronica" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-plus-circle me-1"></i>Agregar colores
+                                                    </button>
+                                                    <ul class="dropdown-menu w-100" aria-labelledby="colorDropdownOpcionalElectronica">
+                                                        <li th:each="color : ${colors}">
+                                                            <a class="dropdown-item color-option-opcional" 
+                                                               th:data-color-id="${color.id}" 
+                                                               th:data-color-name="${color.name}"
+                                                               href="javascript:void(0)">
+                                                                <i class="bi bi-palette me-2"></i>
+                                                                <span th:text="${color.name}"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <!-- Input oculto para enviar los IDs (se reutiliza el mismo colorIds) -->
+                                            </div>
+                                        </div>
                                     </div>
                                     <!-- Fin Sección: Campos de ELECTRÓNICA -->
                                     
@@ -752,6 +792,46 @@
                                                 <label for="especificaciones-libros" class="form-label">Sinopsis / Descripción Adicional</label>
                                                 <textarea class="form-control" id="especificaciones-libros" name="especificaciones" th:field="*{especificaciones}" rows="5"
                                                           placeholder="Sinopsis del libro..."></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Sección opcional de colores para libros -->
+                                        <div class="row mb-3" id="campo-colores-opcional-libros">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="colores-opcional-libros" class="form-label">
+                                                    Colores Disponibles (Opcional)
+                                                    <i class="bi bi-question-circle text-primary ms-1" 
+                                                       data-bs-toggle="tooltip" 
+                                                       data-bs-placement="top" 
+                                                       title="Opcional: Selecciona los colores disponibles para este producto"></i>
+                                                </label>
+                                                
+                                                <!-- Colores seleccionados (chips) -->
+                                                <div id="selected-colors-opcional-libros" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                    <div id="no-colors-opcional-libros" class="text-muted small">
+                                                        <i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Dropdown de colores disponibles -->
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="colorDropdownOpcionalLibros" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-plus-circle me-1"></i>Agregar colores
+                                                    </button>
+                                                    <ul class="dropdown-menu w-100" aria-labelledby="colorDropdownOpcionalLibros">
+                                                        <li th:each="color : ${colors}">
+                                                            <a class="dropdown-item color-option-opcional" 
+                                                               th:data-color-id="${color.id}" 
+                                                               th:data-color-name="${color.name}"
+                                                               href="javascript:void(0)">
+                                                                <i class="bi bi-palette me-2"></i>
+                                                                <span th:text="${color.name}"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <!-- Input oculto para enviar los IDs (se reutiliza el mismo colorIds) -->
                                             </div>
                                         </div>
                                     </div>
@@ -818,6 +898,46 @@
                                                 <label for="garantia-generico" class="form-label">Garantía</label>
                                                 <input type="text" class="form-control" id="garantia-generico" name="garantia" th:field="*{garantia}" 
                                                        placeholder="Ej: 12 meses">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Sección opcional de colores para productos no-indumentaria -->
+                                        <div class="row mb-3" id="campo-colores-opcional">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="colores-opcional" class="form-label">
+                                                    Colores Disponibles (Opcional)
+                                                    <i class="bi bi-question-circle text-primary ms-1" 
+                                                       data-bs-toggle="tooltip" 
+                                                       data-bs-placement="top" 
+                                                       title="Opcional: Selecciona los colores disponibles para este producto"></i>
+                                                </label>
+                                                
+                                                <!-- Colores seleccionados (chips) -->
+                                                <div id="selected-colors-opcional" class="mb-2" style="min-height: 40px; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 8px; background-color: #f8f9fa;">
+                                                    <div id="no-colors-opcional" class="text-muted small">
+                                                        <i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Dropdown de colores disponibles -->
+                                                <div class="dropdown">
+                                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="colorDropdownOpcional" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-plus-circle me-1"></i>Agregar colores
+                                                    </button>
+                                                    <ul class="dropdown-menu w-100" aria-labelledby="colorDropdownOpcional">
+                                                        <li th:each="color : ${colors}">
+                                                            <a class="dropdown-item color-option-opcional" 
+                                                               th:data-color-id="${color.id}" 
+                                                               th:data-color-name="${color.name}"
+                                                               href="javascript:void(0)">
+                                                                <i class="bi bi-palette me-2"></i>
+                                                                <span th:text="${color.name}"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <!-- Input oculto para enviar los IDs (se reutiliza el mismo colorIds) -->
                                             </div>
                                         </div>
                                     </div>
@@ -917,13 +1037,22 @@
             console.log('Inicializando valores seleccionados...');
             
             // Buscar el div oculto que contiene los datos del producto
-            // Este es el primer div con style="display: none;" antes del formulario
-            const allHiddenDivs = document.querySelectorAll('div[style*="display: none"]');
+            // IMPORTANTE: Buscar específicamente el div que tiene data-category-id, no cualquier div oculto
+            // Esto evita leer valores de las secciones ocultas de tipo de producto
             let hiddenDataDiv = null;
             
-            // El primer div oculto es el que contiene los datos del producto
-            if (allHiddenDivs.length > 0) {
-                hiddenDataDiv = allHiddenDivs[0];
+            // Buscar el div que contiene los datos del producto (tiene atributos data-category-id)
+            const allDivs = document.querySelectorAll('div');
+            for (let div of allDivs) {
+                // Verificar si este div tiene elementos con data-category-id (es el div de datos del producto)
+                if (div.querySelector('[data-category-id]') || div.querySelector('[data-color-id]') || div.querySelector('[data-talle-name]')) {
+                    // Verificar que esté oculto y que no sea una sección de tipo de producto
+                    const style = div.getAttribute('style') || '';
+                    if (style.includes('display: none') && !div.id.includes('seccion-')) {
+                        hiddenDataDiv = div;
+                        break;
+                    }
+                }
             }
             
             console.log('Hidden data div found:', hiddenDataDiv ? 'Yes' : 'No');
@@ -992,9 +1121,20 @@
                 });
             } else {
                 // Producto nuevo: asegurar que los arrays estén vacíos
-                console.log('Producto nuevo detectado - inicializando arrays vacíos');
+                console.log('✅ Producto nuevo detectado - inicializando arrays vacíos');
                 selectedCategories = [];
                 selectedSubcategorias = [];
+                selectedColors = [];
+                selectedTalles = [];
+                selectedGeneros = [];
+                selectedTemporadas = [];
+            }
+            
+            // IMPORTANTE: Verificación adicional - si no se encontró el div oculto, asegurar arrays vacíos
+            // Esto es crítico para productos nuevos donde no debe haber valores pre-seleccionados
+            if (!hiddenDataDiv) {
+                console.log('✅ Verificación adicional: Producto nuevo - arrays completamente vacíos');
+                // Asegurar que todos los arrays estén vacíos para productos nuevos
                 selectedColors = [];
                 selectedTalles = [];
                 selectedGeneros = [];
@@ -1008,6 +1148,44 @@
             updateTalleDisplay();
             updateGeneroDisplay();
             updateTemporadaDisplay();
+            
+            // Verificar tipo de producto y mostrar/ocultar sección de colores opcional
+            const tipoProductoSelect = document.getElementById('tipoProducto');
+            if (tipoProductoSelect) {
+                const tipoProducto = tipoProductoSelect.value;
+                
+                // Ocultar todos los campos de colores opcionales primero
+                const camposColoresOpcionales = [
+                    'campo-colores-opcional',
+                    'campo-colores-opcional-libros',
+                    'campo-colores-opcional-electronica'
+                ];
+                camposColoresOpcionales.forEach(campoId => {
+                    const campo = document.getElementById(campoId);
+                    if (campo) {
+                        campo.style.display = 'none';
+                    }
+                });
+                
+                // Mostrar el campo correspondiente según el tipo de producto
+                if (tipoProducto && tipoProducto !== 'INDUMENTARIA') {
+                    if (tipoProducto === 'LIBROS') {
+                        const campo = document.getElementById('campo-colores-opcional-libros');
+                        if (campo) campo.style.display = 'block';
+                    } else if (tipoProducto === 'ELECTRONICA') {
+                        const campo = document.getElementById('campo-colores-opcional-electronica');
+                        if (campo) campo.style.display = 'block';
+                    } else {
+                        const campo = document.getElementById('campo-colores-opcional');
+                        if (campo) campo.style.display = 'block';
+                    }
+                }
+            }
+            
+            // Llamar a actualizarCamposSegunTipo para asegurar que todo esté configurado correctamente
+            if (tipoProductoSelect && tipoProductoSelect.value) {
+                actualizarCamposSegunTipo();
+            }
             
             // Actualizar inputs ocultos
             updateHiddenInput();
@@ -1319,21 +1497,88 @@
 
         function updateColorDisplay() {
             const container = document.getElementById('selected-colors');
+            if (container) {
+                if (selectedColors.length === 0) {
+                    container.innerHTML = '<div id="no-colors" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en los colores de abajo para seleccionarlos</div>';
+                } else {
+                    container.innerHTML = selectedColors.map(color => 
+                        '<span class="color-chip">' +
+                            '<i class="bi bi-palette me-1"></i>' + color.name +
+                            '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
+                        '</span>'
+                    ).join('');
+                }
+            }
             
-            if (selectedColors.length === 0) {
-                container.innerHTML = '<div id="no-colors" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Haz clic en los colores de abajo para seleccionarlos</div>';
-            } else {
-                container.innerHTML = selectedColors.map(color => 
-                    '<span class="color-chip">' +
-                        '<i class="bi bi-palette me-1"></i>' + color.name +
-                        '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
-                    '</span>'
-                ).join('');
+            // También actualizar el display opcional si existe
+            updateColorDisplayOpcional();
+        }
+        
+        function updateColorDisplayOpcional() {
+            // Actualizar display de sección genérica
+            const container = document.getElementById('selected-colors-opcional');
+            if (container) {
+                if (selectedColors.length === 0) {
+                    container.innerHTML = '<div id="no-colors-opcional" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos</div>';
+                } else {
+                    container.innerHTML = selectedColors.map(color => 
+                        '<span class="color-chip">' +
+                            '<i class="bi bi-palette me-1"></i>' + color.name +
+                            '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
+                        '</span>'
+                    ).join('');
+                }
+            }
+            
+            // Actualizar display de libros
+            const containerLibros = document.getElementById('selected-colors-opcional-libros');
+            if (containerLibros) {
+                if (selectedColors.length === 0) {
+                    containerLibros.innerHTML = '<div id="no-colors-opcional-libros" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos</div>';
+                } else {
+                    containerLibros.innerHTML = selectedColors.map(color => 
+                        '<span class="color-chip">' +
+                            '<i class="bi bi-palette me-1"></i>' + color.name +
+                            '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
+                        '</span>'
+                    ).join('');
+                }
+            }
+            
+            // Actualizar display de electrónica
+            const containerElectronica = document.getElementById('selected-colors-opcional-electronica');
+            if (containerElectronica) {
+                if (selectedColors.length === 0) {
+                    containerElectronica.innerHTML = '<div id="no-colors-opcional-electronica" class="text-muted small"><i class="bi bi-info-circle me-1"></i>Opcional: Haz clic en los colores de abajo para seleccionarlos</div>';
+                } else {
+                    containerElectronica.innerHTML = selectedColors.map(color => 
+                        '<span class="color-chip">' +
+                            '<i class="bi bi-palette me-1"></i>' + color.name +
+                            '<span class="remove-btn" data-color-id="' + color.id + '">×</span>' +
+                        '</span>'
+                    ).join('');
+                }
             }
         }
 
         function updateColorDropdownOptions() {
+            // Actualizar opciones de colores en sección indumentaria
             document.querySelectorAll('.color-option').forEach(option => {
+                const colorId = option.getAttribute('data-color-id');
+                const colorName = option.getAttribute('data-color-name');
+                const isSelected = selectedColors.find(color => color.id === colorId);
+                
+                if (isSelected) {
+                    option.classList.add('selected');
+                    option.innerHTML = '<i class="bi bi-check-circle me-2 text-success"></i><span>' + colorName + '</span>';
+                } else {
+                    option.classList.remove('selected');
+                    option.innerHTML = '<i class="bi bi-palette me-2"></i><span>' + colorName + '</span>';
+                }
+            });
+            
+            // Actualizar opciones de colores en todas las secciones opcionales (genérica, libros, electrónica)
+            document.querySelectorAll('.color-option-opcional').forEach(option => {
                 const colorId = option.getAttribute('data-color-id');
                 const colorName = option.getAttribute('data-color-name');
                 const isSelected = selectedColors.find(color => color.id === colorId);
@@ -1534,13 +1779,25 @@
                 return;
             }
             
-            // Click en opciones del dropdown de colores
+            // Click en opciones del dropdown de colores (indumentaria)
             let colorOption = e.target.closest('.color-option');
             if (colorOption) {
                 e.preventDefault();
                 const colorId = colorOption.getAttribute('data-color-id');
                 const colorName = colorOption.getAttribute('data-color-name');
                 addColor(colorId, colorName);
+                return;
+            }
+            
+            // Click en opciones del dropdown de colores (opcional para no-indumentaria)
+            let colorOptionOpcional = e.target.closest('.color-option-opcional');
+            if (colorOptionOpcional) {
+                e.preventDefault();
+                const colorId = colorOptionOpcional.getAttribute('data-color-id');
+                const colorName = colorOptionOpcional.getAttribute('data-color-name');
+                addColor(colorId, colorName);
+                // Actualizar también el display opcional
+                updateColorDisplayOpcional();
                 return;
             }
             
@@ -1752,14 +2009,114 @@
                 });
             }
             
+            // IMPORTANTE: Mostrar campo de colores opcional para TODOS los tipos no-indumentaria
+            // Esto debe hacerse DESPUÉS de mostrar/ocultar los campos específicos
+            if (tipoProducto && tipoProducto !== 'INDUMENTARIA') {
+                // Mostrar campo de colores según la sección que se esté mostrando
+                if (tipoProducto === 'LIBROS') {
+                    const campoColoresOpcional = document.getElementById('campo-colores-opcional-libros');
+                    if (campoColoresOpcional) {
+                        campoColoresOpcional.style.display = 'block';
+                        console.log('✅ Mostrando campo de colores opcional para LIBROS');
+                    }
+                } else if (tipoProducto === 'ELECTRONICA') {
+                    const campoColoresOpcional = document.getElementById('campo-colores-opcional-electronica');
+                    if (campoColoresOpcional) {
+                        campoColoresOpcional.style.display = 'block';
+                        console.log('✅ Mostrando campo de colores opcional para ELECTRONICA');
+                    }
+                } else {
+                    // Para otros tipos (HOGAR, DEPORTES, etc.), usar el campo de seccion-genericos
+                    const campoColoresOpcional = document.getElementById('campo-colores-opcional');
+                    if (campoColoresOpcional) {
+                        campoColoresOpcional.style.display = 'block';
+                        console.log('✅ Mostrando campo de colores opcional para tipo:', tipoProducto);
+                    }
+                }
+            }
+            
+            // IMPORTANTE: Si NO es INDUMENTARIA, limpiar talles, géneros y temporadas
+            // (pero mantener colores porque pueden usarse en otros productos)
+            if (tipoProducto !== 'INDUMENTARIA') {
+                console.log('🧹 Limpiando talles, géneros y temporadas (no es indumentaria)');
+                selectedTalles = [];
+                selectedGeneros = [];
+                selectedTemporadas = [];
+                
+                // Actualizar displays y inputs ocultos
+                updateTalleDisplay();
+                updateGeneroDisplay();
+                updateTemporadaDisplay();
+                updateTalleHiddenInput();
+                updateGeneroHiddenInput();
+                updateTemporadaHiddenInput();
+            } else {
+                // Si ES INDUMENTARIA, asegurar que los arrays solo tengan valores si hay un producto existente
+                // Verificar si hay un div oculto con datos del producto (producto existente)
+                const allDivs = document.querySelectorAll('div');
+                let hasProductData = false;
+                for (let div of allDivs) {
+                    if (div.querySelector('[data-category-id]') || div.querySelector('[data-color-id]') || div.querySelector('[data-talle-name]')) {
+                        const style = div.getAttribute('style') || '';
+                        if (style.includes('display: none') && !div.id.includes('seccion-')) {
+                            hasProductData = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Si es un producto nuevo (no hay datos), asegurar que los arrays estén vacíos
+                if (!hasProductData) {
+                    console.log('🧹 Producto nuevo detectado - asegurando arrays vacíos para indumentaria');
+                    // No limpiar colores aquí porque pueden haberse agregado manualmente
+                    // Solo limpiar talles, géneros y temporadas si no hay datos del producto
+                    if (selectedTalles.length > 0 || selectedGeneros.length > 0 || selectedTemporadas.length > 0) {
+                        selectedTalles = [];
+                        selectedGeneros = [];
+                        selectedTemporadas = [];
+                        
+                        // Actualizar displays y inputs ocultos
+                        updateTalleDisplay();
+                        updateGeneroDisplay();
+                        updateTemporadaDisplay();
+                        updateTalleHiddenInput();
+                        updateGeneroHiddenInput();
+                        updateTemporadaHiddenInput();
+                    }
+                }
+            }
+            
+            // Ocultar todos los campos de colores opcionales si es INDUMENTARIA
+            if (tipoProducto === 'INDUMENTARIA') {
+                const camposColoresOpcionales = [
+                    'campo-colores-opcional',
+                    'campo-colores-opcional-libros',
+                    'campo-colores-opcional-electronica'
+                ];
+                camposColoresOpcionales.forEach(campoId => {
+                    const campo = document.getElementById(campoId);
+                    if (campo) {
+                        campo.style.display = 'none';
+                    }
+                });
+                console.log('❌ Ocultando todos los campos de colores opcionales (es indumentaria)');
+            }
+            
             console.log('✅ Actualización de campos completada');
         }
 
-        // Ejecutar al cargar la página (para edición de productos existentes)
+        // Listener para cambios en el tipo de producto
         document.addEventListener('DOMContentLoaded', function() {
-            const tipoProducto = document.getElementById('tipoProducto');
-            if (tipoProducto && tipoProducto.value) {
-                actualizarCamposSegunTipo();
+            const tipoProductoSelect = document.getElementById('tipoProducto');
+            if (tipoProductoSelect) {
+                tipoProductoSelect.addEventListener('change', function() {
+                    actualizarCamposSegunTipo();
+                });
+                
+                // Si hay un valor inicial, actualizar campos
+                if (tipoProductoSelect.value) {
+                    actualizarCamposSegunTipo();
+                }
             }
             
             // Si hay categorías seleccionadas al cargar (edición), cargar subcategorías
@@ -1772,6 +2129,38 @@
             }
         });
 
+        // Función para limpiar campos de secciones ocultas antes de enviar
+        function limpiarCamposOcultos() {
+            // Obtener todas las secciones de tipo producto
+            const secciones = document.querySelectorAll('.seccion-tipo-producto');
+            
+            // Lista de campos que pueden duplicarse entre secciones
+            const camposDuplicados = ['peso', 'dimensiones', 'especificaciones', 'garantia', 'marca', 'modelo'];
+            
+            secciones.forEach(seccion => {
+                // Si la sección está oculta
+                if (seccion.style.display === 'none' || window.getComputedStyle(seccion).display === 'none') {
+                    // Limpiar todos los inputs y textareas dentro de esta sección
+                    const inputs = seccion.querySelectorAll('input[type="text"], input[type="number"], textarea');
+                    inputs.forEach(input => {
+                        // Limpiar si el campo está en la lista de campos duplicados
+                        if (camposDuplicados.includes(input.name)) {
+                            input.value = '';
+                            input.disabled = true; // Deshabilitar para que no se envíe
+                        }
+                    });
+                } else {
+                    // Si la sección está visible, habilitar los campos
+                    const inputs = seccion.querySelectorAll('input[type="text"], input[type="number"], textarea');
+                    inputs.forEach(input => {
+                        if (camposDuplicados.includes(input.name)) {
+                            input.disabled = false;
+                        }
+                    });
+                }
+            });
+        }
+
         // Validación de formulario
         document.querySelector('form').addEventListener('submit', function(e) {
             const name = document.getElementById('name').value;
@@ -1783,6 +2172,9 @@
                 DetodoyaMessages.showError('Por favor completa todos los campos obligatorios');
                 return false;
             }
+            
+            // Limpiar campos de secciones ocultas antes de enviar
+            limpiarCamposOcultos();
         });
     </script>
 </body>

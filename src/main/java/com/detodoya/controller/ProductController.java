@@ -207,6 +207,14 @@ public class ProductController {
             product.setTemporadas(selectedTemporadas);
         }
         
+        // Limpiar valores duplicados de peso, dimensiones, especificaciones, garantia, marca y modelo antes de guardar
+        product.setPeso(limpiarValorDuplicado(product.getPeso()));
+        product.setDimensiones(limpiarValorDuplicado(product.getDimensiones()));
+        product.setEspecificaciones(limpiarValorDuplicado(product.getEspecificaciones()));
+        product.setGarantia(limpiarValorDuplicado(product.getGarantia()));
+        product.setMarca(limpiarValorDuplicado(product.getMarca()));
+        product.setModelo(limpiarValorDuplicado(product.getModelo()));
+        
         product.setFechaCreacion(java.time.LocalDateTime.now());
         product.setFechaActualizacion(java.time.LocalDateTime.now());
         Product savedProduct = productRepository.save(product);
@@ -277,11 +285,11 @@ public class ProductController {
         existingProduct.setEdadRecomendada(product.getEdadRecomendada());
         existingProduct.setTallasDisponibles(product.getTallasDisponibles());
         existingProduct.setColoresDisponibles(product.getColoresDisponibles());
-        // Nuevos campos genéricos
-        existingProduct.setEspecificaciones(product.getEspecificaciones());
-        existingProduct.setMarca(product.getMarca());
-        existingProduct.setModelo(product.getModelo());
-        existingProduct.setGarantia(product.getGarantia());
+        // Nuevos campos genéricos - Limpiar valores duplicados
+        existingProduct.setEspecificaciones(limpiarValorDuplicado(product.getEspecificaciones()));
+        existingProduct.setMarca(limpiarValorDuplicado(product.getMarca()));
+        existingProduct.setModelo(limpiarValorDuplicado(product.getModelo()));
+        existingProduct.setGarantia(limpiarValorDuplicado(product.getGarantia()));
         existingProduct.setTipoProducto(product.getTipoProducto());
         // Campos de integración marketplace
         existingProduct.setCodigoProducto(product.getCodigoProducto());
@@ -293,15 +301,26 @@ public class ProductController {
         existingProduct.setEditorial(product.getEditorial());
         existingProduct.setIsbn(product.getIsbn());
         existingProduct.setPaginas(product.getPaginas());
-        // Nuevos campos genéricos
-        existingProduct.setPeso(product.getPeso());
-        existingProduct.setDimensiones(product.getDimensiones());
+        // Nuevos campos genéricos - Limpiar valores duplicados
+        existingProduct.setPeso(limpiarValorDuplicado(product.getPeso()));
+        existingProduct.setDimensiones(limpiarValorDuplicado(product.getDimensiones()));
         // Nuevos campos para electrónica
         existingProduct.setPotencia(product.getPotencia());
         existingProduct.setConsumo(product.getConsumo());
-        existingProduct.setEsDestacado(product.getEsDestacado());
-        // NO actualizar esNuevo desde el formulario - se maneja mediante el endpoint toggle-vista-inicio
-        // existingProduct.setEsNuevo(product.getEsNuevo());
+        // Manejar null en checkboxes: si no están marcados, pueden venir como null
+        Boolean esDestacadoValue = product.getEsDestacado();
+        if (esDestacadoValue == null) {
+            esDestacadoValue = false;
+        }
+        existingProduct.setEsDestacado(esDestacadoValue);
+        
+        // Actualizar esNuevo desde el formulario (permitir edición desde el formulario)
+        // Manejar null: si el checkbox no está marcado, puede venir como null, establecerlo como false
+        Boolean esNuevoValue = product.getEsNuevo();
+        if (esNuevoValue == null) {
+            esNuevoValue = false;
+        }
+        existingProduct.setEsNuevo(esNuevoValue);
         existingProduct.setEtiquetaPromocional(product.getEtiquetaPromocional());
         existingProduct.setDescuentoPorcentaje(product.getDescuentoPorcentaje());
         existingProduct.setPrecioOriginal(product.getPrecioOriginal());
@@ -396,16 +415,14 @@ public class ProductController {
         
         existingProduct.setFechaActualizacion(java.time.LocalDateTime.now());
         
-        // IMPORTANTE: Preservar el valor de esNuevo que fue establecido mediante toggle-vista-inicio
-        // No se debe sobrescribir con el valor del formulario
         System.out.println("💾 [updateProduct] Guardando producto ID: " + existingProduct.getPId());
-        System.out.println("💾 [updateProduct] esNuevo antes de guardar: " + existingProduct.getEsNuevo());
-        System.out.println("💾 [updateProduct] esNuevo del formulario (ignorado): " + product.getEsNuevo());
+        System.out.println("💾 [updateProduct] esNuevo: " + existingProduct.getEsNuevo());
+        System.out.println("💾 [updateProduct] esDestacado: " + existingProduct.getEsDestacado());
         
         productRepository.save(existingProduct);
         productRepository.flush(); // Asegurar persistencia
         
-        System.out.println("✅ [updateProduct] Producto guardado, esNuevo preservado: " + existingProduct.getEsNuevo());
+        System.out.println("✅ [updateProduct] Producto guardado exitosamente");
         
         return "redirect:/admin/products";
     }
@@ -636,6 +653,42 @@ public class ProductController {
             response.put("message", "Error al cambiar la vista en inicio: " + e.getMessage());
             return response;
         }
+    }
+    
+    /**
+     * Limpia valores duplicados en campos de texto.
+     * Si el valor contiene repeticiones separadas por comas múltiples (ej: ",valor,,,valor,,,valor,"),
+     * extrae solo el primer valor único y lo limpia.
+     * 
+     * @param valor El valor a limpiar
+     * @return El valor limpio sin duplicados, o null si el valor original era null o vacío
+     */
+    private String limpiarValorDuplicado(String valor) {
+        if (valor == null || valor.trim().isEmpty()) {
+            return valor;
+        }
+        
+        // Limpiar espacios al inicio y final
+        String valorLimpio = valor.trim();
+        
+        // Detectar patrones de duplicación como ",valor,,,valor,,,valor,"
+        // Buscar si hay múltiples repeticiones del mismo patrón
+        if (valorLimpio.contains(",,,")) {
+            // Dividir por múltiples comas
+            String[] partes = valorLimpio.split(",+");
+            
+            // Encontrar el primer valor no vacío
+            for (String parte : partes) {
+                String parteLimpia = parte.trim();
+                if (!parteLimpia.isEmpty()) {
+                    // Retornar solo el primer valor único encontrado
+                    return parteLimpia;
+                }
+            }
+        }
+        
+        // Si no hay duplicación obvia, retornar el valor limpio
+        return valorLimpio;
     }
 }
 

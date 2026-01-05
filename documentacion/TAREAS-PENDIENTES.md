@@ -24,6 +24,44 @@
 
 ---
 
+## 🔴 **PRIORIDAD ALTA: Reparar Edición de Productos**
+
+### **Problema Identificado:**
+La edición de productos no guarda las modificaciones y muestra un error al intentar guardar.
+
+### **Síntomas:**
+- Al editar un producto y guardar, no se guardan las modificaciones
+- Aparece un error al intentar guardar
+- Las modificaciones realizadas se pierden
+
+### **Archivos Afectados:**
+- `src/main/resources/templates/admin/product-form.html` (probablemente)
+- `src/main/java/com/detodoya/controller/ProductController.java` (probablemente)
+- `src/main/java/com/detodoya/service/ProductService.java` (probablemente)
+
+### **Análisis Necesario:**
+1. Verificar el método de actualización en `ProductController`
+2. Revisar el formulario de edición en `product-form.html`
+3. Verificar la lógica de guardado en `ProductService`
+4. Revisar logs del servidor para identificar el error específico
+5. Verificar validaciones y manejo de errores
+
+### **Tareas Específicas:**
+- [ ] Investigar el error específico que aparece al guardar
+- [ ] Revisar el método `updateProduct()` en el controller
+- [ ] Verificar que el formulario envíe todos los datos correctamente
+- [ ] Revisar validaciones que puedan estar bloqueando el guardado
+- [ ] Verificar manejo de imágenes/videos en la edición
+- [ ] Probar edición de diferentes campos (nombre, precio, descripción, etc.)
+- [ ] Verificar que las relaciones (categorías, colores, talles) se guarden correctamente
+- [ ] Revisar logs del servidor para identificar el error exacto
+
+### **Notas:**
+- Problema reportado el 2 de Enero 2025
+- Requiere investigación para identificar la causa raíz del error
+
+---
+
 ## 🎨 **PRIORIDAD MEDIA: Retoques Finales en HTML de Detalle de Producto**
 
 ### **Estado Actual:**
@@ -199,6 +237,7 @@ Permitir que el administrador elija si un producto debe mostrar colores o no, in
 ### **🔴 Prioridad Alta (Urgente):**
 1. ~~Manejo de videos en publicaciones (pantalla gris)~~ ✅ RESUELTO (2 de Enero 2025)
 2. ~~Completar vistas y estilo del HTML de detalle de producto~~ ✅ COMPLETADO (2 de Enero 2025) - Pendiente retoques menores
+3. **Reparar edición de productos** - No guarda modificaciones, sale error
 
 ### **🟡 Prioridad Media (Importante):**
 1. Selección opcional de colores en productos

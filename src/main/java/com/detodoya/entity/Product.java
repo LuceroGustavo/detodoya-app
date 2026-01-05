@@ -143,10 +143,10 @@ public class Product {
     private Integer paginas; // Número de páginas del libro
     
     // Campos genéricos para dimensiones y peso
-    @Column(name = "peso", nullable = true, length = 50)
+    @Column(name = "peso", nullable = true, length = 100)
     private String peso; // Peso del producto (ej: "500g", "2.5kg", "1.2 libras")
     
-    @Column(name = "dimensiones", nullable = true, length = 100)
+    @Column(name = "dimensiones", nullable = true, length = 255)
     private String dimensiones; // Dimensiones del producto (ej: "20x15x5 cm", "200x80x75 cm")
     
     // Campos para electrónica/electrodomésticos

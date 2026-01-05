@@ -217,8 +217,8 @@
                         </div>
                     </div>
                     
-                    <!-- Sizes -->
-                    <div th:if="${product.talles != null and !product.talles.isEmpty()}">
+                    <!-- Sizes - Solo para INDUMENTARIA -->
+                    <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.talles != null and !product.talles.isEmpty()}">
                         <div class="flex justify-between items-center mb-3">
                             <span class="block text-sm font-bold text-slate-900 dark:text-white">Talle</span>
                         </div>
@@ -326,11 +326,13 @@
                                 <span class="text-slate-500 font-medium">Material</span>
                                 <span class="text-slate-900 dark:text-white font-semibold" th:text="${product.material}"></span>
                             </div>
-                            <div th:if="${product.generos != null and !product.generos.isEmpty()}" class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
+                            <!-- Género - Solo para INDUMENTARIA -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.generos != null and !product.generos.isEmpty()}" class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
                                 <span class="text-slate-500 font-medium">Género</span>
                                 <span class="text-slate-900 dark:text-white font-semibold" th:text="${product.getGenerosComoTexto()}"></span>
                             </div>
-                            <div th:if="${product.temporadas != null and !product.temporadas.isEmpty()}" class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
+                            <!-- Temporada - Solo para INDUMENTARIA -->
+                            <div th:if="${product.tipoProducto != null and product.tipoProducto.name() == 'INDUMENTARIA' and product.temporadas != null and !product.temporadas.isEmpty()}" class="flex justify-between items-center py-3 border-b border-slate-100 dark:border-slate-800">
                                 <span class="text-slate-500 font-medium">Temporada</span>
                                 <span class="text-slate-900 dark:text-white font-semibold" th:text="${product.getTemporadasComoTexto()}"></span>
                             </div>
