@@ -11,6 +11,7 @@ import com.detodoya.enums.TipoProducto;
 import com.detodoya.repo.ProductRepository;
 import com.detodoya.repo.ProductImageRepository;
 import com.detodoya.repo.ProductViewRepository;
+import com.detodoya.repo.FavoriteRepository;
 import com.detodoya.service.CategoryService;
 import com.detodoya.service.ColorService;
 import com.detodoya.service.ImageProcessingService;
@@ -56,6 +57,9 @@ public class ProductController {
     
     @Autowired
     private ProductViewRepository productViewRepository;
+    
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @GetMapping
     public String listProducts(@RequestParam(required = false) String search,
@@ -456,10 +460,26 @@ public class ProductController {
                 // Continuar con la eliminación del producto aunque falle la eliminación de vistas
             }
             
-            // PASO 2: Las imágenes y videos ya se eliminan automáticamente por cascade
-            // PASO 3: Las relaciones many-to-many (categorías, colores, talles, etc.) se eliminan automáticamente
+            // PASO 2: Eliminar todos los favoritos del producto
+            try {
+                List<com.detodoya.entity.Favorite> favorites = favoriteRepository.findByProduct(product);
+                if (!favorites.isEmpty()) {
+                    System.out.println("❤️ [deleteProduct] Eliminando " + favorites.size() + " favoritos del producto");
+                    favoriteRepository.deleteByProduct(product);
+                    favoriteRepository.flush();
+                    System.out.println("✅ [deleteProduct] Favoritos del producto eliminados");
+                } else {
+                    System.out.println("ℹ️ [deleteProduct] No hay favoritos asociados al producto");
+                }
+            } catch (Exception e) {
+                System.err.println("⚠️ [deleteProduct] Error al eliminar favoritos (continuando): " + e.getMessage());
+                // Continuar con la eliminación del producto aunque falle la eliminación de favoritos
+            }
             
-            // PASO 4: Eliminar el producto
+            // PASO 3: Las imágenes y videos ya se eliminan automáticamente por cascade
+            // PASO 4: Las relaciones many-to-many (categorías, colores, talles, etc.) se eliminan automáticamente
+            
+            // PASO 5: Eliminar el producto
             productRepository.delete(product);
             productRepository.flush(); // Forzar la escritura inmediata
             

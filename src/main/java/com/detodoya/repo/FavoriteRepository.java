@@ -75,5 +75,15 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
      */
     @Query("SELECT f.product.pId FROM Favorite f WHERE f.sessionId = :sessionId")
     List<Integer> findProductIdsBySessionId(@Param("sessionId") String sessionId);
+    
+    /**
+     * Buscar todos los favoritos de un producto
+     */
+    List<Favorite> findByProduct(Product product);
+    
+    /**
+     * Eliminar todos los favoritos de un producto
+     */
+    void deleteByProduct(Product product);
 }
 
