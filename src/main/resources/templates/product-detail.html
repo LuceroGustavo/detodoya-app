@@ -46,6 +46,77 @@
         html {
             scroll-behavior: smooth;
         }
+        
+        /* Estilos mejorados para el modal */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            box-shadow: none;
+        }
+        
+        .modal-media {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-media:hover {
+            transform: scale(1.02);
+        }
+        
+        .modal-nav-btn {
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-nav-btn:hover {
+            background: rgba(0,0,0,0.8) !important;
+        }
+        
+        .modal-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-indicator:hover {
+            background: rgba(255,255,255,0.8) !important;
+            transform: scale(1.2);
+        }
+        
+        .modal-indicator.active {
+            transform: scale(1.3);
+        }
+        
+        /* Responsive: Modal mejorado en móvil */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 0;
+                max-width: 100%;
+                height: 100vh;
+            }
+            
+            .modal-content {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .modal-body {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .modal-nav-btn {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 20px !important;
+            }
+            
+            .modal-media {
+                max-height: 85vh !important;
+            }
+        }
+        
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -357,36 +428,39 @@
         </div>
     </main>
     
-    <!-- Modal para imagen ampliada -->
+    <!-- Modal para imagen ampliada (PC) -->
     <div class="modal fade" id="imageModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content" style="background: transparent; border: none;">
-                <div class="modal-header" style="border: none; padding: 0; position: absolute; top: 10px; right: 10px; z-index: 1050;">
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="background: rgba(0,0,0,0.5); border-radius: 50%; padding: 10px;"></button>
+                <div class="modal-header" style="border: none; padding: 0; position: absolute; top: 20px; right: 20px; z-index: 1050;">
+                    <button type="button" class="btn-close btn-close-white modal-close-btn" data-bs-dismiss="modal" style="background: rgba(0,0,0,0.6); border-radius: 50%; padding: 12px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"></button>
                 </div>
                 <div class="modal-body text-center" style="padding: 0; position: relative;">
                     <!-- Botón anterior (izquierda) -->
-                    <button id="prevImageBtn" class="modal-nav-btn" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
-                        <i class="bi bi-chevron-left"></i>
+                    <button id="prevImageBtn" class="modal-nav-btn" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;">
+                        <span class="material-symbols-outlined">chevron_left</span>
                     </button>
                     <!-- Botón siguiente (derecha) -->
-                    <button id="nextImageBtn" class="modal-nav-btn" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
-                        <i class="bi bi-chevron-right"></i>
+                    <button id="nextImageBtn" class="modal-nav-btn" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1051; font-size: 24px; transition: all 0.3s ease;">
+                        <span class="material-symbols-outlined">chevron_right</span>
                     </button>
                     <!-- Imagen del modal -->
                     <img id="modalImage" 
                          th:if="${product.images != null and !product.images.isEmpty()}" 
                          th:src="${product.images[0].getImageUrl()}" 
-                         class="img-fluid" 
-                         style="max-height: 90vh; max-width: 100%; object-fit: contain; background: white; border-radius: 10px;">
+                         class="img-fluid modal-media" 
+                         style="max-height: 90vh; max-width: 100%; object-fit: contain; background: white; border-radius: 10px; transition: all 0.3s ease;">
                     <!-- Video del modal (se crea dinámicamente si es necesario) -->
                     <video id="modalVideo" 
-                           class="img-fluid d-none" 
+                           class="img-fluid d-none modal-media" 
                            autoplay muted loop controls
                            style="max-height: 90vh; max-width: 100%; object-fit: contain; background: black; border-radius: 10px;">
                     </video>
+                    <!-- Indicadores de posición (puntos) -->
+                    <div id="modalIndicators" class="modal-indicators" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 1051;">
+                    </div>
                     <div th:if="${product.images == null or product.images.isEmpty()}" class="text-center py-5">
-                        <i class="bi bi-image" style="font-size: 5rem; color: white;"></i>
+                        <span class="material-symbols-outlined" style="font-size: 5rem; color: white;">image</span>
                         <p class="text-white mt-3">Imagen no disponible</p>
                     </div>
                 </div>
@@ -492,12 +566,12 @@
                     } else {
                         const video = document.createElement('video');
                         video.id = 'modalVideo';
-                        video.className = 'img-fluid';
+                        video.className = 'img-fluid modal-media';
                         video.autoplay = true;
                         video.muted = true;
                         video.loop = true;
                         video.controls = true;
-                        video.style.cssText = 'max-height: 90vh; max-width: 100%; object-fit: contain; background: black; border-radius: 10px;';
+                        video.style.cssText = 'max-height: 90vh; max-width: 100%; object-fit: contain; background: black; border-radius: 10px; transition: all 0.3s ease;';
                         video.src = item.url;
                         if (modalBody) {
                             modalBody.insertBefore(video, modalImage);
@@ -519,10 +593,60 @@
             }
             
             // Actualizar thumbnails activos
-            document.querySelectorAll('.thumbnail-vertical').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.thumbnail-vertical').forEach(t => {
+                t.classList.remove('active', 'border-primary', 'border-2');
+                t.classList.add('border-slate-200', 'border');
+            });
             if (modalImages[index] && modalImages[index].thumbnail) {
-                modalImages[index].thumbnail.classList.add('active');
+                modalImages[index].thumbnail.classList.add('active', 'border-primary', 'border-2');
+                modalImages[index].thumbnail.classList.remove('border-slate-200');
             }
+            
+            // Actualizar indicadores
+            updateModalIndicators();
+        }
+        
+        // Función para actualizar los indicadores del modal
+        function updateModalIndicators() {
+            const indicatorsContainer = document.getElementById('modalIndicators');
+            if (!indicatorsContainer || modalImages.length <= 1) {
+                if (indicatorsContainer) indicatorsContainer.style.display = 'none';
+                return;
+            }
+            
+            indicatorsContainer.style.display = 'flex';
+            indicatorsContainer.innerHTML = '';
+            
+            modalImages.forEach((img, index) => {
+                const indicator = document.createElement('span');
+                indicator.className = 'modal-indicator';
+                indicator.style.cssText = `
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: ${index === currentModalImageIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'};
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                `;
+                if (index === currentModalImageIndex) {
+                    indicator.style.transform = 'scale(1.3)';
+                }
+                indicator.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showModalImage(index);
+                });
+                indicator.addEventListener('mouseenter', () => {
+                    if (index !== currentModalImageIndex) {
+                        indicator.style.background = 'rgba(255,255,255,0.8)';
+                    }
+                });
+                indicator.addEventListener('mouseleave', () => {
+                    if (index !== currentModalImageIndex) {
+                        indicator.style.background = 'rgba(255,255,255,0.5)';
+                    }
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
         }
         
         // Función para imagen anterior en el modal
@@ -699,6 +823,31 @@
                 });
             }
             
+            // Mejorar estilos de botones del modal
+            document.querySelectorAll('.modal-nav-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.background = 'rgba(0,0,0,0.8)';
+                    this.style.transform = 'translateY(-50%) scale(1.1)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.background = 'rgba(0,0,0,0.6)';
+                    this.style.transform = 'translateY(-50%) scale(1)';
+                });
+            });
+            
+            // Mejorar estilo del botón de cerrar
+            const closeBtn = document.querySelector('.modal-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('mouseenter', function() {
+                    this.style.background = 'rgba(0,0,0,0.8)';
+                    this.style.transform = 'scale(1.1)';
+                });
+                closeBtn.addEventListener('mouseleave', function() {
+                    this.style.background = 'rgba(0,0,0,0.6)';
+                    this.style.transform = 'scale(1)';
+                });
+            }
+            
             // Botones de WhatsApp
             document.querySelectorAll('button[data-product-name]').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -728,11 +877,327 @@
             const mainImageContainer = document.getElementById('mainImageContainer');
             if (mainImageContainer) {
                 mainImageContainer.addEventListener('click', function() {
-                    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
-                    modal.show();
+                    // En móvil, usar el carrusel de pantalla completa
+                    if (window.innerWidth <= 768) {
+                        openFullscreenCarousel();
+                    } else {
+                        // En PC, usar el modal de Bootstrap
+                        const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                        modal.show();
+                    }
                 });
             }
         });
+        
+        // Variables para el carrusel en pantalla completa (móvil)
+        let fullscreenCarouselIndex = 0;
+        let fullscreenCarouselModal = null;
+        let fullscreenTouchStartX = 0;
+        let fullscreenTouchEndX = 0;
+        
+        // Función para abrir carrusel en pantalla completa (móvil)
+        function openFullscreenCarousel() {
+            if (modalImages.length === 0) return;
+            
+            // Usar el índice actual de la imagen
+            fullscreenCarouselIndex = currentModalImageIndex;
+            
+            // Crear modal de zoom con carrusel
+            fullscreenCarouselModal = document.createElement('div');
+            fullscreenCarouselModal.className = 'mobile-zoom-modal';
+            fullscreenCarouselModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.95);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                touch-action: pan-y;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            // Contenedor del carrusel
+            const carouselContainer = document.createElement('div');
+            carouselContainer.className = 'fullscreen-carousel-container';
+            carouselContainer.style.cssText = `
+                position: relative;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            `;
+            
+            // Contenedor de imágenes/videos con transform para el carrusel
+            const carouselTrack = document.createElement('div');
+            carouselTrack.className = 'fullscreen-carousel-track';
+            carouselTrack.style.cssText = `
+                display: flex;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                transition: transform 0.3s ease;
+            `;
+            
+            // Crear slides para cada imagen/video
+            modalImages.forEach((item, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'fullscreen-carousel-slide';
+                slide.style.cssText = `
+                    min-width: 100%;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                `;
+                
+                if (item.isVideo) {
+                    const video = document.createElement('video');
+                    video.src = item.url;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.loop = true;
+                    video.controls = true;
+                    video.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = item.url;
+                    img.style.cssText = `
+                        max-width: 90%;
+                        max-height: 90%;
+                        width: auto;
+                        height: auto;
+                        object-fit: contain;
+                    `;
+                    slide.appendChild(img);
+                }
+                
+                carouselTrack.appendChild(slide);
+            });
+            
+            carouselContainer.appendChild(carouselTrack);
+            
+            // Indicadores de posición (puntos)
+            if (modalImages.length > 1) {
+                const indicatorsContainer = document.createElement('div');
+                indicatorsContainer.className = 'fullscreen-carousel-indicators';
+                indicatorsContainer.style.cssText = `
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 10px;
+                    z-index: 10000;
+                `;
+                
+                modalImages.forEach((item, index) => {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'fullscreen-carousel-indicator';
+                    if (index === fullscreenCarouselIndex) {
+                        indicator.classList.add('active');
+                    }
+                    indicator.style.cssText = `
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: ${index === fullscreenCarouselIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)'};
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    `;
+                    indicator.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        goToFullscreenImage(index);
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                });
+                
+                carouselContainer.appendChild(indicatorsContainer);
+            }
+            
+            // Botón de cerrar
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<span class="material-symbols-outlined">close</span>';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                background: rgba(0,0,0,0.6);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10000;
+                font-size: 20px;
+                transition: all 0.3s ease;
+            `;
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeFullscreenCarousel();
+            });
+            closeBtn.addEventListener('mouseenter', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.8)';
+                closeBtn.style.transform = 'scale(1.1)';
+            });
+            closeBtn.addEventListener('mouseleave', () => {
+                closeBtn.style.background = 'rgba(0,0,0,0.6)';
+                closeBtn.style.transform = 'scale(1)';
+            });
+            
+            carouselContainer.appendChild(closeBtn);
+            
+            fullscreenCarouselModal.appendChild(carouselContainer);
+            document.body.appendChild(fullscreenCarouselModal);
+            
+            // Prevenir scroll del body
+            document.body.classList.add('carousel-open');
+            document.body.style.overflow = 'hidden';
+            
+            // Actualizar posición inicial
+            updateFullscreenCarouselPosition();
+            
+            // Eventos de touch para swipe
+            carouselTrack.addEventListener('touchstart', (e) => {
+                fullscreenTouchStartX = e.touches[0].clientX;
+                carouselTrack.style.transition = 'none';
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchmove', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                const currentX = e.touches[0].clientX;
+                const diff = currentX - fullscreenTouchStartX;
+                const translateX = -(fullscreenCarouselIndex * 100) + (diff / window.innerWidth * 100);
+                carouselTrack.style.transform = `translateX(${translateX}%)`;
+            }, { passive: true });
+            
+            carouselTrack.addEventListener('touchend', (e) => {
+                if (fullscreenTouchStartX === 0) return;
+                
+                fullscreenTouchEndX = e.changedTouches[0].clientX;
+                const diff = fullscreenTouchStartX - fullscreenTouchEndX;
+                const swipeThreshold = 50;
+                
+                carouselTrack.style.transition = 'transform 0.3s ease';
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        nextFullscreenImage();
+                    } else {
+                        prevFullscreenImage();
+                    }
+                } else {
+                    updateFullscreenCarouselPosition();
+                }
+                
+                fullscreenTouchStartX = 0;
+            }, { passive: true });
+            
+            // Prevenir el cierre al hacer clic en el contenido
+            carouselContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Cerrar al hacer clic en el fondo
+            fullscreenCarouselModal.addEventListener('click', (e) => {
+                if (e.target === fullscreenCarouselModal) {
+                    closeFullscreenCarousel();
+                }
+            });
+        }
+        
+        // Función para actualizar posición del carrusel en pantalla completa
+        function updateFullscreenCarouselPosition() {
+            if (!fullscreenCarouselModal) return;
+            const carouselTrack = fullscreenCarouselModal.querySelector('.fullscreen-carousel-track');
+            if (carouselTrack) {
+                carouselTrack.style.transform = `translateX(-${fullscreenCarouselIndex * 100}%)`;
+            }
+            
+            // Actualizar indicadores
+            const indicators = fullscreenCarouselModal.querySelectorAll('.fullscreen-carousel-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === fullscreenCarouselIndex) {
+                    indicator.classList.add('active');
+                    indicator.style.background = 'rgba(255,255,255,1)';
+                    indicator.style.transform = 'scale(1.3)';
+                } else {
+                    indicator.classList.remove('active');
+                    indicator.style.background = 'rgba(255,255,255,0.5)';
+                    indicator.style.transform = 'scale(1)';
+                }
+            });
+        }
+        
+        // Función para siguiente imagen en pantalla completa
+        function nextFullscreenImage() {
+            if (modalImages.length === 0) return;
+            fullscreenCarouselIndex = (fullscreenCarouselIndex + 1) % modalImages.length;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para imagen anterior en pantalla completa
+        function prevFullscreenImage() {
+            if (modalImages.length === 0) return;
+            fullscreenCarouselIndex = fullscreenCarouselIndex === 0 ? modalImages.length - 1 : fullscreenCarouselIndex - 1;
+            updateFullscreenCarouselPosition();
+        }
+        
+        // Función para ir a una imagen específica en pantalla completa
+        function goToFullscreenImage(index) {
+            if (index >= 0 && index < modalImages.length) {
+                fullscreenCarouselIndex = index;
+                updateFullscreenCarouselPosition();
+            }
+        }
+        
+        // Función para cerrar el carrusel en pantalla completa
+        function closeFullscreenCarousel() {
+            if (fullscreenCarouselModal && document.body.contains(fullscreenCarouselModal)) {
+                document.body.removeChild(fullscreenCarouselModal);
+                fullscreenCarouselModal = null;
+                document.body.classList.remove('carousel-open');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Agregar animación fadeIn
+        if (!document.querySelector('#fadeInAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'fadeInAnimation';
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                
+                body.carousel-open {
+                    overflow: hidden;
+                    position: fixed;
+                    width: 100%;
+                }
+            `;
+            document.head.appendChild(style);
+        }
     </script>
 </body>
 </html>
